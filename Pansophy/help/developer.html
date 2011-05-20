@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<!--
+This file is meant for developers who are working on Pansophy.
+Contained here are lists of all pertinent files and short descriptions of them.
+Also, various guidelines and future suggestions are listed here for future developers.
+-->
+
+<p>
+<table width="80%" class="tablehelp" align="center"><tr align="center"><td><h1 id="top">Pansophy Contact Manager Help:<br />Developer Guide</h1></td></tr><tr><td><hr /><br /></td></tr>
+
+<tr><td align="center"><table width="85%" border="0"><tr align="left"><td>
+<a href="#securityguidelines">Security Guidelines</a><br />
+<a href="#programmingguidelines">Other Programming Guidelines</a><br />
+<a href="#systemfiles">Description of System Files</a><br />
+<a href="#todo">Developer To-Do List</a></td></tr></table><br /><hr /></td></tr>
+
+<tr><td><table width="85%" border="0" align="center"><tr><td><h2 id="securityguidelines">Security Guidelines</h2></td></tr></table></td></tr>
+<tr><td align="center"><table width="85%" border="0"><tr align="left"><td>
+All data transfer which takes place across a network must be encrypted.
+<br><br>
+Use global variables minimally; consider any data in them user-accessible whether or not you intend it to be.
+<br><br>
+No database access should take place outside of <code>DataAccessManager.inc.php</code>.
+<br><br>
+Consider all functions user-accessible whether or not you intend them to be.  For every function in this project,
+create a corresponding "userCan" function which shall return a boolean indicating whether or not the user attempting
+to execute a particular action has permission to do so.  Examples can be found in <code>DataAccessManager.inc.php</code>.
+<br><br>
+Access level 0 is reserved for users whose records we wish to keep but to whom we no longer wish to grant system access.
+<br><br><a href="#top">Top</a> | <a href="./index.html">Back to Help</a></td></tr></table><br /><hr /></td></tr>
+
+
+<tr><td><table width="85%" border="0" align="center"><tr><td><h2 id="programmingguidelines">Other Programming Guidelines</h2></td></tr></table></td></tr>
+<tr><td align="center"><table width="85%" border="0"><tr align="left"><td>
+Name functions and variables using Java conventions.
+<br><br>
+Use "userCan" functions in the interface in order to only display links to actions users have permission to execute.  The
+actual security mechanisms take place within <code>DataAccessManager.inc.php</code>, but hiding buttons to things users
+will be denied access to eliminates a lot of confusion.
+<br><br><a href="#top">Top</a> | <a href="./index.html">Back to Help</a></td></tr></table><br /><hr /></td></tr>
+
+
+
+<tr><td><table width="85%" border="0" align="center"><tr><td><h2 id="systemfiles">Description of System Files</h2></td></tr></table></td></tr>
+<tr><td align="center"><table width="85%" border="0"><tr align="left"><td>
+<h3>./ (root directory)</h3>
+<dl>
+
+<dt><code>alert.php</code></dt>
+<dd>Bottom frame of the system interface which periodically checks for new alerts for the user.</dd>
+
+<dt><code>DataAccessManager.inc.php</code></dt>
+<dd>The most important file in the system; it handles all user functions and interaction with the database.  This is a
+PHP class which must be instantiated by every script that requires database access.</dd>
+
+<dt><code>import.php</code></dt>
+<dd>Imports data to the database from a flat file.</dd>
+
+<dt><code>index.php</code></dt>
+<dd>The index page; it does an include statement and a redirect.</dd>
+
+<dt><code>main.php</code></dt>
+<dd>The "Main" page which is the first thing the user sees when he/she logs in.</dd>
+
+<dt><code>menu.php</code></dt>
+<dd>The top frame of the system interface which includes a search bar, a few links, and a logout button.</dd>
+
+<dt><code>results.php</code></dt>
+<dd>Displays the results of a search originating from the top menu search bar.</dd>
+
+<dt><code>settings.php</code></dt>
+<dd>Keeps information like the name, location, and login data for the database.</dd>
+
+<dt><code>setup.php</code></dt>
+<dd>This script is only called once and does the initial setup of the database and creates administrator account.</dd>
+</dl>
+
+<h3>./login</h3>
+<dl>
+<dt><code>login.php</code></dt>
+<dd>Handles user logins.</dd>
+</dl>
+
+<h3>./include</h3>
+<dl>
+<dt><code>filescript.inc</code></dt>
+<dd>Used by various pages to execute file downloads and file deletes.</dd>
+
+<dt><code>frameset.inc</code></dt>
+<dd>Defines the frameset used by all interfaces of the system except the login screen.</dd>
+
+<dt><code>header.inc</code></dt>
+<dd>Includes HTML <code>BODY</code>, <code>HEAD</code>, and <code>TITLE</code> tags and defines CSS style for every
+interface but the login screen.</dd>
+
+<dt><code>loginheader.inc</code></dt>
+<dd>Includes HTML <code>BODY</code>, <code>HEAD</code>, and <code>TITLE</code> tags and defines CSS style for the login
+screen.</dd>
+
+<dt><code>miscfunctions.inc.php</code></dt>
+<dd>Acts as a repository for coded functions used across multiple pages.</dd>
+
+<dt><code>MyDate.inc.php</code></dt>
+<dd>Contains various date/time related functions used throughout Pansophy.</dd>
+</dl>
+
+<h3>./interface</h3>
+<dl>
+<dt><code>addcontact.php</code></dt>
+<dd>Interface for appending new contacts to issues, as well as creating totally new issues.</dd>
+
+<dt><code>addflag.php</code></dt>
+<dd>Interface for mass-adding of student flags to a list of checked students.</dd>
+
+<dt><code>addfw.php</code></dt>
+<dd>Interface for adding students to the First Watch report.</dd>
+
+<dt><code>addinterim.php</code></dt>
+<dd>Interface for submitting interim reports into Pansophy.</dd>
+
+<dt><code>adduser.php</code></dt>
+<dd>Interface for adding a user to the system.</dd>
+
+<dt><code>alerts.php</code></dt>
+<dd>Interface for viewing alerts generated by "watching" issues and/or students.</dd>
+
+<dt><code>allwatchissue.php</code></dt>
+<dd>Calls a function in <code>DataAccessManager.inc.php</code> that sets all users to be watching an issue.</dd>
+
+<dt><code>attachfiles.php</code></dt>
+<dd>Interface for attaching files to a contact.</dd>
+
+<dt><code>batchstudents.inc</code></dt>
+<dd>Included in <code>addcontact.php</code>, <code>addflag.php</code>, and <code>addfw.php</code> to handle student lists on those interfaces.</dd>
+
+<dt><code>changeemails.php</code></dt>
+<dd>Administrative task that allows the e-mail addresses for the Writing Center, Learning Center, and Math Center to be changed or set for the first time.</dd>
+
+<dt><code>clearalerts.php</code></dt>
+<dd>Called by alerts.php to remove all of a user's alerts.</dd>
+
+<dt><code>clearcounter.php</code></dt>
+<dd>Handles the resetting of the InterimCounter field for students by an administrator.</dd>
+
+<dt><code>deletecontact.php</code></dt>
+<dd>Handles the deletion of a contact by an administrator.</dd>
+
+<dt><code>deleteissue.php</code></dt>
+<dd>Handles the deletion of an issue by an administrator.</dd>
+
+<dt><code>deletereport.php</code></dt>
+<dd>Handles the deletion of a report by a user.</dd>
+
+<dt><code>deleteuser.php</code></dt>
+<dd>Handles the deletion of a user by an administrator.</dd>
+
+<dt><code>downloadfile.php</code></dt>
+<dd>Called by filescript.inc to bring up download file dialog.</dd>
+
+<dt><code>editcontact.php</code></dt>
+<dd>Interface for editing a contact's "Description" field.</dd>
+
+<dt><code>editflags.php</code></dt>
+<dd>Interface for editing the user-controlled flags. Administrator only.</dd>
+
+<dt><code>editstudent.php</code></dt>
+<dd>Interface for editing the RedFlag and VIP text fields along with setting student flags on an individual student's profile.</dd>
+
+<dt><code>edituser.php</code></dt>
+<dd>Interface for editing user information.</dd>
+
+<dt><code>getuser.php</code></dt>
+<dd>Performs a search on the username to return the user's contexts for <code>adduser.php</code>.</dd>
+
+<dt><code>importinterim.php</code></dt>
+<dd>Interface that parses the text of a copied interim report e-mail for <code>addinterim.php</code>.</dd>
+
+<dt><code>issuecontacts.php</code></dt>
+<dd>The "Contact History" included in <code>viewissue.php</code>.</dd>
+
+<dt><code>issuereports.php</code></dt>
+<dd>The form for generating a report of issues.</dd>
+
+<dt><code>recentlycreated.php</code></dt>
+<dd>Displays all issues that have been created recently.</dd>
+
+<dt><code>reports.php</code></dt>
+<dd>Contains saved reports and links to forms to create new reports.</dd>
+
+<dt><code>studentcontacts.php</code></dt>
+<dd>The "Contact History" included in <code>viewstudent.php</code>.</dd>
+
+<dt><code>studentinterims.php</code></dt>
+<dd>The "Interim Reports" included in <code>viewstudent.php.</code>.</dd>
+
+<dt><code>studentissues.php</code></dt>
+<dd>The "Issue History" included in <code>viewstudent.php</code>.</dd>
+
+<dt><code>studentreports.php</code></dt>
+<dd>The form for generating a report of students.</dd>
+
+<dt><code>tasks.php</code></dt>
+<dd>Contains all tasks that a given user can perform. (Limited to access levels 9 and 10.)</dd>
+
+<dt><code>usercontacts.php</code></dt>
+<dd>The "Contact History" included in <code>viewuser.php</code>.</dd>
+
+<dt><code>userissues.php</code></dt>
+<dd>The "Issue History" included in <code>viewuser.php</code>.</dd>
+
+<dt><code>userreports.php</code></dt>
+<dd>The form for generating a report of users.</dd>
+
+<dt><code>viewfirstwatch.php</code></dt>
+<dd>Interface for viewing all students currently placed in First Watch.</dd>
+
+<dt><code>viewinterim.php</code></dt>
+<dd>Interface for viewing information related to a particular interim report.</dd>
+
+<dt><code>viewinterimpf.php</code></dt>
+<dd>Printer-friendly view of <code>viewinterim.php</code>.</dd>
+
+<dt><code>viewissue.php</code></dt>
+<dd>Interface for viewing information related to a particular issue.</dd>
+
+<dt><code>viewissuepf.php</code></dt>
+<dd>Printer-friendly view of <code>viewissue.php</code>.</dd>
+
+<dt><code>viewschedule.php</code></dt>
+<dd>Interface for viewing student schedules for the current term for a particular student.</dd>
+
+<dt><code>viewstudent.php</code></dt>
+<dd>Interface for viewing information related to a particular student.</dd>
+
+<dt><code>viewstudentpf.php</code></dt>
+<dd>Printer-friendly view of <code>viewstudent.php</code>.</dd>
+
+<dt><code>viewuser.php</code></dt>
+<dd>Interface for viewing information related to a particular user.</dd>
+
+<dt><code>viewuserpf.php</code></dt>
+<dd>Printer-friendly view of <code>viewuser.php</code>.</dd>
+
+<dt><code>watchstudent.php</code></dt>
+<dd>Called by <code>viewstudent.php</code> to watch or stop watching a student.</dd>
+
+<dt><code>watchissue.php</code></dt>
+<dd>Called by <code>viewissue.php</code> to watch or stop watching an issue.</dd>
+</dl>
+
+<h3>./img</h3>
+<dl>
+<dt><code>leavesouthmall_gray.jpg</code></dt>
+<dd>Background image for the login screen:  a washed-out grayscale image of Kauke Mall.</dd>
+
+<dt><code>woosterlogo.gif</code></dt>
+<dd>College of Wooster logo which appears in the upper left corner of the top menu.</dd>
+</dl>
+
+<h3>./help</h3>
+<dl>
+<dt><code>about.html</code></dt>
+<dd>Contains information about Pansophy, its designers, and special messages.</dd>
+
+<dt><code>developer.html</code></dt>
+<dd>Information for future programmers and project members; you're looking at it right now.</dd>
+
+<dt><code>faq.html</code></dt>
+<dd>User FAQ: answers to common questions.</dd>
+
+<dt><code>index.html</code></dt>
+<dd>Main page of the help section which contains links to all of the subsections.</dd>
+
+<dt><code>setup.html</code></dt>
+<dd>Gives instructions to set up the system from scratch.</dd>
+
+<dt><code>walkthroughs.html</code></dt>
+<dd>User walkthroughs for common tasks.</dd>
+
+<dt><code>whatsnew.html</code></dt>
+<dd>Version notes for updates are listed here.</dd>
+</dl>
+<br><br><a href="#top">Top</a> | <a href="./index.html">Back to Help</a></td></tr></table><br /><hr /></td></tr>
+
+
+<tr><td><table width="85%" border="0" align="center"><tr><td><h2 id="todo">Developer To-Do List</h2></td></tr></table></td></tr>
+<tr><td align="center"><table width="85%" border="0"><tr align="left"><td>
+<h3>Increase security</h3>
+Currently the PHP code must reside on an HTTPS-enabled server to maintain proper security.  The database must reside on
+the same server.  Extend the system to do the encryption itself so that the PHP code need not reside on an HTTPS server,
+and the database need not reside on the same server as the PHP code.
+<br><br>
+In <code>DataAccessManager.inc.php</code> you will notice that most functions have an argument <code>$sessionID</code>.
+This was included with the intention of using session information as a "fingerprint" for additional security.  However, this
+was never actually done and would be good to consider in the future.
+<br><br>
+In general, read a good guide about writing secure PHP (what some call an oxymoron).  Go through and right any security wrongs
+which may have been done in the program (We won't go into specifics on this publicly-accessible help guide).
+<br><br>
+<h3>Slightly modify database</h3>
+The database structure was overhauled in version 2.0.  However, there is one small issue left.  The `users-contacts` table
+is entirely unnecessary since each contact already has a "Creator" field which can take care of this.  This was just an
+absent-minded mistake on one developer's part and does not hurt functionality.  However, before removing this table, someone
+should go through DataAccessManager.inc.php and modify all SQL statements that reference it to use the `contacts` table's
+"Creator" field which serves the same purpose (but preserves a 1-1 relationship between users and contacts).
+<br><br>
+<h3>More use of validated CSS, XHTML</h3>
+We are developers first and web designers second, and this shows in the web code.  Some effort was made to convert more of the
+code to use CSS than previously, but there is plenty more that could be done.
+<br><br>
+<h3>Increase generalization</h3>
+This includes a lot of little things like changing the database table "students" to "clients."  We would also like to
+see increased generalization and modularity through the use of more object oriented programming.
+<br><br>
+<h3>Object Oriented Programming</h3>
+At some point everyone will be up to speed with PHP5.  When this happens, object-oriented programming will be more useful.
+Create the following PHP classes:  Database, Client, User, Contact, Issue.
+<br><br>
+<h3>Small Problems with LastModified and Modifier</h3>
+Currently the "LastModified" field in each of tables is a MySQL timestamp.  The first timestamp field in any MySQL table is
+automatically updated to the current time anytime the record is edited in any way.  Currently our "watch" feature is
+implemented in such a way that the issue contains a field which keeps track of which users are watching it, so anytime a
+user changes his/her "watch" status of an issue, this is a modification to the issue record, and it gets timestamped.  This
+falsely indicates that an issue has been altered in a significant way.  Replace the automatic MySQL timestamp with a
+programmer-defined function to be called at a time of the programmer's choosing.
+<br><br>
+As a result, the "Modifier" field often remains empty even when the "LastModified" field is getting updated.  This is
+misleading to users and is documented in the user FAQ ("Sometimes I see a contact or issue that says 'Modfied (date) by' but
+there is nothing after 'by.'  Why?").  Obviously, there could be a better way to indicate in the interface that an issue has
+not been modified since its creation.
+
+<br><br><a href="#top">Top</a> | <a href="./index.html">Back to Help</a></td></tr></table><br /></td></tr>
+</table>
+</p>
+</body>
+</html>

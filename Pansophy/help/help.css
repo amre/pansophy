@@ -1,0 +1,65 @@
+body {
+	background-image:url("../img/leavesouthmall_gray.jpg");
+	background-attachment: fixed;
+}
+h1 {
+	color: #b78f02;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 28px;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: none;
+}
+h2 {
+	color: #b78f02;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 23px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+}
+h3 {
+	color: #b78f02;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+}
+hr {
+	width: 85%;
+}
+.tablehelp {
+	background-color: #FFFFFF;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #000000;
+	color: #000000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+a:link {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: #660000;
+	text-decoration: none;
+}
+a:visited {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: #660000;
+	text-decoration: none;
+}
+a:hover {
+	background-color: #999999;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: #000000;
+	text-decoration: none;
+}
+a:active {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: #660000;
+	text-decoration: none;
+}
