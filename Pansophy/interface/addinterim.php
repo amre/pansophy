@@ -240,8 +240,8 @@ function parseInterim()
       $start = $indices[4] + 6;
       $length = $indices[5] - $start;
       $chunk = substr($text,$start,$length);
-      $unformattedDate = trim($chunk);
-      $date = readableDate($unformattedDate);
+      $date = trim($chunk);
+      $date = readableDate(formatDate());
    } 
 
    // extract problems
