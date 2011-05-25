@@ -2840,6 +2840,7 @@ class DataAccessManager {
 		";
 		
 		if( $classyear ) $query .= " and x.CLASS_YEAR = '$classyear'";
+
 		if( $residenceselect ) $query .= " and x.HOUSING_BDLG = '$residenceselect'";
 		if( $userselect ) $query .= " and s.assignedto = '$userselect'";
 		if( isset($watched) ) $query .= " and x.ID in (select studentid from studentwatch where userid = '$userid')";
@@ -3044,6 +3045,7 @@ class DataAccessManager {
 	
 
    /**
+
 	 * Used to generate a report on the first watch list.
 	 * 
 	 * @param $startdate - date to start report on
@@ -3707,6 +3709,54 @@ class DataAccessManager {
 			$result = mysql_query($query);
 			
 			return $result;
+		}
+	}
+
+	/**
+	 * Determines whether or not a student is on First Watch
+	 *
+	 * @param $sessionID - session information like IP address to verify for security
+	 *
+
+	 * @return - array of students on first watch
+	 */
+	function studentOnFW ( $sessionID, $studentID) {
+		if($this->userCanViewFW( $sessionID ))
+		{
+			if(!empty($studentID)){
+				$this->verifyStudent($studentID);
+				$query="select Reason from `students-FW` where StudentID='$studentID'";
+				$result=mysql_query($query);
+				//return $result;
+				if (mysql_num_rows($result) == 0) return false;
+				else
+				{
+					$return=array();
+					while($row=mysql_fetch_assoc($result)){
+						array_push($return,$row['Reason']);
+					}
+					return $return;
+				}
+					//return $result;
+					//return mysql_fetch_assoc($result);
+			}//return true;
+
+
+			/*$query = "SELECT Reason FROM students-FW WHERE StudentID = $studentID";
+			$result = mysql_query($query);
+			$return = array();
+			while( $row = mysql_fetch_assoc($result) ) {
+				if( $this->userCanViewFW('') ) {
+					array_push( $return, $row );
+				}
+			}
+			return $return;*/
+
+			/*$query = "SELECT x.ID, x.FIRST_NAME, x.LAST_NAME, f.Reason FROM `students` s, `X_PNSY_STUDENT` x, `students-FW` f WHERE s.FirstWatch=1 AND s.StudentID = f.StudentID AND s.StudentID = x.ID ORDER BY x.LAST_NAME, f.Reason";
+			$result = mysql_query($query);*/
+			//echo $result;
+			
+			//return $result;
 		}
 	}
 	

@@ -22,6 +22,12 @@ if( isset($_POST['reassign']) && $_POST['reassign'] ) {
 	else echo 'Student could not be reassigned at this time.  Please try again later.<p>';
 }
 
+//process first watch here
+if(isset($_POST['fwreason']) && $_POST['addtofw'] ) {
+	$dam->placeOnFirstWatch('', $_GET['id'], $_POST['fwreason']);//function already checks whether user can modify FW
+}
+
+
 // Get student info
 $studentId = $_GET['id'];
 $student = $dam->viewStudent('',$studentId);
@@ -36,7 +42,10 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 //FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
 
 // display title section
-echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1><center>';
+
+echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1>';
+echo '<center>';
+//watching
 echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
 if($dam->userIsWatchingStudent( '', $studentId )){
 	echo '<b>You ARE currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=0&id='.$studentId.'">[Stop watching]</a>';
@@ -46,9 +55,42 @@ else{
 		echo '<b>You are NOT currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=1&id='.$studentId.'">[Watch]</a>';
 	}
 }
+//first watch
+if($reasons=$dam->studentOnFW('',$studentId))
+{
+	echo '<br><br><b>This student IS currently on First Watch for: '.$reasons[0];
+	$count=count($reasons);
+	if($count==1)
+		echo ' </b>';
+	else
+	{
+		for($i=1; $i<$count-1; $i++)
+			echo ', '.$reasons[$i];
+		echo ' and '.$reasons[$count-1].' </b>';
+	}
+}
+else if($dam->userCanViewFW(''))
+	echo '<br><br><b>This student is NOT currently on First Watch. </b>';
+
+if($dam->userCanModifyFW(''))
+{
+	// drop down menu strings
+	$FWReasonArr = array('Academic', 'Financial', 'Medical', 'Possible Transfer', 'Personal', 'Watch List' );
+
+	echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
+	<p class='colortext'> Add to First Watch List:&nbsp;<select size='1' name='fwreason'>
+	</p>";
+	for($i=0; $i<sizeof($FWReasonArr); $i++){
+		if($FWReasonArr[$i] != ''){
+			if(strcmp($FWReasonArr[$i], $FWReason)==0)	echo '<option value="'.$FWReasonArr[$i].'" SELECTED>'.$FWReasonArr[$i].'</option>';
+			else								echo '<option value="'.$FWReasonArr[$i].'">'.$FWReasonArr[$i].'</option>';
+		}
+	}
+	echo "</select>&nbsp;<input type='submit' name='addtofw' value='Add to FW'></form>";
+}
 
 // for assignment select
-echo "<br><br>";
+//echo "<br><br>";
 echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
 	<p class='colortext'> Assigned to:&nbsp;<select size='1' name='assignedto'>
 	<option value=''>(unassigned)</option></p>";
