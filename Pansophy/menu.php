@@ -33,6 +33,9 @@ if( $dam->userCanCreateIssue('') ) echo '
 if( $dam->userCanModifyStudent('') ) echo '
 		<td align="left" nowrap width="1%" class="colorbg">
 		<a href="./interface/addflag.php" target="Main" class="darkcolor">[Add Flag]</a></td>';
+if( $dam->userCanViewFW('') ) echo '
+		<td align="left" nowrap width="1%" class="colorbg">
+		<a href="./interface/viewfirstwatch.php" target="Main" class="darkcolor">[First Watch List]</a></td>';
 echo '	<td align="left" nowrap width="1%" class="colorbg">
 		<a href="./help/index.html" target="_blank" class="darkcolor">[Help]</td></td><td width="40%"></td>
 	</table>';

@@ -43,19 +43,7 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 
 // display title section
 
-//echo '<table width="100%" position="fixed" cellpadding="2" cellspacing="5" vspace="0" hspace="0" class="lightbg"
-//style="position:fixed;
-//padding: 3px;
-//border-width: 2px;
-//border-color: #000000;
-//border-style: solid;">';
-//echo '<tr><td align="center"><h1></h1></tr>';
-//echo '<tr><td align="center">';
 echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1>';
-//echo '</td></table>';
-//echo '<h1 style="position:fixed;background-color:#000000;width:100%;vspace:0;hspace:0;align:center;cellpadding:5;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1><center>';
-//echo "\r\n";
-//echo 'hspace="50"';
 echo '<center>';
 //watching
 echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
