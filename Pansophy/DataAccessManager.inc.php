@@ -2577,7 +2577,22 @@ class DataAccessManager {
 			array_push( $return, $row );
 		}
 		return $return;
-		
+	}
+
+	/**
+	 * Retrieves the information necessary to create an HTML <SELECT> list of active users
+	 *
+	 * @return associative array of users and certain fields
+	 */
+	function getActiveUserSelectList() {
+		$return = array();
+		$query = "select ID, CONCAT(LastName, ', ', FirstName, ' ', MiddleIn, ' (', ID, ')') as Label
+			  from users where AccessLevel > 0 order by LastName";
+		$result = mysql_query($query);
+		while( $row = mysql_fetch_assoc($result) ) {
+			array_push( $return, $row );
+		}
+		return $return;
 	}
 	
 	/**
@@ -2840,6 +2855,7 @@ class DataAccessManager {
 		";
 		
 		if( $classyear ) $query .= " and x.CLASS_YEAR = '$classyear'";
+
 
 		if( $residenceselect ) $query .= " and x.HOUSING_BDLG = '$residenceselect'";
 		if( $userselect ) $query .= " and s.assignedto = '$userselect'";
@@ -3749,6 +3765,7 @@ class DataAccessManager {
 				if( $this->userCanViewFW('') ) {
 					array_push( $return, $row );
 				}
+
 			}
 			return $return;*/
 
