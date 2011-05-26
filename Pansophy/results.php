@@ -149,7 +149,7 @@ else if(strcmp($table, 'students') != 0 && strcmp($table, 'contacts') != 0 && st
 	echo 'Not a valid SQL table';
 	exit;
 }
-//
+//'Ethnic''ETHNIC'
 else{
 	$results = array();
 	//Set the special case fields using the special case arrays
@@ -158,11 +158,11 @@ else{
 		$links = array('LAST_NAME', 'WOOSTER_EMAIL');
 		//$doNotDisplay holds the fields that are returned from the search that you don't want to show up in the result table
 		$doNotDisplay = array('LastModified', 'DateCreated', 'RedFlag', 'Cellular', 'UsersWatching', 'Address1', 'Address2', 
-					'NickName', 'HomePhone', 'Ethnic', 'Status', 'Advisor', 'Modifier', 'VIP', 'AssignedTo', 
+					'NickName', 'HomePhone', 'Status', 'Advisor', 'Modifier', 'VIP', 'AssignedTo', 
 					'HousingBuilding', 'HousingRoom', 'ParentEmail', 'ParentCellPhone', 'AcProbation', 'HousingWaitList', 
 					'Field1', 'Field2', 'Field3', 'AllWatch', 'ParentName1', 'ParentName2', 'City', 'State', 'ZIP', 'Country',
-					'StudentActivities', 'InterimCounter', 'FirstWatch',
-					'StudentID', 'SUFFIX', 'GENDER', 'ETHNIC', 'ADDRESS_ID', 'PRIMARY_EMAIL', 'HOME_PHONE', 'CELL_PHONE', 'CAMPUS_PHONE',
+					'StudentActivities', 'InterimCounter', 'FirstWatch','MAJOR_1','MAJOR_2',
+					'StudentID', 'SUFFIX', 'GENDER', 'ADDRESS_ID', 'PRIMARY_EMAIL', 'HOME_PHONE', 'CELL_PHONE', 'CAMPUS_PHONE',
 					'ADVISOR', 'HOUSING_BLDG', 'HOUSING_ROOM', 'PRIVACY_FLAG',
 					'STREET_2', 'STREET_3', 'STREET_4', 'STREET_5', 'CITY', 'STATE', 'ZIP', 'COUNTRY');
 	}
