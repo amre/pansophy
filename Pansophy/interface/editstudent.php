@@ -92,7 +92,7 @@ echo '<table  cellspacing="5" cellpadding="4">';
 	echo '<tr><td valign="top" align="left" nowrap>RedFlag: </td><td align="left"><TEXTAREA name="redflag" cols="40" rows="5">'.$redflag.'</TEXTAREA></td></tr>
 	<tr><td valign="top" align="left" nowrap>VIP: </td><td align="left"><TEXTAREA name="vip" cols="40" rows="5">'.$vip.'</TEXTAREA></td></tr>';
 
-	// acpro and houseing waitlist flags
+	// acpro and housing waitlist flags
 	echo '<tr><td valign="top" align="left" nowrap>Academic Probation: </td><td align="left">';
 	echo '<input type="checkbox" name="acpro" '.$acpro.'>';
 	echo '</td></tr>

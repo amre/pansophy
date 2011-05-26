@@ -12,6 +12,30 @@ $user=$_SESSION['userid'];
 $watchedIssues=$dam->issuesWatched();
 $watchedStudents=$dam->studentsWatched();
 $inactiveIssues=$dam->inactiveOpenIssuesForUser( -1 );
+
+//process closing issues
+if(strcmp($_POST['submit'], 'Close') == 0){	
+	if(isset($_POST['closeIssueArr'])) $issueArr = $_POST['closeIssueArr'];
+	else $issueArr = array();
+	//$studentArr = explode(',',$students);
+	for($i=0; $i<count($issueArr); $i++){
+		// take this moment to keep `students` table up to date
+		//$dam->verifyStudent($addArr[$i]);
+		// add selected students to list
+		//$dam->stopWatchingIssue('', $issueArr[$i]);
+		//$dam->setIssueStatus('', $issueArr[$i], 'Closed');
+		$result=$dam->setIssueStatus('', $issueArr[$i], 'Closed');
+		if($result) {
+			echo 'Issue status changed.<p>';
+		}
+		else {
+			echo '<meta http-equiv="Refresh" content="0; URL=./interface/addcontact.php">';
+			//echo 'You do not have permission to change issue status.<p>';
+		}
+	}
+	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
+}
+
 	
 //print header
 echo '<h1>Pansophy - Student Affairs Contact Manager</h1>';
@@ -54,12 +78,16 @@ echo '
 	<table width="100%" >
 	<tr><td class="lightbg"><h3>Your inactive issues</h3></td></tr>';
 if($inactiveIssues) {
+//start form
+echo '<form action="./main.php" method="POST">';
 	foreach( $inactiveIssues as $issue ){
-		echo '<tr><td>
+		echo '<tr><td><input type="checkbox" name="closeIssueArr[]" value="'.$issue['ID'].'">
 		<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> ('.$issue['DaysOld'].' days old) - '.stripslashes_all($issue['Header']);
 		if( $issue['AssignedTo'] == $_SESSION['userid'] ) echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Assigned to <b>YOU</b>.</i>";
 		echo '</td></tr>';
 	}
+	echo '<tr><td><input type="submit" name="submit" value="Close"></td></tr>';
+	echo '</form>';
 }
 else {
 	echo "<td><i>You currently have no inactive issues.</i></td>";
