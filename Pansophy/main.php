@@ -23,9 +23,9 @@ echo '<table width=100% cellpadding="0" cellspacing="5" class="darkbg">';
 	echo '<tr><td NOWRAP valign="center" width="100%" class="darkbg" colspan="3">';
 //print links
 echo '<table width="100%"  cellspacing="0" cellpadding="5" class="darkbg"><tr>
-		<td align="center"><a href="http://www.wooster.edu/en/Student-Life/Dean-of-Students" target="_blank" class="lightcolor">Dean Of Students</a></td><!--Honestly now, Dean of STD?-->
+		<td align="center"><a href="http://www.wooster.edu/Student-Life/Dean-of-Students" target="_blank" class="lightcolor">Dean Of Students</a></td><!--Honestly now, Dean of STD?-->
 		<td align="center"><a href="http://www.wooster.edu/Academics/Academic-Affairs" target="_blank" class="lightcolor">Academic Affairs</a></td>
-		<td align="center"><a href="http://www.wooster.edu/en/Academics/Registrar" target="_blank" class="lightcolor">Registrar\'s Office</a></td>
+		<td align="center"><a href="http://www.wooster.edu/Academics/Registrar" target="_blank" class="lightcolor">Registrar\'s Office</a></td>
 		<td align="center"><a href="http://www.wooster.edu/Student-Life/Security-and-Protective-Services" target="_blank" class="lightcolor">Safety and Security</a></td>
 		<td align="center"><a href="http://contmgr2.wooster.edu/" target="_blank" class="lightcolor">Document Management</a></td>
 		</tr></table>';

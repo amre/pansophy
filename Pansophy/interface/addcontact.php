@@ -63,7 +63,8 @@ if(!isset($_POST['submit'])){
 	}
 	
 	// set some defaults
-	$watch = 'Just me';
+	$watch = 'Do not watch';
+        $status = 'Closed';
 }
 // if the user has cancelled, return to either the main menu or the parent issue page
 else if(strcmp($_POST['submit'], 'Cancel') == 0){
