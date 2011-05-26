@@ -64,8 +64,6 @@ class DataAccessManager {
 		@$this->link = mysql_connect($host, $user, $pass);
 		if(!$this->link){
 			echo "<br>Could not connect to database.  Please try again later.<br>";
-			echo '<br>'.mysql_error();
-			echo '<br>'.$host.' '.$user.' '.$pass.' '.$name;
 			return;
 		}
 		mysql_select_db($name);
@@ -2855,8 +2853,6 @@ class DataAccessManager {
 		";
 		
 		if( $classyear ) $query .= " and x.CLASS_YEAR = '$classyear'";
-
-
 		if( $residenceselect ) $query .= " and x.HOUSING_BDLG = '$residenceselect'";
 		if( $userselect ) $query .= " and s.assignedto = '$userselect'";
 		if( isset($watched) ) $query .= " and x.ID in (select studentid from studentwatch where userid = '$userid')";
@@ -4337,6 +4333,46 @@ class DataAccessManager {
       $description = "Email sent to student concerning interim ".$interimId;
       $this->updateSpecialHistory($studentId,$description,0);
    }
+	function failedLoginAttempt($user){
+		$query = "SELECT LoginAttempts from users where ID='$user'";
+		$result = mysql_query($query);
+		$value = mysql_fetch_assoc($result);
+		if (!isset($value['LoginAttempts'])) $attempts=0;
+		else $attempts=$value['LoginAttempts'];
+		$attempts++;
+		$timeval = time();
+		$query = "UPDATE users SET LoginAttempts=$attempts, LastLogin=$timeval WHERE ID='$user'";
+		mysql_query($query);
+	}
+
+	function successfulLoginAttempt($user){
+		$timeval = time();
+		$query = "UPDATE users SET LoginAttempts=0, LastLogin=$timeval WHERE ID='$user'";
+		mysql_query($query);
+	}
+
+	function isLockedOut($user){
+		$query = "SELECT LoginAttempts, LastLogin from users where ID='$user'";
+		$result = mysql_query($query);
+		$value = mysql_fetch_assoc($result);
+		$attempts = $value['LoginAttempts'];
+		$lasttime = $value['LastLogin'];
+		$thistime = time();
+		$timearith = $thistime - $lasttime;
+		if( ($thistime - $lasttime) > 300){
+			$query = "UPDATE users SET LoginAttempts=0, LastLogin=$thistime WHERE ID='$user'";
+			mysql_query($query);
+			return false;
+			}
+		else{
+			if($attempts > 3){
+				return true;
+				}
+			else{
+				return false;
+				}
+			}
+		}
 }
 
 ?>
