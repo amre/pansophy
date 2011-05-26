@@ -9,7 +9,6 @@
 
 include_once('../include/loginheader.inc');
 include('../DataAccessManager.inc.php');
-
 $dam=new DataAccessManager();
 
 
@@ -43,21 +42,29 @@ else{
 		$pass=$_POST['pass'];
 		$ldapaddress='ldap.wooster.edu';
 		$link=ldap_connect($ldapaddress);
-		if(@ldap_bind($link, $username, $pass)){
+		$islockedout = $dam->isLockedOut($userid);
+		if(@ldap_bind($link, $username, $pass) && !$islockedout){
 			//it worked, so start this session
 			session_set_cookie_params(0);
+			$dam->successfulLoginAttempt($userid);
 			$_SESSION['userid']=$userid;
 			if($dam->getAccessLevel('') > 0){
 				echo '<meta http-equiv="Refresh" content="0; URL=../index.php">';
 			}
 			else{
 				echo 'Access denied.';
-            echo '<meta http-equiv="Refresh" content="3; URL=./login.php">';
+            			echo '<meta http-equiv="Refresh" content="3; URL=./login.php">';
 			}
 		}
 		else{
 			//The authentication did not work.  Print an error message.
+			if($islockedout){
+			echo 'This username has been temporarily locked out of the system for too many incorrect login attempts. Please wait a few minutes and try again';
+			}
+			else{
 			echo 'Username or password incorrect.  Please try again or check with your system administrator.';
+			$dam->failedLoginAttempt($userid);
+			}
 		   echo '<meta http-equiv="Refresh" content="3; URL=./login.php">';
 		}
 	}
