@@ -15,8 +15,8 @@ $dam = new DataAccessManager();
 //+-----------------------------------------------------------------------------------------+
 
 echo '<div style="position:fixed;height:100%;width:35%;right:0%;background:#ffffff;z-index:-1"></div>';
-echo '<div style="position:fixed;height:100%;width:30%;right:35%;background:#f0f0f0;z-index:-1"></div>';
-echo '<div style="position:fixed;height:100%;width:35%;right:65%;background:#ffffff;z-index:-1"></div>';
+echo '<div style="position:fixed;height:100%;width:35%;right:35%;background:#f0f0f0;z-index:-1"></div>';
+echo '<div style="position:fixed;height:100%;width:30%;right:70%;background:#ffffff;z-index:-1"></div>';
 // process assignment here
 if( isset($_POST['reassign']) && $_POST['reassign'] ) {
 	$result = $dam->assignUserToStudent( $_POST['assignedto'], $_GET['id'] );
@@ -44,71 +44,11 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 //FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
 
 // display title section
-echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%">';
-echo '<h1 style="color:#000000;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div>';
-if($dam->userCanCreateContact('', $studentId)){
-echo '<div style="position:fixed; top:7.2%;left:45%;z-index:96;">';
-echo '<a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect=1" style="left:65%;"><b> [Add new student issue]</b></a></div>';
-	      }
-echo '<center><div style="width:30%"></br></br></br></br></br>';
-//watching
-echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
-if($dam->userIsWatchingStudent( '', $studentId )){
-	echo '<b>You ARE currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=0&id='.$studentId.'">[Stop watching]</a>';
-}
-else{
-	if($dam->userCanWatchStudent('', $studentId)){
-		echo '<b>You are NOT currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=1&id='.$studentId.'">[Watch]</a>';
-	}
-}
-//first watch
-if($reasons=$dam->studentOnFW('',$studentId))
-{
-	echo '<br><br><b>This student IS currently on First Watch for: '.$reasons[0];
-	$count=count($reasons);
-	if($count==1)
-		echo ' </b>';
-	else
-	{
-		for($i=1; $i<$count-1; $i++)
-			echo ', '.$reasons[$i];
-		echo ' and '.$reasons[$count-1].' </b>';
-	}
-}
-else if($dam->userCanViewFW(''))
-	echo '<br><br><b>This student is NOT currently on First Watch. </b>';
+echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%;">';
+echo '<h1 style="color:#000000;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div></br>';
 
-if($dam->userCanModifyFW(''))
-{
-	// drop down menu strings
-	$FWReasonArr = array('Academic', 'Financial', 'Medical', 'Possible Transfer', 'Personal', 'Watch List' );
 
-	echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
-	<p class='colortext'> Add to First Watch List:&nbsp;<select size='1' name='fwreason'>
-	</p>";
-	for($i=0; $i<sizeof($FWReasonArr); $i++){
-		if($FWReasonArr[$i] != ''){
-			if(strcmp($FWReasonArr[$i], $FWReason)==0)	echo '<option value="'.$FWReasonArr[$i].'" SELECTED>'.$FWReasonArr[$i].'</option>';
-			else								echo '<option value="'.$FWReasonArr[$i].'">'.$FWReasonArr[$i].'</option>';
-		}
-	}
-	echo "</select>&nbsp;<input type='submit' name='addtofw' value='Add to FW'></form>";
-}
-
-// for assignment select
-//echo "<br><br>";
-echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
-	<p class='colortext'> Assigned to:&nbsp;<select size='1' name='assignedto'>
-	<option value=''>(unassigned)</option></p>";
-foreach( $dam->getActiveUserSelectList() as $user ) {
-	$userid = $user['ID'];
-	$label = $user['Label'];
-	$selected = "";
-	if( $student['AssignedTo'] == $userid ) $selected = " selected";
-	echo "<option value='$userid'$selected>$label</option>";
-}
-echo "</select>&nbsp;<input type='submit' name='reassign' value='Reassign'></form>";
-echo '</div></center><p><br />';
+echo '<p><br />';
 
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
@@ -143,10 +83,10 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcP
 // display student info...
 
 // main table
-echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" width="33%">';
+echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" width="30%">';
    
    // subtable one
-   echo '<div style="position:absolute; top:10%;right=65%;left=0%;">';   
+   echo '<div style="position:relative; top:0%;right=65%;left=0%;">';   
    echo '<table><tr><td>'; 
 
       // student details section
@@ -245,10 +185,76 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
    echo '</div>';
 //end subtable one
  
-   //begin subtable three
-  
-echo '<td valign="top" rowspan="3">';
-echo '<div style="position:absolute; top:35%;left:35%;right:35%">'; 
+   //begin subtable two
+// div one  
+echo '<td valign="top" rowspan="3" width="35%" >';
+echo '<div style="position:relative;right:0%;left:0%"></br></br>';
+//watching
+echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
+if($dam->userIsWatchingStudent( '', $studentId )){
+	echo '<b>You ARE currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=0&id='.$studentId.'">[Stop watching]</a>';
+}
+else{
+	if($dam->userCanWatchStudent('', $studentId)){
+		echo '<b>You are NOT currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=1&id='.$studentId.'">[Watch]</a>';
+	}
+}
+//first watch
+if($reasons=$dam->studentOnFW('',$studentId))
+{
+	echo '<br><br><b>This student IS currently on First Watch for: '.$reasons[0];
+	$count=count($reasons);
+	if($count==1)
+		echo ' </b>';
+	else
+	{
+		for($i=1; $i<$count-1; $i++)
+			echo ', '.$reasons[$i];
+		echo ' and '.$reasons[$count-1].' </b>';
+	}
+}
+else if($dam->userCanViewFW(''))
+	echo '<br><br><b>This student is NOT currently on First Watch. </b>';
+
+if($dam->userCanModifyFW(''))
+{
+	// drop down menu strings
+	$FWReasonArr = array('Academic', 'Financial', 'Medical', 'Possible Transfer', 'Personal', 'Watch List' );
+
+	echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
+	<p class='colortext'> Add to First Watch List:&nbsp;<select size='1' name='fwreason'>
+	</p>";
+	for($i=0; $i<sizeof($FWReasonArr); $i++){
+		if($FWReasonArr[$i] != ''){
+			if(strcmp($FWReasonArr[$i], $FWReason)==0)	echo '<option value="'.$FWReasonArr[$i].'" SELECTED>'.$FWReasonArr[$i].'</option>';
+			else								echo '<option value="'.$FWReasonArr[$i].'">'.$FWReasonArr[$i].'</option>';
+		}
+	}
+	echo "</select>&nbsp;<input type='submit' name='addtofw' value='Add to FW'></form>";
+}
+
+// for assignment select
+//echo "<br><br>";
+echo 	"<form action='./viewstudent.php?id=$studentId' method='POST' target='_self'>
+	<p class='colortext'> Assigned to:&nbsp;<select size='1' name='assignedto'>
+	<option value=''>(unassigned)</option></p>";
+foreach( $dam->getActiveUserSelectList() as $user ) {
+	$userid = $user['ID'];
+	$label = $user['Label'];
+	$selected = "";
+	if( $student['AssignedTo'] == $userid ) $selected = " selected";
+	echo "<option value='$userid'$selected>$label</option>";
+}
+echo "</select>&nbsp;<input type='submit' name='reassign' value='Reassign'></form>";
+//add user issue
+if($dam->userCanCreateContact('', $studentId)){
+echo '</br><center><a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect=1" style="font-size:18px";"><b> [Add new student issue]</b></a></center>';
+//echo '<div style="position:fixed; top:7.2%;left:45%;z-index:96;">';
+//echo '<a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect=1" style="left:65%;"><b> [Add new student issue]</b></a></div>';
+	      }
+echo '</div>';
+// div two
+echo '<div style="position:relative;">'; 
 echo '<table><tr><td>';
       echo '<tr><td>'; 
 
@@ -285,13 +291,13 @@ echo '<table><tr><td>';
       // end issue section
 
    echo '</td></tr></table>'; 
-   // end subtable three  
+   // end subtable two
 
    echo '</div>';
    echo '</td>';
-  echo '<td valign="top" rowspan="3" width="33%">';
-   echo '<div style="position:absolute;top:10%; left:65%; right:0%;">';
-   // subtable two
+  echo '<td valign="top" rowspan="3" width="35%">';
+   echo '<div style="position:relative;">';
+   // subtable three
    echo '<table><tr><td>'; 
 
       // contacts section
@@ -306,7 +312,7 @@ echo '<table><tr><td>';
       
    echo '</td></tr></table>';
    echo '</div>';
-   // end subtable two
+   // end subtable three
    echo '</td>';
 
 echo '</td></tr></table></p>'; 
