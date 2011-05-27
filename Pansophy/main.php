@@ -19,14 +19,6 @@ if(strcmp($_POST['submit'], 'Close') == 0){
 	else $issueArr = array();
 	for($i=0; $i<count($issueArr); $i++){
 		$dam->setIssueStatus('', $issueArr[$i], 'Closed');
-		/*$result=$dam->setIssueStatus('', $issueArr[$i], 'Closed');
-		if($result) {
-			echo 'Issue status changed.<p>';
-		}
-		else {
-			echo '<meta http-equiv="Refresh" content="0; URL=./interface/addcontact.php">';
-			//echo 'You do not have permission to change issue status.<p>';
-		}*/
 	}
 	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
 }

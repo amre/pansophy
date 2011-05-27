@@ -4091,14 +4091,14 @@ class DataAccessManager {
 	 }*/
 	 
 	 /**
-	  * Retrieves the LastModified date and ID for each open issue that a user has.
+	  * Retrieves the LastModified date and ID for each non-closed issue that a user has.
 	  *
 	  * @param $userID - the ID of the user that is logging in.
 	  *
 	  * @return - results of the query for comparison to the current date.
 	  */
 	 function getLastModifedIssue( $userID ) {
-	 	$query = "SELECT LastModified, ID FROM issues WHERE Creator = '$userID' AND Status = 'Open'";
+	 	$query = "SELECT LastModified, ID FROM issues WHERE Creator = '$userID' AND Status != 'Closed'";
 	 	$result = mysql_query($query);
 	 	
 	 	return $result;
