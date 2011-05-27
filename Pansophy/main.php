@@ -11,7 +11,7 @@ $dam=new DataAccessManager();
 $user=$_SESSION['userid'];
 $watchedIssues=$dam->issuesWatched();
 $watchedStudents=$dam->studentsWatched();
-$inactiveIssues=$dam->inactiveOpenIssuesForUser( -1 );
+$inactiveIssues=$dam->inactiveOpenIssuesForUser( 100 ); //open/sepcial case issues inactive for 100 days
 
 //process closing issues
 if(strcmp($_POST['submit'], 'Close') == 0){	
@@ -108,7 +108,9 @@ if($watchedIssues){
 echo '<form action="./main.php" method="POST">';
 	foreach( $watchedIssues as $issue ){
 		echo '<tr><td><input type="checkbox" name="watchIssueArr[]" value="'.$issue['ID'].'">';
-		echo '<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> - '.stripslashes_all($issue['Header']).'</td></tr>';
+		echo '<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> - '.stripslashes_all($issue['Header']);
+		if( $issue['AssignedTo'] == $_SESSION['userid'] ) echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Assigned to <b>YOU</b>.</i>";
+		echo '</td></tr>';
 	}
 	echo '<tr><td><input type="submit" name="submit" value="Stop Watching"></td></tr>';
 //end form

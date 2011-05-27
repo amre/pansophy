@@ -2511,7 +2511,7 @@ class DataAccessManager {
 	}
 	
 	/**
-	 * Retrieves all open issues the current user is assigned to or watching
+	 * Retrieves all open issues the current user created
 	 * which have not been acted on in a specified number of days.
 	 *
 	 * @param $dayswithoutaction number of days to check if issues inactive for that long
@@ -2522,36 +2522,13 @@ class DataAccessManager {
 		$userid = $_SESSION['userid'];
 		$return = array();
 		
-		// this is the older query which took a long time to load
-		// OLD QUERY 
-		/*$query = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where
-			  	((i.id = iw.issueid and iw.userid = '$userid') or (i.AssignedTo = '$userid'))
-			  	and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.lastmodified asc";
-		$result = mysql_query($query);
-		while( $row = mysql_fetch_assoc($result) ) {
-			array_push( $return, $row );
-		}
-		*/
-		// END OLD QUERY
-		
-		// split up version of old query, works a lot faster
-		// NEW QUERY
-		$query1 = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where 
-				i.AssignedTo = '$userid' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.lastmodified asc";
-		$query2 = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where
-			  	i.id = iw.issueid and iw.userid = '$userid' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
+		$query = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i where
+			  	i.Creator = '$userid' and i.Status != 'Closed' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
 			  	order by i.lastmodified asc";
 			  	
-		$result1 = mysql_query($query1);
-		$result2 = mysql_query($query2);		
+		$result = mysql_query($query);		
 		
-		while( $row = mysql_fetch_assoc($result1) ) {
-			array_push( $return, $row );
-		}
-		
-		while($row = mysql_fetch_assoc($result2)){
+		while($row = mysql_fetch_assoc($result)){
 			if(!in_array($row,$return)){
 				array_push($return,$row);
 			}
