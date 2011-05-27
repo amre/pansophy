@@ -2523,7 +2523,7 @@ class DataAccessManager {
 		$return = array();
 		
 		$query = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i where
-			  	i.Creator = '$userid' and i.Status != 'Closed' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
+			  	i.Creator = '$userid' and i.Status == 'Open' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
 			  	order by i.lastmodified asc";
 			  	
 		$result = mysql_query($query);		
@@ -4098,7 +4098,7 @@ class DataAccessManager {
 	  * @return - results of the query for comparison to the current date.
 	  */
 	 function getLastModifedIssue( $userID ) {
-	 	$query = "SELECT LastModified, ID FROM issues WHERE Creator = '$userID' AND Status != 'Closed'";
+	 	$query = "SELECT LastModified, ID FROM issues WHERE Creator = '$userID' AND Status = 'Open'";
 	 	$result = mysql_query($query);
 	 	
 	 	return $result;
