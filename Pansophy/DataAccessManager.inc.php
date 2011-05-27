@@ -2600,6 +2600,8 @@ class DataAccessManager {
 
 			//create contact
 			$this->createContact( '', date('Y-m-d H:i:s'), $students, $Description, $issueId, '-1' );
+			//watch issue
+			$this->watchIssue($userToAssign, $issueId);
 			return $return;
 		}
 	}
