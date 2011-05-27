@@ -2585,7 +2585,7 @@ class DataAccessManager {
 	function getActiveUserSelectList() {
 		$return = array();
 		$query = "select ID, CONCAT(LastName, ', ', FirstName, ' ', MiddleIn, ' (', ID, ')') as Label
-			  from users where AccessLevel > 0 order by LastName";
+			  from users where AccessLevel >= 8 order by LastName";
 		$result = mysql_query($query);
 		while( $row = mysql_fetch_assoc($result) ) {
 			array_push( $return, $row );
