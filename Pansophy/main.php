@@ -17,21 +17,24 @@ $inactiveIssues=$dam->inactiveOpenIssuesForUser( -1 );
 if(strcmp($_POST['submit'], 'Close') == 0){	
 	if(isset($_POST['closeIssueArr'])) $issueArr = $_POST['closeIssueArr'];
 	else $issueArr = array();
-	//$studentArr = explode(',',$students);
 	for($i=0; $i<count($issueArr); $i++){
-		// take this moment to keep `students` table up to date
-		//$dam->verifyStudent($addArr[$i]);
-		// add selected students to list
-		//$dam->stopWatchingIssue('', $issueArr[$i]);
-		//$dam->setIssueStatus('', $issueArr[$i], 'Closed');
-		$result=$dam->setIssueStatus('', $issueArr[$i], 'Closed');
+		$dam->setIssueStatus('', $issueArr[$i], 'Closed');
+		/*$result=$dam->setIssueStatus('', $issueArr[$i], 'Closed');
 		if($result) {
 			echo 'Issue status changed.<p>';
 		}
 		else {
 			echo '<meta http-equiv="Refresh" content="0; URL=./interface/addcontact.php">';
 			//echo 'You do not have permission to change issue status.<p>';
-		}
+		}*/
+	}
+	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
+}
+if(strcmp($_POST['submit'], 'Stop Watching') == 0){	
+	if(isset($_POST['watchIssueArr'])) $issueArr = $_POST['watchIssueArr'];
+	else $issueArr = array();
+	for($i=0; $i<count($issueArr); $i++){
+		$dam->stopWatchingIssue('', $issueArr[$i]);
 	}
 	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
 }
@@ -87,7 +90,8 @@ echo '<form action="./main.php" method="POST">';
 		echo '</td></tr>';
 	}
 	echo '<tr><td><input type="submit" name="submit" value="Close"></td></tr>';
-	echo '</form>';
+//end form
+echo '</form>';
 }
 else {
 	echo "<td><i>You currently have no inactive issues.</i></td>";
@@ -100,9 +104,15 @@ echo '
 	<table width="100%" >
 	<tr><td class="lightbg"><h3>Issues you are watching</h3></td></tr>';
 if($watchedIssues){
-	for($i=0; $i<sizeof($watchedIssues); $i++){
-		echo '<tr><td><a href="./interface/viewissue.php?id='.$watchedIssues[$i]['ID'].'">'.$watchedIssues[$i]['ID'].'</a> - '.stripslashes_all($watchedIssues[$i]['Header']).'</td></tr>';
+//start form
+echo '<form action="./main.php" method="POST">';
+	foreach( $watchedIssues as $issue ){
+		echo '<tr><td><input type="checkbox" name="watchIssueArr[]" value="'.$issue['ID'].'">';
+		echo '<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> - '.stripslashes_all($issue['Header']).'</td></tr>';
 	}
+	echo '<tr><td><input type="submit" name="submit" value="Stop Watching"></td></tr>';
+//end form
+echo '</form>';
 }
 else{
 	echo "<td><i>You are currently watching no issues.</i></td>";
