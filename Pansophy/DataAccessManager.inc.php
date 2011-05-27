@@ -2522,15 +2522,16 @@ class DataAccessManager {
 		$userid = $_SESSION['userid'];
 		$return = array();
 		
-		$query = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.LastModified ) as DaysOld from issues i where
-			  	i.Creator = '$userid' and i.Status = 'Open' and i.LastModified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.LastModified asc";
+		$query = "select distinct ID, Header, AssignedTo, datediff( curdate(), LastModified ) as DaysOld from issues where 
+				Creator = '$userid' and Status = 'Open' and LastModified <= date_sub( curdate(), interval $dayswithoutaction day )
+			  	order by LastModified asc";
 			  	
 		$result = mysql_query($query);		
 		
-		while($row = mysql_fetch_assoc($result)){
-			array_push($return,$row);
+		while( $row = mysql_fetch_assoc($result) ) {
+			array_push( $return, $row );
 		}
+		
 		// END NEW QUERY
 		
 		return $return;
