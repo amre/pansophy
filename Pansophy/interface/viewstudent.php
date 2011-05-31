@@ -14,7 +14,9 @@ $dam = new DataAccessManager();
 
 //+-----------------------------------------------------------------------------------------+
 
-
+echo '<div style="position:fixed;height:100%;width:35%;right:0%;background:#ffffff;z-index:-1"></div>';
+echo '<div style="position:fixed;height:100%;width:30%;right:35%;background:#f0f0f0;z-index:-1"></div>';
+echo '<div style="position:fixed;height:100%;width:35%;right:65%;background:#ffffff;z-index:-1"></div>';
 // process assignment here
 if( isset($_POST['reassign']) && $_POST['reassign'] ) {
 	$result = $dam->assignUserToStudent( $_POST['assignedto'], $_GET['id'] );
@@ -42,9 +44,13 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 //FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
 
 // display title section
-
-echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1>';
-echo '<center>';
+echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%">';
+echo '<h1 style="color:#000000;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div>';
+if($dam->userCanCreateContact('', $studentId)){
+echo '<div style="position:fixed; top:7.2%;left:45%;z-index:96;">';
+echo '<a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect=1" style="left:65%;"><b> [Add new student issue]</b></a></div>';
+	      }
+echo '<center><div style="width:30%"></br></br></br></br></br>';
 //watching
 echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
 if($dam->userIsWatchingStudent( '', $studentId )){
@@ -102,7 +108,7 @@ foreach( $dam->getActiveUserSelectList() as $user ) {
 	echo "<option value='$userid'$selected>$label</option>";
 }
 echo "</select>&nbsp;<input type='submit' name='reassign' value='Reassign'></form>";
-echo '</center><p><br />';
+echo '</div></center><p><br />';
 
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
@@ -137,9 +143,10 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcP
 // display student info...
 
 // main table
-echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" width="45%">';
+echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" width="33%">';
    
-   // subtable one   
+   // subtable one
+   echo '<div style="position:absolute; top:10%;right=65%;left=0%;">';   
    echo '<table><tr><td>'; 
 
       // student details section
@@ -234,6 +241,15 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
       // end student details section
 
       echo '</td></tr>';
+   echo '</td></tr></table>';
+   echo '</div>';
+//end subtable one
+ 
+   //begin subtable three
+  
+echo '<td valign="top" rowspan="3">';
+echo '<div style="position:absolute; top:35%;left:35%;right:35%">'; 
+echo '<table><tr><td>';
       echo '<tr><td>'; 
 
       // files section
@@ -263,18 +279,18 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 
 	      if($dam->userCanCreateContact('', $studentId)){
 		      // Michael Thompson * 12/14/2005 * Made redirect cap to match other routines
-		      echo '<a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect='.$studentId.'"><b>[Add a new issue]</b></a></td>';
 	      }
       echo '</tr></table></p></p>';
       include( './studentissues.php' );
       // end issue section
 
    echo '</td></tr></table>'; 
-   // end subtable one   
+   // end subtable three  
 
+   echo '</div>';
    echo '</td>';
-   echo '<td valign="top" rowspan="3">';
-
+  echo '<td valign="top" rowspan="3" width="33%">';
+   echo '<div style="position:absolute;top:10%; left:65%; right:0%;">';
    // subtable two
    echo '<table><tr><td>'; 
 
@@ -288,8 +304,10 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 	   include( './studentcontacts.php' );
       // end contacts section
       
-   echo '</td></tr></table>'; 
+   echo '</td></tr></table>';
+   echo '</div>';
    // end subtable two
+   echo '</td>';
 
 echo '</td></tr></table></p>'; 
 // end main table

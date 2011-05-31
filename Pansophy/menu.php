@@ -11,7 +11,7 @@ include('./include/miscfunctions.inc.php');
 $dam = new DataAccessManager();
 	
 //start content table
-echo '<table width="100%" cellpadding="2" cellspacing="0" vspace="0" hspace="0">';
+echo '<table width="100%" cellpadding="2" cellspacing="0" vspace="0" hspace="0" style="border: thick solid #000000;">';
 echo '<tr>';
 
 //print logo
