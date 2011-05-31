@@ -1,6 +1,6 @@
 <html>
 <head><title>Pansophy Contact Manager - Student Affairs</title></head>
-<FRAMESET ROWS="130,*,50" BORDERCOLOR="EEEEB0" FRAMESPACING="0" BORDER="1">
+<FRAMESET ROWS="100,*,50" BORDERCOLOR="000000" FRAMESPACING="0" BORDER="0">
 <FRAME NAME="Menu" TARGET="Main" src="./menu.php?table=students" NORESIZE SCROLLING="NO" frameborder="0">
 <FRAME NAME="Main" src="./main.php" NORESIZE frameborder="0">
 <FRAME NAME="AlertBox" src="./alert.php" NORESIZE SCROLLING="NO" frameborder="0">
