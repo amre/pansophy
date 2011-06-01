@@ -1,5 +1,12 @@
 <?php
-
+if (file_exists('./logtimer.inc.php'))
+{
+include('./logtimer.inc.php');
+}
+else
+{
+include('../logtimer.inc.php');
+}
 /**
  * ACCESS LEVELS
  *
