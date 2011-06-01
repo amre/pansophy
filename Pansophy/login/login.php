@@ -11,7 +11,6 @@ include_once('../include/loginheader.inc');
 include('../DataAccessManager.inc.php');
 $dam=new DataAccessManager();
 
-
 //If there is no username set, they must not have logged in yet  Print out the login form.
 if(!isset($_POST['username'])){
 	//print login form
