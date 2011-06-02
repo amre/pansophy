@@ -304,13 +304,6 @@ caption {
 	list-style-type: none;
 }
 
-h3 {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	font-weight: bold;
-	text-decoration: none;
-	vertical-align: middle;
-}
 
 h1 {
    color: #b78f02;
@@ -329,7 +322,13 @@ h2 {
    text-align: center;
    text-decoration: none;
 }
-
+h3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: none;
+	vertical-align: middle;
+}
 .na {
    color: #999999;
    text-decoration: strikethrough;

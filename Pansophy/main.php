@@ -11,7 +11,26 @@ $dam=new DataAccessManager();
 $user=$_SESSION['userid'];
 $watchedIssues=$dam->issuesWatched();
 $watchedStudents=$dam->studentsWatched();
-$inactiveIssues=$dam->inactiveOpenIssuesForUser( -1 );
+$inactiveIssues=$dam->inactiveOpenIssuesForUser( 100 ); //open/sepcial case issues inactive for 100 days
+
+//process closing issues
+if(strcmp($_POST['submit'], 'Close') == 0){	
+	if(isset($_POST['closeIssueArr'])) $issueArr = $_POST['closeIssueArr'];
+	else $issueArr = array();
+	for($i=0; $i<count($issueArr); $i++){
+		$dam->setIssueStatus('', $issueArr[$i], 'Closed');
+	}
+	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
+}
+if(strcmp($_POST['submit'], 'Stop Watching') == 0){	
+	if(isset($_POST['watchIssueArr'])) $issueArr = $_POST['watchIssueArr'];
+	else $issueArr = array();
+	for($i=0; $i<count($issueArr); $i++){
+		$dam->stopWatchingIssue('', $issueArr[$i]);
+	}
+	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
+}
+
 	
 //print header
 echo '<h1>Pansophy - Student Affairs Contact Manager</h1>';
@@ -54,12 +73,17 @@ echo '
 	<table width="100%" >
 	<tr><td class="lightbg"><h3>Your inactive issues</h3></td></tr>';
 if($inactiveIssues) {
+//start form
+echo '<form action="./main.php" method="POST">';
 	foreach( $inactiveIssues as $issue ){
-		echo '<tr><td>
+		echo '<tr><td><input type="checkbox" name="closeIssueArr[]" value="'.$issue['ID'].'">
 		<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> ('.$issue['DaysOld'].' days old) - '.stripslashes_all($issue['Header']);
 		if( $issue['AssignedTo'] == $_SESSION['userid'] ) echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Assigned to <b>YOU</b>.</i>";
 		echo '</td></tr>';
 	}
+	echo '<tr><td><input type="submit" name="submit" value="Close"></td></tr>';
+//end form
+echo '</form>';
 }
 else {
 	echo "<td><i>You currently have no inactive issues.</i></td>";
@@ -72,9 +96,17 @@ echo '
 	<table width="100%" >
 	<tr><td class="lightbg"><h3>Issues you are watching</h3></td></tr>';
 if($watchedIssues){
-	for($i=0; $i<sizeof($watchedIssues); $i++){
-		echo '<tr><td><a href="./interface/viewissue.php?id='.$watchedIssues[$i]['ID'].'">'.$watchedIssues[$i]['ID'].'</a> - '.stripslashes_all($watchedIssues[$i]['Header']).'</td></tr>';
+//start form
+echo '<form action="./main.php" method="POST">';
+	foreach( $watchedIssues as $issue ){
+		echo '<tr><td><input type="checkbox" name="watchIssueArr[]" value="'.$issue['ID'].'">';
+		echo '<a href="./interface/viewissue.php?id='.$issue['ID'].'">'.$issue['ID'].'</a> - '.stripslashes_all($issue['Header']);
+		if( $issue['AssignedTo'] == $_SESSION['userid'] ) echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Assigned to <b>YOU</b>.</i>";
+		echo '</td></tr>';
 	}
+	echo '<tr><td><input type="submit" name="submit" value="Stop Watching"></td></tr>';
+//end form
+echo '</form>';
 }
 else{
 	echo "<td><i>You are currently watching no issues.</i></td>";

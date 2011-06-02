@@ -1,5 +1,12 @@
 <?php
-
+if (file_exists('./logtimer.inc.php'))
+{
+include('./logtimer.inc.php');
+}
+else
+{
+include('../logtimer.inc.php');
+}
 /**
  * ACCESS LEVELS
  *
@@ -2511,7 +2518,7 @@ class DataAccessManager {
 	}
 	
 	/**
-	 * Retrieves all open issues the current user is assigned to or watching
+	 * Retrieves all open issues the current user created
 	 * which have not been acted on in a specified number of days.
 	 *
 	 * @param $dayswithoutaction number of days to check if issues inactive for that long
@@ -2522,40 +2529,16 @@ class DataAccessManager {
 		$userid = $_SESSION['userid'];
 		$return = array();
 		
-		// this is the older query which took a long time to load
-		// OLD QUERY 
-		/*$query = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where
-			  	((i.id = iw.issueid and iw.userid = '$userid') or (i.AssignedTo = '$userid'))
-			  	and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.lastmodified asc";
-		$result = mysql_query($query);
+		$query = "select distinct ID, Header, AssignedTo, datediff( curdate(), LastModified ) as DaysOld from issues where 
+				Creator = '$userid' and Status = 'Open' and LastModified <= date_sub( curdate(), interval $dayswithoutaction day )
+			  	order by LastModified asc";
+			  	
+		$result = mysql_query($query);		
+		
 		while( $row = mysql_fetch_assoc($result) ) {
 			array_push( $return, $row );
 		}
-		*/
-		// END OLD QUERY
 		
-		// split up version of old query, works a lot faster
-		// NEW QUERY
-		$query1 = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where 
-				i.AssignedTo = '$userid' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.lastmodified asc";
-		$query2 = "select distinct i.ID, i.Header, i.AssignedTo, datediff( curdate(), i.lastmodified ) as DaysOld from issues i, issuewatch iw where
-			  	i.id = iw.issueid and iw.userid = '$userid' and i.lastmodified <= date_sub( curdate(), interval $dayswithoutaction day )
-			  	order by i.lastmodified asc";
-			  	
-		$result1 = mysql_query($query1);
-		$result2 = mysql_query($query2);		
-		
-		while( $row = mysql_fetch_assoc($result1) ) {
-			array_push( $return, $row );
-		}
-		
-		while($row = mysql_fetch_assoc($result2)){
-			if(!in_array($row,$return)){
-				array_push($return,$row);
-			}
-		}
 		// END NEW QUERY
 		
 		return $return;
@@ -2585,7 +2568,7 @@ class DataAccessManager {
 	function getActiveUserSelectList() {
 		$return = array();
 		$query = "select ID, CONCAT(LastName, ', ', FirstName, ' ', MiddleIn, ' (', ID, ')') as Label
-			  from users where AccessLevel > 0 order by LastName";
+			  from users where AccessLevel >= 8 order by LastName";
 		$result = mysql_query($query);
 		while( $row = mysql_fetch_assoc($result) ) {
 			array_push( $return, $row );
@@ -2623,6 +2606,8 @@ class DataAccessManager {
 
 			//create contact
 			$this->createContact( '', date('Y-m-d H:i:s'), $students, $Description, $issueId, '-1' );
+			//watch issue
+			$this->watchIssue($userToAssign, $issueId);
 			return $return;
 		}
 	}
@@ -4112,7 +4097,7 @@ class DataAccessManager {
 	 }*/
 	 
 	 /**
-	  * Retrieves the LastModified date and ID for each open issue that a user has.
+	  * Retrieves the LastModified date and ID for each non-closed issue that a user has.
 	  *
 	  * @param $userID - the ID of the user that is logging in.
 	  *
