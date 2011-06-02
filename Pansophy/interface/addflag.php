@@ -72,20 +72,7 @@ else if(strcmp($_POST['submit'], 'Submit') == 0){
 // start form
 echo '<form action="addflag.php" method="POST" target="_self">';
 
-// here is the section of the form for adding/removing a student using batchstudents.inc
-if(	strcmp($_POST['submit'], 'Add') == 0 || 
-	strcmp($_POST['submit'], 'Remove') == 0 ||
-	strcmp($_POST['submit'], 'Search') == 0 ||
-	strcmp($_POST['submit'], 'Edit List') == 0){
-	
-	// set hidden variables for form input so that they save during student list editiing
-	echo '<input type="hidden" name="flag" value="'.$flag.'">';
-	
-	// display student list editing options
-	include('./batchstudents.inc');
-}
 // here is the default section for displaying the main form
-else{
 	// title	
 	echo '<center><p class="largecolorheading">Add Flag to Students</p></center>';
 	
@@ -104,6 +91,8 @@ else{
 	
 	// prepare and list students
 	echo '<tr cellpadding="0" cellspacing="0"><td align="left"><b>Students to flag:</b></td>';
+        // adding/removing a student using batchstudents.inc
+        include('./batchstudents.inc');
 	if(!empty($students)){
 		$studentArr = explode(',', $students);
 		for($i=0; $i<count($studentArr); $i++){
@@ -111,7 +100,7 @@ else{
 			echo '<td>'.$student['FIRST_NAME'].' '.$student['LAST_NAME'].'</td></tr><tr><td></td>';
 		}
 	}
-	echo '<td><input type="submit" name="submit" value="Edit List"></td></tr>';	
+	//echo '<td><input type="submit" name="submit" value="Edit List"></td></tr>';	
 	echo '</td></tr><tr><td height="10"></td></tr>';			
 		
 	// end table
@@ -119,7 +108,7 @@ else{
 		
 	// submit/cancel buttons
 	echo '<input type="submit" name="submit" value="Cancel"> <input type="submit" name="submit" value="Submit">';
-}
+
 
 // set hidden variables passed via post
 echo '<input type="hidden" name="students" value="'.$students.'">';

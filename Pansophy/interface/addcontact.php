@@ -170,37 +170,15 @@ antiMagic();
 // the whole page is one giant form, starting here
 echo '<form action="addcontact.php" method="POST" target="_self">';
 
-// here is the section of the form for adding/removing a student using batchstudents.inc
-if(	isset($_POST['submit']) && (	
-	strcmp($_POST['submit'], 'Add') == 0 || 
-	strcmp($_POST['submit'], 'Remove') == 0 ||
-	strcmp($_POST['submit'], 'Search') == 0 ||
-	strcmp($_POST['submit'], 'Edit List') == 0)){
-	
-	// set hidden variables for form input so that they save during student list editiing
-	echo '
-	<input type="hidden" name="header" value="'.htmlspecialchars($header).'">
-	<input type="hidden" name="status" value="'.$status.'">
-	<input type="hidden" name="category" value="'.$category.'">
-	<input type="hidden" name="level" value="'.$level.'">
-	<input type="hidden" name="description" value="'.htmlspecialchars($description).'">
-	<input type="hidden" name="watch" value="'.$watch.'">
-	<input type="hidden" name="attach" value="'.$attach.'">
-   <input type="hidden" name="datecreated" value="'.$dateCreated.'">';
-	
-	// display student list editing options
-	include('./batchstudents.inc');
-}
 // here is the default section for displaying the main issue/contact creation form
-else{
+
 	// the top part of the display is different for new issue and new contact
 	if($isNewIssue){
 		echo '<center><p class="largecolorheading">Create a New Issue</p></center>';
-		
 		// start table
-		echo '<table width="80%" >
+
+		echo '<table width="50%" >
 		<tr cellpadding="0" cellspacing="0"><td align="left"></td><td></td></tr>';
-		
 		// display header text box
 		echo '<tr><td><b>Header (100 char limit):</b></td><td><input type="text" name="header" maxlength="100" size=50" value="'.htmlspecialchars($header).'"></td></tr>
 		<tr><td height="10"></td></tr>';
@@ -241,7 +219,7 @@ else{
 	}
 	else{
 		echo '<center><p class="largecolorheading">Append a New Contact to '.$issueID.'</p></center>';
-	
+
 		// start table
 		echo '<table width="80%" >
 		<tr cellpadding="0" cellspacing="0"><td align="left"></td><td></td></tr>';
@@ -255,39 +233,35 @@ else{
 	
 	// prepare and list students
 	echo '<tr cellpadding="0" cellspacing="0"><td align="left"><b>Students Associated:</b></td>';
-	if(!empty($students)){
-		$studentArr = explode(',', $students);
-		for($i=0; $i<count($studentArr); $i++){
-			$student=$dam->ViewStudent('',$studentArr[$i]);
-			echo '<td>'.$student['FIRST_NAME'].' '.$student['LAST_NAME'].'</td></tr><tr><td></td>';
-		}
-	}
-	echo '<td><input type="submit" name="submit" value="Edit List"></td></tr>';	
-	
-	// description box
-	echo '<tr><td height="10"></td></tr>';
-	echo '<tr><td valign="top"><b>Description:</b></td><td><textarea wrap=virtual cols="70" rows="10" name="description">'.$description.'</textarea></td></tr>';
+
+   // adding/removing a student using batchstudents.inc
+   include('./batchstudents.inc');
+      echo '<table width="50%" >
+		<tr cellpadding="0" cellspacing="0"><td align="left"></td><td></td></tr>';
+     // description box
+	echo '<tr><td valign="top"><b>Description:</b></td><td><textarea wrap=virtual cols="60" rows="10" name="description">'.$description.'</textarea></td></tr>';
+
+// attach file options
+        echo '<br>';
+	echo '</td></tr><tr><td height="10"></td></tr>';
+	echo '<tr><td align="left"><b>Attach Files:</b></td><td align="left">';
+	if(strcmp($attach,'true') == 0)	echo '<input type="checkbox" name="attach" value="true" checked/></td></tr>';
+	else					echo '<input type="checkbox" name="attach" value="true"/></td></tr>'; 
 	
 	// watch options
+echo '<br>';
 	echo '<tr><td height="10"></td></tr>';
 	echo '<tr><td align="left"><b>Watch Assignment:</b></td><td align="left"><select size="1" name="watch">';
 	for($i=0; $i<sizeof($watchTypes); $i++){
 		if(strcmp($watchTypes[$i],$watch) == 0)	echo '<option value="'.$watchTypes[$i].'" SELECTED>'.$watchTypes[$i].'</option>';
 		else									echo '<option value="'.$watchTypes[$i].'">'.$watchTypes[$i].'</option>';
 	}
-	
-	// attach file options
-	echo '</td></tr><tr><td height="10"></td></tr>';
-	echo '<tr><td align="left"><b>Attach Files:</b></td><td align="left">';
-	if(strcmp($attach,'true') == 0)	echo '<input type="checkbox" name="attach" value="true" checked/></td></tr>';
-	else							echo '<input type="checkbox" name="attach" value="true"/></td></tr>';
-	
+
 	// end table
 	echo '<tr><td height="10"></td></tr></table>';
-	
 	// submit/cancel buttons
 	echo '<input type="submit" name="submit" value="Cancel"> <input type="submit" name="submit" value="Submit">';
-}
+
 
 // set hidden variables passed via post
 echo '

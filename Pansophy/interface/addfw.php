@@ -67,22 +67,57 @@ else if(strcmp($_POST['submit'], 'Submit') == 0){
 
 // start form
 echo '<form action="addfw.php" method="POST" target="_self">';
-
 // here is the section of the form for adding/removing a student using batchstudents.inc
-if(	isset($_POST['submit']) && (
-	strcmp($_POST['submit'], 'Add') == 0 || 
+/*if(	isset($_POST['submit']) && (
+	strcmp($_POST['submit'], 'Add') == 0|| 
 	strcmp($_POST['submit'], 'Remove') == 0 ||
-	strcmp($_POST['submit'], 'Search') == 0 ||
-	strcmp($_POST['submit'], 'Edit List') == 0)){
+	strcmp($_POST['submit'], 'Search') == 0  ||
+	strcmp($_POST['submit'], 'Add Student') == 0))
 
 	// set hidden variables for form input so that they save during student list editiing
 	echo '<input type="hidden" name="fwreason" value="'.$FWReason.'">';
 
 	// display student list editing options
-	include('./batchstudents.inc');
+	//include('./batchstudents.inc');*/
+          
+/*if(strcmp($_POST['submit'], 'Add') == 0){
+echo '<input type="hidden" name="fwreason" value="'.$FWReason.'">';	
+	if(isset($_POST['addarr'])) $addArr = $_POST['addarr'];
+	else $addArr = array();
+	$studentArr = explode(',',$students);
+	for($i=0; $i<count($addArr); $i++){
+		// take this moment to keep `students` table up to date
+		$dam->verifyStudent($addArr[$i]);
+		// add selected students to list
+		if(!in_array($addArr[$i], $studentArr)){
+			if(empty($students))$students = $addArr[$i];
+			else				$students .= ','.$addArr[$i];		
+		}	
+	}
 }
-// here is the default section for displaying the main form
+else if(strcmp($_POST['submit'], 'Remove') == 0){
+echo '<input type="hidden" name="fwreason" value="'.$FWReason.'">';
+	if(isset($_POST['removearr'])) $removeArr = $_POST['removearr'];
+	else $removeArr = array();
+	$studentArr = explode(',',$students);
+	if(!empty($removeArr)){
+		$studentArr = array_diff($studentArr, $removeArr);
+		$studentArr = array_diff($studentArr, array(''));
+	}
+	$students = implode(',',$studentArr);
+}
+else if(strcmp($_POST['submit'], 'Search') == 0){
+echo '<input type="hidden" name="fwreason" value="'.$FWReason.'">';
+	$firstName = $_POST['firstname'];
+	$lastName = $_POST['lastname'];
+	if($lastName != '' || $firstName !=''){
+		$searchResults = $dam->powerSearch('X_PNSY_STUDENT', "WHERE `LAST_NAME` LIKE '%$lastName%' AND `FIRST_NAME` LIKE '%$firstName%'");
+	}
+}
 else{
+}*/
+//else{
+// here is the default section for displaying the main form
 	// title	
 	echo '<center><p class="largecolorheading">Place Students on First Watch</p></center>';
 	
@@ -97,26 +132,20 @@ else{
 			else								echo '<option value="'.$FWReasonArr[$i].'">'.$FWReasonArr[$i].'</option>';
 		}
 	}
-	echo '</td></tr><tr><td height="10"></td></tr>';
+	//echo '</td></tr><tr><td height="10"></td></tr>';
 	
 	// prepare and list students
 	echo '<tr cellpadding="0" cellspacing="0"><td align="left"><b>Students to add:</b></td>';
-	if(!empty($students)){
-		$studentArr = explode(',', $students);
-		for($i=0; $i<count($studentArr); $i++){
-			$student=$dam->ViewStudent('',$studentArr[$i]);
-			echo '<td>'.$student['FIRST_NAME'].' '.$student['LAST_NAME'].'</td></tr><tr><td></td>';
-		}
-	}
-	echo '<td><input type="submit" name="submit" value="Edit List"></td></tr>';	
-	echo '</td></tr><tr><td height="10"></td></tr>';			
-		
+	echo '</td></tr><tr><td height="10"></td></tr>';
+	// adding/removing a student using batchstudents.inc	
+	include 'batchstudents.inc';
+
 	// end table
 	echo '</table>';	
 		
 	// submit/cancel buttons
-	echo '<input type="submit" name="submit" value="Cancel"> <input type="submit" name="submit" value="Submit">';
-}
+	echo '<tr><td><input type="submit" name="submit" value="Cancel"> <input type="submit" name="submit" value="Submit">';
+//}
 
 // set hidden variables passed via post
 echo '<input type="hidden" name="students" value="'.$students.'">';

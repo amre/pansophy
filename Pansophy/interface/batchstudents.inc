@@ -9,7 +9,7 @@
  * included as part of a form. Calling page needs to have a comma delimited '$students' string.
  */
 
-//+-----------------------------------------------------------------------------------------+
+//+-----------------------------------------------------------------------------------in_array------+
 
 // add checked students
 if(strcmp($_POST['submit'], 'Add') == 0){	
@@ -52,49 +52,42 @@ else{
 //+-----------------------------------------------------------------------------------------+
 
 // hack to make the search button (appears later) the default button
+
 echo '<input type="submit" name="submit" value="Search" style="visibility:hidden">';
-
-// title
-echo '<center><h1>Edit Student List</h1></center>';
-
-// start main table
-echo '<table width="100%">';
 
 // start left hand subtable
 echo '<tr><td valign="top"><table>';
 
 // this is the list of currently selected students
-echo '<tr><td><h3>Currently Selected</h3></td></tr>';
+//echo '<tr><td><h3>Currently Selected</h3></td></tr>';
 
 // list them out
 if(!empty($students)){
-	$studentArr = explode(',',$students);
-	for($i=0; $i<count($studentArr); $i++){
-		$student = $dam->ViewStudent('', $studentArr[$i]);
-		echo '<tr><td><input type="checkbox" name="removearr[]" value="'.$student['ID'].'">
-		'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].'</td>
-		<td>'.$student['CLASS_YEAR'].'</td></tr>';
-	}			
-}
-echo '<tr><td height="10"></td></tr>';	
+		$studentArr = explode(',', $students);
+		for($i=0; $i<count($studentArr); $i++){
+			$student=$dam->ViewStudent('',$studentArr[$i]);
+			echo '<tr><td><input type="checkbox" name="removearr[]" value="'.$student['ID'].'">
+		'.$student['FIRST_NAME'].' '.$student['LAST_NAME'].'</td></tr><tr><td></td>';
+		}
+	}
+
+//echo '<tr><td height="10"></td></tr>';	
 
 // remove and done buttons
 echo '<tr><td><input type="submit" name="submit" value="Remove">';
-echo '<input type="submit" name="submit" value="Done"></td></tr>';
+//echo '<center><input type="submit" name="submit" value="Back"></td></tr>';
 
 // end left subtable and start right hand one
 echo '</table></td><td valign="top"><table>';
 
 // this is the search list for add new students to the list
-echo '<tr><td><h3>Add Students</h3></td></tr>';
+//echo '<tr><td><h3>Add Students</h3></td></tr>';
 
 // search text boxes and buttons
 echo '<tr><td>First name <input type="text" name="firstname"></td></tr>';
 echo '<tr><td>Last name <input type="text" name="lastname"></td></tr>';
-echo '<tr><td height="10"></td></tr>';
 echo '<tr><td><input type="submit" name="submit" value="Add">';
 echo '<input type="submit" name="submit" value="Search"></td></tr>';
-echo '<tr><td height="10"></td></tr>';
 
 // list students found
 if(!empty($searchResults)){
