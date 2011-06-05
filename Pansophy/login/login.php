@@ -19,7 +19,7 @@ if(!isset($_POST['username'])){
 		<div style="_top:  50%; display: table-cell; vertical-align: middle;">
 		<div style="_top: -50%; width:500px; height: 200px" class="blackwithborder">
 		<form action="./login.php" method="post">
-		<h1  align="center">Welcome to Pansophy&reg; Contact Manager</h1>
+		<h1  align="center">Welcome to Phronesis&reg; Contact Manager</h1>
 		<p  class="mediumcolorheading" align="center">Please log in <a href="../help/index.html" class="lightcolor" target="_blank">[Help]</a></p>
 		<p  class="lightcolortext" align="center">Username: <input type="text"  name="username" tabindex="1" /></p>
 		<p class="lightcolortext"  align="center">Password: <input type="password" name="pass"  tabindex="2" /></p>

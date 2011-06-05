@@ -73,7 +73,7 @@ if($InFile){
 		$studentRecord = parseRow( $row );
 		$dam->createOrReplaceStudent( '', $studentRecord );
 	}
-	echo '<p><b>Data successfully imported from SRN to Pansophy Contact Manager.</b>';
+	echo '<p><b>Data successfully imported from SRN to Phronesis Contact Manager.</b>';
 }
 else{
 	echo 'ERROR: Unable to open file.';

@@ -33,7 +33,7 @@ if(strcmp($_POST['submit'], 'Stop Watching') == 0){
 
 	
 //print header
-echo '<h1>Pansophy - Student Affairs Contact Manager</h1>';
+echo '<h1>Phronesis - Student Affairs Contact Manager</h1>';
 
 //start content table
 echo '<table width=100% cellpadding="0" cellspacing="5" class="darkbg">';

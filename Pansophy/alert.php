@@ -26,14 +26,14 @@ function printWithoutAlerts() {
 	echo ' <meta http-equiv="Refresh" content="300; URL=./alert.php">';
 	echo '<table  width="100%" cellpadding="5" class="darkbg" cellspacing="6">
 	<td align="left" height="25" width="100%" class="lightbg">You currently have no alerts.</td>';
-	echo '<td align="right" height="25" nowrap><p class="mediumcolorheading">Pansophy&reg Contact Manager</td></table>';
+	echo '<td align="right" height="25" nowrap><p class="mediumcolorheading">Phronesis&reg Contact Manager</td></table>';
 }
 
 function printWithAlerts() {
 	echo ' <meta http-equiv="Refresh" content="30; URL=./alert.php">';
 	echo '<table  width="100%" cellpadding="5" class="redbg" cellspacing="6">
 	<td align="left" height="25" width="100%" class="lightbg"><a href="./interface/alerts.php" target="Main" class="alert">[You have new alerts]</a></td>';
-	echo '<td align="right" height="25" nowrap><p class="mediumlightcolorheading">Pansophy&reg Contact Manager</td></table>';
+	echo '<td align="right" height="25" nowrap><p class="mediumlightcolorheading">Phronesisansophy&reg Contact Manager</td></table>';
 }
 
 printPage();

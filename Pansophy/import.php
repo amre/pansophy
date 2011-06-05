@@ -58,7 +58,7 @@ if( $dam->userCanCreateOrReplaceStudent( '' ) ) {
 		}
 	}
 	echo '<h1>Import SRN Student Records</h1><br>';
-	echo '<p>This page does not work with Pansophy in its current state.<br />Because student information is
+	echo '<p>This page does not work with Phronesis in its current state.<br />Because student information is
 		received through Datatel, any information that would be imported through this interface would be erased
 		during the next push from Datatel.</p>
 		<p><form enctype="multipart/form-data" action="'.basename($_SERVER['PHP_SELF']).'" method="post">

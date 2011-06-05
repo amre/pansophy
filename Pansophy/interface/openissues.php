@@ -1,5 +1,5 @@
 <?php
-// This file was replaced in Pansophy v2.0 by the Report Generator.
+// This file was replaced in Phronesis v2.0 by the Report Generator.
 
 //This is the pending issues script.  It performs a search for pending issues, and then outputs the results
 include('../include/header.inc');

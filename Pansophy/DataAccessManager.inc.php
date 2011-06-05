@@ -1563,7 +1563,7 @@ ini_set("display_errors", 1);
 		
 		// IMPORTANT: Permission checking is currently not done here. It is done by the web gui. 
 		// Links to delete files only show up when userCanDeleteFile() returns true.
-		// This is something to keep in mind for future pansophy versions.
+		// This is something to keep in mind for future phronesis versions.
 		
 		// delete file from server
 		if(file_exists($file_upload_folder.$fileID)){

@@ -42,7 +42,7 @@ function printAlertTable() {
 				$fullname = $student['FIRST_NAME']." ".$student['LAST_NAME'];
 				echo "<tr><td><a class='alert' href='./viewstudent.php?id=".$alert['StudentID']."'>$fullname (Student #".$alert['StudentID'].")</a> - $message</td></tr>";
 			}
-		// IN PANSOPHY 2 THIS SHOULD NEVER HAPPEN.  WATCHING USERS IS ONLY SUPPORTED INTERNALLY.
+		// IN PHRONESIS 2 THIS SHOULD NEVER HAPPEN.  WATCHING USERS IS ONLY SUPPORTED INTERNALLY.
 		// THERE IS NO MECHANISM IN THE INTERFACE TO ALLOW WATCHING OF A USER.
 			else {
 				if( $id = $alert['OtherUserID'] ) {
