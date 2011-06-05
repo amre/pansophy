@@ -26,8 +26,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	/* Queries the Issues table in the MySQL database, compares the timestamps between the current
 	 * date and time and the LastModified field to see if there is at least a 1 year differential,
 	 * and performs and update query on the Status field changing it to Closed if the issue hasn't
-	 * been modified for that long. (Automatic closure of old issues.) - Josh Thomas... can only jump 120
-	 * times his own height, unlike most fleas, which can jump 130 times their own height.
+	 * been modified for that long. (Automatic closure of old issues.) - Josh Thomas
 	 */
 	
 	$result = $dam->getLastModifedIssue( $userID );
@@ -45,8 +44,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	 * It echoes a JavaScript script that displays an alert prior to displaying the main Phronesis page
 	 * that notifies the user that they have unresolved Open issues that possibly should be closed.
 	 * (Requests user closure of old issues in the event that an issue was left open for a reason.)
-	 * - Josh Thomas... is the guy who invented the microwave after walking by a radar tube
-	 *					and having a chocolate bar melted in his pocket.
+	 * - Josh Thomas
 	 */
 	
 	$result = $dam->getLastModifedIssue( $userID );

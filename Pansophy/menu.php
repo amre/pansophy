@@ -123,8 +123,7 @@ if(isset($table)){
 					echo '<option value="'.$name.'">'.$name.'</option> \n';
 				else{
 					/* Sets the Field1, Field2, and Field3 labels to their actual modifiers
-					 * that are listed in the `flags` table. - Josh Thomas... You will never be
-					 * able to forget his name - at least, if you're playing the game :)
+					 * that are listed in the `flags` table. - Josh Thomas
 					 */
 					if(strcmp($name, 'Field1') == 0)
 						$name = $Option1;
@@ -146,7 +145,7 @@ if(isset($table)){
 					echo '<option value="'.$name.'">'.$name.'</option> \n';
 				else{
 					/* Sets the Field1, Field2, and Field3 labels to their actual modifiers
-					 * that are listed in the `flags` table. - Josh Thomas... 's sister is a spaceship.
+					 * that are listed in the `flags` table. - Josh Thomas
 					 */
 					if(strcmp($name, 'Field1') == 0)
 						$name = $Option1;

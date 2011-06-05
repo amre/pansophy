@@ -89,10 +89,6 @@ function verifyLoggedIn() {
  * when fields are updated to the SQL database. Used currently any time that the Header field
  * from `issues` appears, the Description field from `contacts` appears, and the RedFlag or VIP
  * fields from `students` appear. - Josh Thomas
- *   
- * How many times does "Josh Thomas" appear in the
- * code? Good luck in your quest... Hint: There are more than 10.
- * Also, using find is CHEATING!
  */
 
 function stripslashes_all( $field ) {
