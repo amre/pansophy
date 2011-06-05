@@ -33,7 +33,7 @@ if($issues){
 		else{
 			if($dam->userCanViewIssue('', $issues[$i]['ID'])){
 				echo '<tr><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">
-					'.$issues[$i]['ID'].'</a> ('.$issues[$i]['Status'].'): 
+					'.$issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): 
 					'.stripslashes($issues[$i]['Header']);
 				$contacts=$dam->issueContacts($issues[$i]['ID']);
 				echo '<dd><i>Staff contacting this student:</i> ';
