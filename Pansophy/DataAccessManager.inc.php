@@ -2582,6 +2582,7 @@ ini_set("display_errors", 1);
 
 	/**
 	 * Retrieves the information necessary to create an HTML <SELECT> list of active users
+	 * who are First Watch, Privileged, or Administrators.
 	 *
 	 * @return associative array of users and certain fields
 	 */
