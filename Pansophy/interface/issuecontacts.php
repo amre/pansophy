@@ -12,7 +12,7 @@ $dam = new DataAccessManager();
 
 include_once('../include/filescript.inc');
 
-$ID = $_GET['id'];
+$ID = $viewContactsIssue;
 $contacts=$dam->getIssuesContacts($ID);
 if ( sizeof( $contacts ) == 0 ) {
 	echo 'ERROR: There are no contacts for this issue.  Please contact your system administrator.';

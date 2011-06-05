@@ -16,6 +16,10 @@ $dam = new DataAccessManager();
 $ID = $_GET['id'];
 
 $issues=$dam->getStudentIssues($ID);
+$viewContactsIssue; //allows for expansion of contacts on an issue
+if(isset($_GET['viewContacts']) && $_GET['viewContacts']) $viewContacts = true;
+if(isset($_GET['viewContactsIssue'])) $viewContactsIssue = $_GET['viewContactsIssue'];
+
 
 $issuesToView = 8;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $issuesToView = sizeof($issues);
@@ -49,7 +53,15 @@ if($issues){
 						array_push($staff, $contacts[$j]['Creator']);
 					}
 				}
-				echo '</td></tr>';
+				echo '</td>';
+				if($viewContactsIssue!=$issues[$i]['ID']){
+					echo '<td nowrap><a href="./studentissues.php?id='.$ID.'&viewContactsIssue='.$issues[$i]['ID'].'"><b>[Show Contacts]</b></a></td>';
+				}
+				else{
+					echo '<td nowrap><a href="./studentissues.php?id='.$ID.'&viewContactsIssue=null"><b>[Hide Contacts]</b></a></td>';
+					include './issuecontacts.php';
+				}
+				echo '</tr>';
 			}
 		}
 	}
