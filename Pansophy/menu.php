@@ -234,5 +234,4 @@ echo '<td width="50%" class="darkbg"></td></tr>';
 
 //end content table
 echo '</table>';
-
 ?>
