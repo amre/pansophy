@@ -1,4 +1,8 @@
 <?
+/*
+* Session expiration after 3 hours of inactivity-- automatically logs off inactive users.
+*
+*/
 session_start();
 if ((isset($_SESSION['lastclick'])) and (time() - $_SESSION['lastclick'] > 10800))
 	{

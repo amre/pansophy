@@ -4318,6 +4318,12 @@ class DataAccessManager {
       $description = "Email sent to student concerning interim ".$interimId;
       $this->updateSpecialHistory($studentId,$description,0);
    }
+	/**
+	 * Modifies the database to reflect an incorrect login attempt (used for password lockout feature)
+	 *
+	 * @param $user - userID of user who attempted to log in
+	 * 
+	 */
 	function failedLoginAttempt($user){
 		$query = "SELECT LoginAttempts from users where ID='$user'";
 		$result = mysql_query($query);
@@ -4330,12 +4336,24 @@ class DataAccessManager {
 		mysql_query($query);
 	}
 
+	/**
+	 * Modifies the database to reflect a correct login attempt (used for password lockout feature)
+	 *
+	 * @param $user - userID of user who logged on
+	 * 
+	 */
 	function successfulLoginAttempt($user){
 		$timeval = time();
 		$query = "UPDATE users SET LoginAttempts=0, LastLogin=$timeval WHERE ID='$user'";
 		mysql_query($query);
 	}
 
+	/**
+	 * Queries the database to find out if the current user is locked out of the system (used for password lockout feature)
+	 *
+	 * @param $user - userID of user who is attempting to log in
+	 * @return - boolean value: "true" is user is locked out, "false" is user is not.
+	 */
 	function isLockedOut($user){
 		$query = "SELECT LoginAttempts, LastLogin from users where ID='$user'";
 		$result = mysql_query($query);

@@ -14,6 +14,7 @@ $dam = new DataAccessManager();
 
 //+-----------------------------------------------------------------------------------------+
 
+// background colors
 echo '<div style="position:fixed;height:100%;width:35%;right:0%;background:#ffffff;z-index:-1"></div>';
 echo '<div style="position:fixed;height:100%;width:35%;right:35%;background:#f0f0f0;z-index:-1"></div>';
 echo '<div style="position:fixed;height:100%;width:30%;right:70%;background:#ffffff;z-index:-1"></div>';
