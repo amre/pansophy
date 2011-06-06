@@ -23,7 +23,13 @@ include('../logtimer.inc.php');
  *	keeping the user information available for the future, but discontinuing that user's
  *	access
  */
-
+define("ADMINISTRATOR", 10, true);
+define("PRIVILEGED", 9, true);
+define("FIRSTWATCH", 8, true);
+define("NORMAL", 7, true);
+define("READONLYFULL", 5, true);
+define("READONLY", 4, true);
+define("NOACCESS", 0, true);
 
 //------target path for file uploads------------+
 // note: this dir is requested from the 
@@ -131,19 +137,19 @@ class DataAccessManager {
 	
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10
+	 * action, false if not. Currently the user must be an administrator
 	 * to be able to view other users
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 */
 	function canViewUsers( $sessionID ){
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 	
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10
+	 * action, false if not. Currently the user must be an administrator
 	 * or be the user him/herself
 	 *
 	 * @param $sessionID session information like IP address to verify for security
@@ -154,7 +160,7 @@ class DataAccessManager {
 		if($thisUserID == $userID)
 			return TRUE;
 		else
-			return $this->getAccessLevel() > 9;
+			return $this->canViewUsers($sessionID);
 	}
 // ok
 	/**
@@ -171,23 +177,23 @@ class DataAccessManager {
 			$result = mysql_query($query);
 			return mysql_fetch_assoc($result);
 		}
-      // if current user has insufficient access to view all of another user's info
-      // return only the other user's name and email
-      else if($this->getAccessLevel() >= 4){
-         $query="SELECT `FirstName`, `LastName`, `Email` FROM `users` WHERE `ID` = '$userID'";
+      		// if current user has insufficient access to view all of another user's info
+      		// return only the other user's name and email
+      		else if($this->getAccessLevel() != NOACCESS){
+         		$query="SELECT `FirstName`, `LastName`, `Email` FROM `users` WHERE `ID` = '$userID'";
 			$result = mysql_query($query);
 			return mysql_fetch_assoc($result);
-      }
+      		}
 	}
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10.
+	 * action, false if not. Currently the user must be an administrator.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 */
 	function userCanCreateUser( $sessionID ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // probably ok
 	/**
@@ -216,13 +222,13 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10.
+	 * action, false if not. Currently the user must be an administrator.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $username the ID of the user to modify
 	 */
 	function userCanModifyUser( $sessionID, $username ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 	
 // WORKS BUT FIX SECURITY PROBLEM!!!!!!!
@@ -256,14 +262,14 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10.
+	 * action, false if not. Currently the user must be an administrator.
 	 * Usually in the system a user is not deleted, but deprecated to access level 0 (no access).
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $username the name of the user to delete
 	 */
 	function userCanDeleteUser( $sessionID, $username ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // ok
 	/**
@@ -338,12 +344,12 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not.  Currently the user must have an access level of at least 4.
+	 * action, false if not.  Currently any active user has access.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 */
 	function userCanViewStudent( $sessionID ){
-		return $this->getAccessLevel() > 3;
+		return $this->getAccessLevel() != NOACCESS;
 	}
 // ok
 	/**
@@ -605,12 +611,12 @@ class DataAccessManager {
 	
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 9.
+	 * action, false if not. Currently they must be an Administrative or Privileged user.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 */
 	function userCanModifyStudent( $sessionID){
-		return $this->getAccessLevel() > 8;
+		return $this->getAccessLevel() >= PRIVILEGED;
 	}
 // probably ok
 	/**
@@ -640,13 +646,14 @@ class DataAccessManager {
 // ok
 	/**
 	* Determines if the current user can create/replace a student
+	* Right now, this is an Administrative task.
 	*
 	* @param $sessionID the current session ID
 	*
 	* @return true if the user can, false if not
 	*/
 	function userCanCreateOrReplaceStudent( $sessionID ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // ok
 
@@ -734,12 +741,13 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not.  Currently the user must have an access level of at least 6.
+	 * action, false if not.  Currently the user must be active and cannot be read-only.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 */
 	function userCanCreateIssue( $sessionID ) {
-		return $this->getAccessLevel() > 5;
+		$level = $this->getAccessLevel();
+		return ($level == NORMAL || $level == FIRSTWATCH || $level == PRIVILEGED || $level == ADMINISTRATOR);
 	}
 // MIGHT WORK WITH NEW DB
 	/**
@@ -802,8 +810,9 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 4
-	 * to view a B issue and at least 8 or exactly 5(Full read-only) to view an A issue 
+	 * action, false if not. Currently the user must be an active user
+	 * to view a B issue and Read-Only(Full), First Watch, Privileged,
+	 * or Administrator to view an A issue 
 	 * (or be the creator of/assigned to the A issue).
 	 *
 	 * @param $sessionID session information like IP address to verify for security
@@ -830,8 +839,9 @@ class DataAccessManager {
 			$value3 = mysql_fetch_array($result3);
 			extract($value3);
 			$userID = $_SESSION['userid'];
+			$userLevel = $this->getAccessLevel();
 			if($Level == 'A')
-				if($this->getAccessLevel() > 7 || $this->getAccessLevel() == 5)
+				if($userLevel == READONLYFULL || $userLevel == FIRSTWATCH || $userLevel == PRIVILEGED || $userLevel == ADMINISTRATOR)
 					return TRUE;
 				elseif($Creator == $userID)
 					return TRUE;
@@ -840,7 +850,7 @@ class DataAccessManager {
 				else
 					return FALSE;
 			elseif($Level == 'B')	
-				return $this->getAccessLevel() > 3;
+				return $userLevel != NOACCESS;
 			else
 				return FALSE;
 		}
@@ -979,17 +989,20 @@ class DataAccessManager {
 		$value2 = mysql_fetch_array($result2);
 		extract($value2);
 		$userID = $_SESSION['userid'];
-		if($Level == 'A')
-			if($this->getUserAccessLevel($user) > 7 || $this->getUserAccessLevel($user) == 5)
-				return TRUE;
-			elseif($Creator == $userID)
-				return TRUE;
+		$userLevel = $this->getUserAccessLevel($user);
+			if($Level == 'A')
+				if($userLevel == READONLYFULL || $userLevel == FIRSTWATCH || $userLevel == PRIVILEGED || $userLevel == ADMINISTRATOR)
+					return TRUE;
+				elseif($Creator == $userID)
+					return TRUE;
+				elseif($AssignedTo == $userID)
+					return TRUE;
+				else
+					return FALSE;
+			elseif($Level == 'B')	
+				return $userLevel != NOACCESS;
 			else
 				return FALSE;
-		elseif($Level == 'B')	
-			return $this->getUserAccessLevel($user) > 3;
-		else
-			return FALSE;
 	}
 		
 	
@@ -1057,8 +1070,8 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10
-	 * or be the Creator AND have a level of at least 9.
+	 * action, false if not. Currently the user must be an administrator
+	 * or be the Creator AND be Privileged.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $issueID the ID of the issue to modify
@@ -1070,9 +1083,9 @@ class DataAccessManager {
 		extract($value);
 		$userID = $_SESSION['userid'];
 		if($userID == $Creator)
-			return $this->getAccessLevel() > 8;
+			return $this->getAccessLevel() == PRIVILEGED;
 		else
-			return $this->getAccessLevel() > 9;
+			return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // ok
 	/**
@@ -1093,6 +1106,9 @@ class DataAccessManager {
 // ok
 	/**
 	 * Determines if the current user can set an issue's status.
+	 * Right now, this calls userCanModifyIssue unless the user
+	 * is the creator - if so, they can change the status if they are
+	 * still a non-read only user who has access to the system.
 	 *
 	 * @param $sessionID the current session ID
 	 * @param $issueID the issue to check if the status can be set
@@ -1105,8 +1121,9 @@ class DataAccessManager {
 		$value = mysql_fetch_array($result);
 		extract($value);
 		$userID = $_SESSION['userid'];
-		if($Creator == $userID && $this->getAccessLevel() > 5)
-			return TRUE;
+		$level = $this->getAccessLevel();
+		if($Creator == $userID)
+			return ($level == NORMAL || $level == FIRSTWATCH || $level == PRIVILEGED || $level == ADMINISTRATOR);
 		else
 			return $this->userCanModifyIssue( $sessionID, $issueID );
 	}
@@ -1719,18 +1736,18 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10,
-	 * or he/she must be the creator of the contact AND have a level of at least 9.
+	 * action, false if not. Currently the user must be an administrator,
+	 * or he/she must be the creator of the contact AND be Privileged.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $contactID the ID of the contact to modify
 	 */
 	function userCanModifyContact( $sessionID, $contactID ) {
 		$results = mysql_fetch_array( mysql_query("select * from contacts where ID = '$contactID'") );
-		if($this->getAccessLevel() > 9)
+		if($this->getAccessLevel() == ADMINISTRATOR)
 			return TRUE;
 		else
-			return ( ( $this->getAccessLevel() > 8 ) && ( strcmp( $_SESSION['userid'], $results['Creator'] ) == 0 ) );
+			return ( ( $this->getAccessLevel() == PRIVILEGED ) && ( strcmp( $_SESSION['userid'], $results['Creator'] ) == 0 ) );
 	}
 // ok
 	/**
@@ -1760,13 +1777,13 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 10.
+	 * action, false if not. Currently the user must be an administrator.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $contactID the ID of the contact to delete
 	 */
 	function userCanDeleteContact( $sessionID, $contactID ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // PROBABLY WORKS WITH NEW DB
 	/**
@@ -2012,13 +2029,13 @@ class DataAccessManager {
 // ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently the user must have an access level of at least 4.
+	 * action, false if not. Currently any active user can perform a search.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $table the database table to search
 	 */
 	function userCanPerformSearch($sessionID, $table){
-		return $this->getAccessLevel() > 3;
+		return $this->getAccessLevel() != NOACCESS;
 	}
 	
 // ok
@@ -2250,11 +2267,12 @@ class DataAccessManager {
 // ok
 	/**
 	* Policy implementation; checks if the user can set the database name.
+	* Currently, this is an Administrative task
 	*
 	* @return true if the user can, false if they can't
 	*/
 	function userCanSetDbName(){
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // ok
 	/** 
@@ -2269,11 +2287,12 @@ class DataAccessManager {
 // ok
 	/**
 	* Policy implementation; checks to see if the user can set the database password.
+	* Currently, this is an administrative task.
 	*
 	* @return true if the user can, false if otherwise (they can't)
 	*/
 	function userCanSetDbPassword(){
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 // ok
 	/**
@@ -3383,18 +3402,21 @@ class DataAccessManager {
 	
 	/**
 	 * Checks to see if the user's access level is high enough to import interims.
+	 * Currently, First Watch, Privileged, and Administrative users can do this.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 *
 	 * @return whether or not the current user can create interims
 	 */
 	function userCanCreateInterim( $sessionID ) {
-		return $this->getAccessLevel() > 8;
+		$level == $this->getAccessLevel();
+		return ($level == FIRSTWATCH || $level == PRIVILEGED || $level == $ADMINISTRATOR);
 	}
 	
 	/**
 	 * Based off of createIssue. Inserts interims into the database.
-	 * Checks and alerts users of level 8-10 if student has 3+ interims.
+	 * Checks and alerts First Watch, Priveleged, and Administrator
+	 * users if student has 3+ interims.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 * @param $stuID - ID of student to generate interim for
@@ -3484,13 +3506,15 @@ class DataAccessManager {
   
 	/**
 	 * Checks to see if the user's access level is high enough to delete interims.
+	 * Currently, Privileged and Administrative users can do this.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 *
 	 * @return whether or not the current user can delete interims
 	 */
 	function userCanDeleteInterim( $sessionID ) {
-		return $this->getAccessLevel() > 8;
+		$level = $this->getAccessLevel();
+		return ($level == FIRSTWATCH || $level == PRIVILEGED || $level == ADMINISTRATOR);
 	}
  
 
@@ -3546,13 +3570,15 @@ class DataAccessManager {
 
 	/**
 	 * Checks to see if the user's access level is high enough to edit pre-existing interims.
+	 * Currently, the user must be Privileged or Administrative.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 *
 	 * @return whether or not the current user can edit interims
 	 */
 	function userCanEditInterim( $sessionID ) {
-		return $this->getAccessLevel() > 8;
+		$level = $this->getAccessLevel();
+		return ($level == PRIVILEGED || $level == ADMINISTRATOR);
 	}
 
 
@@ -3599,15 +3625,17 @@ class DataAccessManager {
 	}
 
 	/**
-	 * Checks to see if user is permitted to view interims. Currently, a user must be above
-	 * level 7 or exactly level 5 (Full read-only)
+	 * Checks to see if user is permitted to view interims.
+	 * Currently, a user must be Full Read-only, First Watch,
+	 * Privileged or an Administrator
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 *
 	 * @return - whether the user can view interims
 	 */
 	function userCanViewInterim( $sessionID ) {
-		return ($this->getAccessLevel() > 7 || $this->getAccessLevel() == 5);
+		$level = $this->getAccessLevel();
+		return ($level == READONLYFULL || $level == FIRSTWATCH || $level == PRIVILEGED || $level == ADMINISTRATOR);
 	}
 
 	/**
@@ -3682,14 +3710,15 @@ class DataAccessManager {
 	
 	/**
 	 * Checks to see if the user is permitted to modify the First Watch list.
+	 * Currently, First Watch, Privileged, and Administrative users can do this.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 	 *
 	 * @return - whether the user can view first watch list
 	 */
 	function userCanModifyFW( $sessionID ) {
-		if($this->getAccessLevel() >= 8) return true;
-      return false;
+		$level = $this->getAccessLevel();
+		return ($level == FIRSTWATCH || $level == PRIVILEGED || $level == ADMINISTRATOR);
 	}
 
 	/**
@@ -3815,7 +3844,7 @@ class DataAccessManager {
 	 *					and only taken off for one of those reasons)
 	 */
 	function clearStudentFW ( $sessionID, $studentID, $Reason ) {
-		if($this->getAccessLevel() > 7) {
+		if($this->userCanModifyFW($sessionID)) {
 
          // add a contact indicating that the student was removed
          $description = "Student removed from First Watch List [".$Reason."].";
@@ -3843,7 +3872,7 @@ class DataAccessManager {
 	 */
 	
 	function clearStudentAllFW ( $sessionID, $studentID ) {
-		if($this->getAccessLevel() > 7) {
+		if($this->userCanModifyFW($sessionID)) {
 
          // get reasons why student is on list
          $query = "SELECT DISTINCT `Reason` FROM `students-FW` WHERE `StudentID` = '".$studentID."'";
@@ -3896,7 +3925,7 @@ class DataAccessManager {
 	 * @return whether the user can clear the interim counter
 	 */
 	function userCanClearInterimCounter( $sessionID ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 	
 	/**
@@ -3935,7 +3964,7 @@ class DataAccessManager {
 	 * @param $sessionID - session information like IP address to verify for security
 	 */
 	function userCanChangeEmails( $sessionID ) {
-		return $this->getAccessLevel() > 9;
+		return $this->getAccessLevel() == ADMINISTRATOR;
 	}
 	
 	/**
@@ -4283,7 +4312,7 @@ class DataAccessManager {
 	 */
 	function validateEmail($TO,$SUBJECT,$BODY,$headers){
 
-      if(!$this->getAccessLevel() > 0) {echo 'false'; return false;}
+      if(!$this->getAccessLevel() != NOACCESS) {echo 'false'; return false;}
 
       //$server = "http://localhost/dev/pansophy"; // dev server
       $server = "http://pansophy.wooster.edu";
