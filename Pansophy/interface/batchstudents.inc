@@ -74,7 +74,8 @@ if(!empty($students)){
 //echo '<tr><td height="10"></td></tr>';	
 
 // remove and done buttons
-echo '<tr><td><input type="submit" name="submit" value="Remove">';
+if(count($studentArr)){
+echo '<tr><td><input type="submit" name="submit" value="Remove">';}
 //echo '<center><input type="submit" name="submit" value="Back"></td></tr>';
 
 // end left subtable and start right hand one
