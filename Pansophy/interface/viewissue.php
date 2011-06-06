@@ -152,7 +152,7 @@ else{
 	
 	
 	//Display the Issue information
-	echo '<h1>Issue '.$ID.'</h1><center>
+	echo '<h1>Issue '.$ID[0].'-'.substr($ID,1).'</h1><center>
 	<a href="./viewissuepf.php?id=' . $ID . '" target="_blank">[Click here for printer-friendly version]</a>
 	<a href="mailto:?subject=Phronesis issue email&body='.$emailBody.'">[Email this issue]</a><br><br>
 	<table><tr>
