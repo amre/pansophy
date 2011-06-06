@@ -12,7 +12,7 @@ $dam = new DataAccessManager();
 
 include_once('../include/filescript.inc');
 
-$ID = $viewContactsIssue;
+$ID = $_GET['id'];
 $contacts=$dam->getIssuesContacts($ID);
 if ( sizeof( $contacts ) == 0 ) {
 	echo 'ERROR: There are no contacts for this issue.  Please contact your system administrator.';
@@ -76,7 +76,7 @@ for($i=0; $i<sizeof($contacts); $i++){
 		else echo ' ERROR';	
 	}
 	echo "</td>
-	<td class='right'><a href='mailto:?subject=Phronesis contact email&body=Contact: ".rawurlencode(html_entity_decode($contact['ID']))."
+	<td class='right'><a href='mailto:?subject=Pansophy contact email&body=Contact: ".rawurlencode(html_entity_decode($contact['ID']))."
 	%0AStaff Involved: ".html_entity_decode(rawurlencode($Creator['FirstName']))." ".rawurlencode(html_entity_decode($Creator['LastName']))."
 	%0AStudents Involved: ".rawurlencode(html_entity_decode($emailStudents))."
 	%0ADescription: ".rawurlencode(html_entity_decode(stripslashes($contact['Description'])))."'><strong>[Email this contact]</strong></a></td>";

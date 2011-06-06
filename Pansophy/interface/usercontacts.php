@@ -71,7 +71,7 @@ for($i=0; $i < sizeof($contacts); $i++){
 	// done showing files
 	
 	echo '<tr>
-	<td class="left"><a href="mailto:?subject=Phronesis contact email&body='.urlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></td>
-	<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'][0].'-'.substr($contact['Issue'],1).'</table><p>';
+	<td class="left"><a href="mailto:?subject=Pansophy contact email&body='.urlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></td>
+	<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'].'</table><p>';
 }
 ?>

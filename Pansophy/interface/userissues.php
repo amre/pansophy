@@ -33,7 +33,7 @@ echo '<table><dl>';
 if($issues){
 	for($i=0; $i < sizeof($issues); $i++){
 		$Students = explode(',', $issues[$i]['Students']);
-		echo '<tr><td><dt><a href="./viewissue?id='.$issues[$i]['ID'].'" TARGET="Main">'.$issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): '.stripslashes($issues[$i]['Header']);
+		echo '<tr><td><dt><a href="./viewissue?id='.$issues[$i]['ID'].'" TARGET="Main">'.$issues[$i]['ID'].'</a> ('.$issues[$i]['Status'].'): '.stripslashes($issues[$i]['Header']);
 		echo '<dd><i>Students involved:</i> ';
 		for($j=0; $j<count($Students); $j++){
 			$Student=$dam->ViewStudent('',$Students[$j]);

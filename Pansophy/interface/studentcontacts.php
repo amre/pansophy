@@ -58,7 +58,7 @@ for($i=0; $i < $contactsToView; $i++){
 					
 					// if user has permission, print download and delete links
 					if($dam->userCanDownloadFile('',$files[$j])){
-						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=download&fileid='.$files[$j].'" target="_blank">[Open]</a>';
+						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=download&fileid='.$files[$j].'">[Open]</a>';
 					}
 					if($dam->userCanDeleteFile('',$files[$j])){
 						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=delete&fileid='.$files[$j].'">[Delete]</a>';
@@ -70,8 +70,8 @@ for($i=0; $i < $contactsToView; $i++){
 			// done showing files
 			
 			echo '<tr>
-					<td class="left"><strong><a href="mailto:?subject=Phronesis contact email&body='.rawurlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></a></td>
-					<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'][0].'-'.substr($contact['Issue'],1).'
+					<td class="left"><strong><a href="mailto:?subject=Pansophy contact email&body='.rawurlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></a></td>
+					<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'].'
 				</table><p>';	
 		}
 	}

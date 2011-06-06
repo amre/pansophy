@@ -2,6 +2,8 @@
 
 /**
  * Displays list of issues in student page.
+ * In other news, Josh Thomas is a member of the National Association of Black Journalists
+ * and Alpha Phi Alpha Fraternity. (Again, Wiki it - I'm not making this stuff up)
  */
 
 //+-----------------------------------------------------------------------------------------+
@@ -16,10 +18,6 @@ $dam = new DataAccessManager();
 $ID = $_GET['id'];
 
 $issues=$dam->getStudentIssues($ID);
-$viewContactsIssue; //allows for expansion of contacts on an issue
-if(isset($_GET['viewContacts']) && $_GET['viewContacts']) $viewContacts = true;
-if(isset($_GET['viewContactsIssue'])) $viewContactsIssue = $_GET['viewContactsIssue'];
-
 
 $issuesToView = 8;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $issuesToView = sizeof($issues);
@@ -35,7 +33,7 @@ if($issues){
 		else{
 			if($dam->userCanViewIssue('', $issues[$i]['ID'])){
 				echo '<tr><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">
-					'.$issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): 
+					'.$issues[$i]['ID'].'</a> ('.$issues[$i]['Status'].'): 
 					'.stripslashes($issues[$i]['Header']);
 				$contacts=$dam->issueContacts($issues[$i]['ID']);
 				echo '<dd><i>Staff contacting this student:</i> ';
@@ -53,15 +51,7 @@ if($issues){
 						array_push($staff, $contacts[$j]['Creator']);
 					}
 				}
-				echo '</td>';
-				if($viewContactsIssue!=$issues[$i]['ID']){
-					echo '<td nowrap><a href="./studentissues.php?id='.$ID.'&viewContactsIssue='.$issues[$i]['ID'].'"><b>[Show Contacts]</b></a></td>';
-				}
-				else{
-					echo '<td nowrap><a href="./studentissues.php?id='.$ID.'&viewContactsIssue=null"><b>[Hide Contacts]</b></a></td>';
-					include './issuecontacts.php';
-				}
-				echo '</tr>';
+				echo '</td></tr>';
 			}
 		}
 	}
