@@ -135,6 +135,7 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 		   }
 		   echo '</td></tr>		
 		   <tr><td align="left" nowrap>Class year: </td><td align="left">'.$student['CLASS_YEAR'].'</td></tr>
+		   <tr><td align="left" nowrap>Birth date: </td><td align="left">'.readableDate($student['BIRTHDAY']).'</td></tr>
 		   <tr><td align="left" nowrap>Status: </td><td align="left">'.$student['ENROLL_STATUS'].'</td></tr>
          <tr><td align="left" nowrap>Major(s): </td><td align="left">'.$student['MAJOR_1'];
          if(!empty($student['MAJOR_2'])) echo ', '.$student['MAJOR_2'];

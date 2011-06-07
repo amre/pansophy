@@ -162,7 +162,7 @@ else{
 					'HousingBuilding', 'HousingRoom', 'ParentEmail', 'ParentCellPhone', 'AcProbation', 'HousingWaitList', 
 					'Field1', 'Field2', 'Field3', 'AllWatch', 'ParentName1', 'ParentName2', 'City', 'State', 'ZIP', 'Country',
 					'StudentActivities', 'InterimCounter', 'FirstWatch','MAJOR_1','MAJOR_2',
-					'StudentID', 'SUFFIX', 'GENDER', 'ADDRESS_ID', 'PRIMARY_EMAIL', 'HOME_PHONE', 'CELL_PHONE', 'CAMPUS_PHONE',
+					'StudentID', 'SUFFIX', 'GENDER', 'BIRTHDAY', 'ADDRESS_ID', 'PRIMARY_EMAIL', 'HOME_PHONE', 'CELL_PHONE', 'CAMPUS_PHONE',
 					'ADVISOR', 'HOUSING_BLDG', 'HOUSING_ROOM', 'PRIVACY_FLAG',
 					'STREET_2', 'STREET_3', 'STREET_4', 'STREET_5', 'CITY', 'STATE', 'ZIP', 'COUNTRY');
 	}
