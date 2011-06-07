@@ -1844,7 +1844,7 @@ class DataAccessManager {
 			return;
 		}
 	}
-// ok
+// okgetIssues
 	/**
 	 * Returns a numerically indexed array containing the IDs of all the contacts
 	 * assosciated with the designated Issue ID.
