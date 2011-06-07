@@ -125,7 +125,7 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 	   echo '</td></tr></table></p></p>';
 	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>';
 
-echo "<tr><img src=\"http://www.babble.com/CS/blogs/strollerderby/2009/05/happy-meal.jpg\" width=\"100\" /></tr>"; 
+echo "<tr><img src=\"http://webapps.wooster.edu/webbadge/ShowImage.ashx?id=".$studentId."\" width=\"100\" /></tr>"; 
 
 		   //FOR DISPLAYING PICTURE//<tr><td align="left" nowrap><IMG SRC="'.$picture.'" height="120" width="90" class="darkbd"></td></tr>';
 
