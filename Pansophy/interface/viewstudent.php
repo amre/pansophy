@@ -67,7 +67,7 @@ echo '<p><br />';
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
-	if(!$usingIE) //formatting issues with the floading title
+	if(!$usingIE) //formatting issues with the floating title
 	{
 	echo '</br></br></br>';
 	}
@@ -125,7 +125,12 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 	   echo '</td></tr></table></p></p>';
 	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>';
 
-echo "<tr><img src=\"http://www.babble.com/CS/blogs/strollerderby/2009/05/happy-meal.jpg\" width=\"100\" /></tr>"; 
+//Display student picture if there is one on record
+$pictureUrl="http://webapps.wooster.edu/webbadge/ShowImage.ashx?id=".$studentId;
+if(is_array(getimagesize($pictureUrl)))
+{
+	echo "<tr><img src=\"".$pictureUrl."\" width=\"100\" /></tr>";
+}
 
 		   //FOR DISPLAYING PICTURE//<tr><td align="left" nowrap><IMG SRC="'.$picture.'" height="120" width="90" class="darkbd"></td></tr>';
 
