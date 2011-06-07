@@ -177,6 +177,7 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 		   if(count($relations) % 2 == 0){
 			   for($i = 0; $i < count($relations); $i = $i + 2){
 				   $parent = $dam->viewStudentParent('',$relations[$i]);
+
 				   $relationship = $relations[$i+1];
 				   if(strcmp($relations[$i+1],'P') == 0) $relationship = 'Parent';
 				   else if(strcmp($relations[$i+1],'SP') == 0) $relationship = 'Step-parent';
