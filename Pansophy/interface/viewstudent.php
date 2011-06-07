@@ -123,11 +123,13 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 			   echo '<a href="./editstudent.php?studentId='.$studentId.'"><b>[Edit this student]</b></a>';
 		   }
 	   echo '</td></tr></table></p></p>';
-	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>'; 
+	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>';
+
+echo "<tr><img src=\"http://www.babble.com/CS/blogs/strollerderby/2009/05/happy-meal.jpg\" width=\"100\" /></tr>"; 
 
 		   //FOR DISPLAYING PICTURE//<tr><td align="left" nowrap><IMG SRC="'.$picture.'" height="120" width="90" class="darkbd"></td></tr>';
 
-		   echo 'Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
+		   echo '<tr><td>Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
 		   if(!empty($student['Modifier'])){
 			   $modifier = $dam->viewUser('',$student['Modifier']);
 			   echo 'by <a href="mailto:'.$modifier['Email'].'">'.$modifier['FirstName'].' '.$modifier['LastName'].'</a>';
