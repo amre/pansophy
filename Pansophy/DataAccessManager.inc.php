@@ -1446,7 +1446,6 @@ class DataAccessManager {
 		$userfile_error = $_FILES['userfile']['error'];
 		$userfile_tmp_name = $_FILES['userfile']['tmp_name'];
 		$max_file_size = $_POST['MAX_FILE_SIZE'];
-	
 		// get issue id
 		$query = "SELECT `Issue` FROM `contacts` WHERE ID='$contactID'";
 		$result = mysql_query($query);
@@ -1494,7 +1493,9 @@ class DataAccessManager {
 			}
 			
 			// do the upload
-			if(move_uploaded_file($userfile_tmp_name, $file_upload_folder.$ID)) {
+			error_reporting(E_ALL);
+ini_set("display_errors", 1); 
+			if(move_uploaded_file($userfile_tmp_name, "$file_upload_folder$ID/$userfile_name")) {
 				
 				// send queries to update 'attachments' table
 				$query = "insert into `attachments` (id, extension, alias, contactid)

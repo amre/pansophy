@@ -24,7 +24,7 @@ if(file_exists($path)){
 		   header("Content-type: application/pdf"); // add here more headers for diff. extensions
 		   header("Content-Disposition: attachment; filename=\"".$fileName."\""); // use 'attachement' to force a download
 		   break;
-		   default;
+		   default:
 		   header("Content-type: application/octet-stream");
 		   header("Content-Disposition: filename=\"".$fileName."\"");
 	   }

@@ -6,18 +6,29 @@
  */
 
 //+-----------------------------------------------------------------------------------------+
-
-include('../include/header.inc'); 
+// We need to make some changes if the user is browsing in Internet Explorer.
+$u_agent = $_SERVER['HTTP_USER_AGENT'];
+    $usingIE = False;
+    if(preg_match('/MSIE/i',$u_agent))
+    {
+        $usingIE = True;
+    }
+    
+if($usingIE)
+{
+include('../include/viewstudentheaderIE.inc'); 
+}
+else
+{
+include('../include/header.inc');
+}
 include('../DataAccessManager.inc.php');
 include( '../include/miscfunctions.inc.php' );
 $dam = new DataAccessManager();
 
 //+-----------------------------------------------------------------------------------------+
 
-// background colors
-echo '<div style="position:fixed;height:100%;width:35%;right:0%;background:#ffffff;z-index:-1"></div>';
-echo '<div style="position:fixed;height:100%;width:35%;right:35%;background:#f0f0f0;z-index:-1"></div>';
-echo '<div style="position:fixed;height:100%;width:30%;right:70%;background:#ffffff;z-index:-1"></div>';
+
 // process assignment here
 if( isset($_POST['reassign']) && $_POST['reassign'] ) {
 	$result = $dam->assignUserToStudent( $_POST['assignedto'], $_GET['id'] );
@@ -45,48 +56,64 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 //FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
 
 // display title section
-echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%;">';
+
+echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%;padding:0%;margin:0;;">';
 echo '<h1 style="color:#000000;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div></br>';
-
-
+if($usingIE)
+{
+echo '<div style = "height:100%;overflow:auto">';
+}
 echo '<p><br />';
 
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
-	
-	echo '<table class="darkbd" RULES="NONE" FRAME="BOX" cellpadding="2" width="90%" align="center">';
+	if(!$usingIE) //formatting issues with the floading title
+	{
+	echo '</br></br></br>';
+	}
+	$flagstream= '<table class="darkbd" RULES="NONE" FRAME="BOX" cellpadding="2" width="90%" align="center" style="background:#ffffff;">';
 	if(!empty($student['RedFlag'])){
-		echo '<tr><td><font class="errortext">Red Flag: </font>'.$student['RedFlag'].'</td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream = $flagstream.'<tr><td><font class="errortext">Red Flag: </font>'.$student['RedFlag'].'</td></tr>';
 	}
 	if(!empty($student['VIP'])){
-		echo '<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
 	}
 	if($student['AcProbation'] == 1) {
-		echo "<tr><td><b>This student is on Academic Probation.</b></td></tr>";
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream."<tr><td><b>This student is on Academic Probation.</b></td></tr>";
 	}
 	if($student['HousingWaitList'] == 1) {
-		echo "<tr><td><b>This student is on the waiting list for housing.</b></td></tr>";
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream."<tr><td><b>This student is on the waiting list for housing.</b></td></tr>";
 	}
 	if($student['Field1'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option1'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option1'].'</b></td></tr>';
 	}
 	if($student['Field2'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option2'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option2'].'</b></td></tr>';
 	}
 	if($student['Field3'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option3'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option3'].'</b></td></tr>';
 	}
-	echo '</table>';
+	$flagstream=$flagstream.'</table>';	
+	echo $flagstream;
 }
 
 
 // display student info...
 
 // main table
+
 echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" width="30%">';
    
    // subtable one
+
    echo '<div style="position:relative; top:0%;right=65%;left=0%;">';   
    echo '<table><tr><td>'; 
 
@@ -188,8 +215,8 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
  
    //begin subtable two
 // div one  
-echo '<td valign="top" rowspan="3" width="35%" >';
-echo '<div style="position:relative;right:0%;left:0%"></br></br>';
+echo '<td valign="top" rowspan="3" width="35%" style="background:#f0f0f0" >';
+echo '<div style="position:relative;right:0%;left:0%;"></br></br>';
 //watching
 echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
 if($dam->userIsWatchingStudent( '', $studentId )){
@@ -255,6 +282,7 @@ echo '</br><center><a href="./addcontact.php?isnewissue=1&students='.$studentId.
 	      }
 echo '</div>';
 // div two
+
 echo '<div style="position:relative;">'; 
 echo '<table><tr><td>';
       echo '<tr><td>'; 
@@ -299,7 +327,7 @@ echo '<table><tr><td>';
   echo '<td valign="top" rowspan="3" width="35%">';
    echo '<div style="position:relative;">';
    // subtable three
-   echo '<table><tr><td>'; 
+  echo '<table><tr><td>'; 
 
       // contacts section
       echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Contact History</p></td>';
@@ -318,7 +346,10 @@ echo '<table><tr><td>';
 
 echo '</td></tr></table></p>'; 
 // end main table
-
+if($usingIE)
+{
+echo '</br></br></div>';
+}
 echo '</body></html>';
 
 // since user is viewing page, we can remove student from user's alerts
