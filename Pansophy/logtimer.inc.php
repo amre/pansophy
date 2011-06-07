@@ -4,7 +4,7 @@
 *
 */
 session_start();
-if ((isset($_SESSION['lastclick'])) and (time() - $_SESSION['lastclick'] > 10800))
+if ((isset($_SESSION['lastclick'])) and (time() - $_SESSION['lastclick'] > 10800) and (!file_exists("./login.php")))
 	{
 	session_unset();
 	echo '<html><body><script type="text/javascript">';
