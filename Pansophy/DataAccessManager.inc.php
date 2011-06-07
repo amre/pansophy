@@ -1289,7 +1289,7 @@ class DataAccessManager {
 			$Creator =  $_SESSION['userid'];
 			$table='contacts';
 			if(empty($this->link)){
-				echo "Not connected to database  You must instantiate the DataAccessManager before performing
+				echo "Not connected to database.  You must instantiate the DataAccessManager before performing
 					database accesses.";
 				exit;	
 			}
@@ -1692,6 +1692,7 @@ class DataAccessManager {
 		if($contactID == '')
 			return FALSE;
 		$query="SELECT Issue FROM contacts WHERE ID = '$contactID'";
+
 
 		$result = mysql_query($query);
 		$value = mysql_fetch_array($result);
