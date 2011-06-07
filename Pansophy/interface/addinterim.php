@@ -241,7 +241,8 @@ function parseInterim()
       $length = $indices[5] - $start;
       $chunk = substr($text,$start,$length);
       $date = trim($chunk);
-      $date = readableDate(formatDate());
+      $date = new MyDate($date);
+      $date = $date->humanDateNumerical();
    } 
 
    // extract problems
