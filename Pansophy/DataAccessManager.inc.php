@@ -508,25 +508,23 @@ class DataAccessManager {
 	* Gets issues the specified user has been involved in.
 	*
 	* @param $userid the uid for the user to get issues for
-   * @param $recent flag indicating the we should only retrieve the most recent issues
+   	* @param $recent flag indicating the we should only retrieve the most recent issues
 	* @return return the issues as an array
 	*/
 	function getUserIssues( $userid , $recent) {
 		if( $this->userCanGetUserIssues( $userid ) ) {
 
-		   $query = "select i.ID from issues i, contacts c, `contacts-users` us
-              where us.userid = '$userid'
-			     and us.contactid = c.id
+		   $query = "select distinct i.ID from issues i, contacts c
+              where c.Creator = '$userid'
 			     and c.issue = i.id
               order by i.DateCreated desc";
 
          if($recent){
             //$now = date('Y-m-d H:i:s');
             $past = date('Y-m-d H:i:s', time() - (30*24*60*60)); // a month ago
-			   $query = "select i.ID from issues i, contacts c, `contacts-users` us
+			   $query = "select distinct i.ID from issues i, contacts c
 				     where c.datecreated >= '$past'
-                 and us.userid = '$userid'
-				     and us.contactid = c.id
+                 and c.Creator = '$userid'
 				     and c.issue = i.id
                  order by i.DateCreated desc";
          }
@@ -883,8 +881,8 @@ class DataAccessManager {
 				$i++;
 			}
 			$students = implode(',',$students);
-			$query = "select distinct (userid) from `contacts-users` where contactid in (
-				  	select id from contacts where issue='$issueID'
+			$query = "select distinct (Creator) from `contacts` where ID in (
+				  	select ID from contacts where Issue='$issueID'
 				  )";
 			$result = mysql_query($query);
 			$users = array();
@@ -1252,7 +1250,6 @@ class DataAccessManager {
 			$result = mysql_query( $query );
 			$query = "delete from `issuewatch` where IssueID ='".$issueID."'";
 			$result = mysql_query( $query );
-			$query = "DELETE FROM `contacts-users` WHERE ContactID in (select id from contacts where issue = '".$issueID."' )";
 			$result = mysql_query($query);
 			$query = "DELETE FROM `contacts-students` WHERE ContactID in (select id from contacts where issue = '".$issueID."' )";
 			$result = mysql_query($query);
@@ -1327,15 +1324,8 @@ class DataAccessManager {
 			
 			
 			
-			
-			$query = "insert into `contacts-users` (contactid, userid)
-				  	values ('$ID','$Creator')";
-			//echo $query."<br>";
-			mysql_query($query);
-			
 			$this->sendIssueAlerts($Issue,'New contact appended to issue.');
 			if($watch=='1'){
-				//echo "we're gonna watch us an issue";
 				$this->watchIssue('', $Issue);
 			}
 			else if($watch=='0'){
@@ -1839,8 +1829,6 @@ class DataAccessManager {
 			$query = "delete from contacts where id='$contactID'";
 			$result = mysql_query($query);
 			$query = "delete from `contacts-students` where ContactID='$contactID'";
-			$result = mysql_query($query);
-			$query = "delete from `contacts-users` where ContactID='$contactID'";
 			$result = mysql_query($query);
 			return;
 		}
@@ -2498,9 +2486,8 @@ class DataAccessManager {
 	function issuesByUserName( $name, $order){
 		$name = str_replace(' ', '%', $name);
 		$return = array();
-		$query = "SELECT distinct i.ID, i.* from issues i, users u, contacts c, `contacts-users` cu WHERE
-				u.id = cu.userid and
-				cu.contactid = c.id and
+		$query = "SELECT distinct i.ID, i.* from issues i, users u, contacts c WHERE
+				u.id = c.Creator and
 				c.issue = i.id and
 				CONCAT(u.FirstName, ' ', u.MiddleIn, ' ', u.LastName) LIKE '%$name%'";
 // Michael Thompson * 12/07/2005 * Added Below line to tack order onto sql sentence
@@ -2526,9 +2513,8 @@ class DataAccessManager {
 	function contactsByUserName( $name, $order ){
 		$name = str_replace(' ', '%', $name);
 		$return = array();
-		$query = "SELECT distinct c.ID, c.* from users u, contacts c, `contacts-users` cu WHERE
-				u.id = cu.userid and
-				cu.contactid = c.id and
+		$query = "SELECT distinct c.ID, c.* from users u, contacts c WHERE
+				u.id = c.Creator and
 				CONCAT(u.FirstName, ' ', u.MiddleIn, ' ', u.LastName) LIKE '%$name%'";
 // Michael Thompson * 12/07/2005 * Added Below line to tack order onto sql sentence
                 if ($order != "") $query .= " ORDER BY $order";
@@ -2725,8 +2711,8 @@ class DataAccessManager {
 		if( $levelselect ) $query .= " and level = '$levelselect'";
 		if( $categoryselect ) $query .= " and category = '$categoryselect'";
 		if( $userselect ) $query .= " and id in
-			(select c.issue from contacts c, `contacts-users` cu
-			 where c.id = cu.contactid and cu.userid = '$userselect')
+			(select c.issue from contacts c
+			 where c.Creator = '$userselect')
 		";
 		if( isset($watched) ) $query .= " and id in
 			(select issueid from issuewatch where userid = '$userid')";
@@ -2782,9 +2768,8 @@ class DataAccessManager {
 			$query = "select distinct u.ID,
 					 concat( u.LastName, ', ', u.FirstName, ' ', u.MiddleIn ) as FullName,
 					 u.Email
-				  from users u, `contacts-users` cu, contacts c
-				  where u.id = cu.userid and
-				  	cu.contactid = c.id
+				  from users u, contacts c
+				  where u.id = c.Creator and
 					and c.issue = '".$row['ID']."'
 				 ";
 			$usersArray = array();
@@ -2911,9 +2896,9 @@ class DataAccessManager {
 			$query = "select distinct u.ID,
 					 concat( u.LastName, ', ', u.FirstName, ' ', u.MiddleIn ) as FullName,
 					 u.Email
-				  from users u, `contacts-users` cu, `contacts-students` cs, contacts c
-				  where u.id = cu.userid
-				  and cu.contactid = cs.contactid
+				  from users u, `contacts-students` cs, contacts c
+				  where u.id = c.Creator
+				  and c.ID = cs.contactid
 				  and cs.studentid = '".$row['ID']."'
 				  and cs.contactid = c.id$datestuff
 				 ";
@@ -2959,7 +2944,7 @@ class DataAccessManager {
 			       concat( u.LastName, ', ', u.FirstName, ' ', u.MiddleIn ) as FullName,
 			       u.Extension,
 			       u.Email
-			from users u$left join (`contacts-users` cu join contacts c on cu.contactid = c.id$datestuff) on cu.userid = u.id
+			from users u$left join contacts c on c.Creator = u.id $datestuff
 		";
 		
 		if( $datetypeselect == 0 || $datetypeselect == 1 ) {
@@ -2983,11 +2968,9 @@ class DataAccessManager {
 		
 		foreach( $return as $rowNumber => $row ) {
 			// include the number of contacts
-			$query = "select count(*) as NumContacts from contacts
-				  where id in (
-				  	select distinct contactid from `contacts-users` cu
-					where cu.userid = '".$row['ID']."'
-				  )";
+			$query = "select count(*) as NumContacts from contacts c
+				  where c.Creator = '".$row['ID']."'
+				  ";
 			$result = mysql_query( $query );
 			if( $numContactsArray = mysql_fetch_assoc( $result ) ) {
 				$return[$rowNumber]['NumContacts'] = $numContactsArray['NumContacts'];
@@ -2995,13 +2978,9 @@ class DataAccessManager {
 			else $return[$rowNumber]['NumContacts'] = false;
 					
 			// include the number of contacts in the date range
-			$query = "select count(*) as NumContactsInRange from contacts
-				  where id in (
-				  	select distinct c.id from contacts c
-					join `contacts-users` cu
-					on cu.contactid = c.id
-					and cu.userid = '".$row['ID']."'$datestuff
-				  )";
+			$query = "select count(*) as NumContactsInRange from contacts c
+				  where c.Creator = '".$row['ID']."'$datestuff
+				  ";
 			$result = mysql_query( $query );
 			if( $numContactsArray = mysql_fetch_assoc( $result ) ) {
 				$return[$rowNumber]['NumContactsInRange'] = $numContactsArray['NumContactsInRange'];
@@ -3012,10 +2991,10 @@ class DataAccessManager {
 			$query = "select distinct s.ID,
 					 concat( s.LAST_NAME, ', ', s.FIRST_NAME, ' ', s.MIDDLE_NAME ) as FullName,
 					 s.WOOSTER_EMAIL
-				  from X_PNSY_STUDENT s, `contacts-users` cu, `contacts-students` cs, contacts c
+				  from X_PNSY_STUDENT s, `contacts-students` cs, contacts c
 				  where s.ID = cs.studentid
-				  and cu.contactid = cs.contactid
-				  and cu.userid = '".$row['ID']."'
+				  and c.ID = cs.contactid
+				  and c.Creator = '".$row['ID']."'
 				  and cs.contactid = c.id$datestuff
 				 ";
 			$studentsArray = array();
