@@ -21,8 +21,7 @@ $booleanFields = array( 'AcProbation', 'HousingWaitList', $Option1 , $Option2, $
 
 //Get the relevant data from the Post method
 /* Resets the value of $SearchField to Field1, Field2, and Field3 from the exact values in `flags`
- * so that it can be used in DataAccessMananger.inc.php. - Josh Thomas... How many are you up to now?
- * There are definitely WAY more than 10...
+ * so that it can be used in DataAccessMananger.inc.php. - Josh Thomas
  */
 $SearchField = $_POST['SearchField'];
 if( in_array( $_POST['SearchField'], $booleanFields ) ) $SearchTerm = '1';
@@ -54,10 +53,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Submit' ) {
 	$action = $_POST['function'];
 	foreach ( $items as $value ) {
 /* Michael Thompson * 12/16/2005 * added ability to add students to the various lists
- * (housing, AcPro, Admin-controlled fields). - Addendum by Josh Thomas... In case you didn't understand
- * the most recent comment following Josh, you are in the middle of a rather exciting game - count the
- * occurances of "Josh Thomas" throughout the code... Enjoy :)
- * And don't forget - using Find is most certainly cheating...
+ * (housing, AcPro, Admin-controlled fields). - Addendum by Josh Thomas
  */
 		if ( $type == 'students' ) {
 			if ( $action == 'watch' ) $dam->watchStudent( '', $value );
@@ -113,9 +109,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Submit' ) {
 	if ( $type == 'students' ) {
 		echo 'Student(s)';
 // Michael Thompson * 12/16/2005 * added status messages for adding students to lists
-// Added new Admin-controlled flag messages as well. - Josh Thomas... If you're just starting,
-// you already have 3 from this one file! My original "more than 10" estimate was definitely
-// and ridiculously misleading.
+// Added new Admin-controlled flag messages as well. - Josh Thomas
 		if ( $action == 'watch' ) echo ' watched.';
 		elseif ( $action == 'unwatch' ) echo ' removed from watch list.';
 		elseif ( $action == 'unacpro' ) echo ' removed from academic probation.';
@@ -221,7 +215,7 @@ else{
 			<select name="function">';
 			if ( $table == 'students' ) {
 // Michael Thompson * 12/07/2005 * Added options for adding students to parking list, housing list, or academic probation
-// Addendum - Parking list removed in place of three Admin-controlled flags. - Josh Thomas... 4
+// Addendum - Parking list removed in place of three Admin-controlled flags. - Josh Thomas
 				echo'
 				<option value="watch">Watch marked student(s)</option>
 				<option value="unwatch">Stop watching marked student(s)</option>
@@ -263,8 +257,7 @@ else{
 		if ( $table == 'students' || $table == 'issues' ) echo '<th class="nocontent"></th>';	//empty column for checkboxen
 		for ($i = 0; $i <sizeof($columns); $i++) {
 			if( (!in_array($columns[$i], $doNotDisplay)) || ($columns[$i] == $SearchField) ){
-				// Changes heading display to actual flag name and then changes back to display value later - Josh Thomas... my
-				// goodness, this is madness... NO - THIS .. IS .. SPARTA!!!!!
+				// Changes heading display to actual flag name and then changes back to display value later - Josh Thomas
 				if(strcmp($columns[$i], "Field1") == 0)
 					$columns[$i] = $Option1;
 				if(strcmp($columns[$i], "Field2") == 0)

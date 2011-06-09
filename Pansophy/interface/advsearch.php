@@ -1,5 +1,5 @@
 <?php 
-// This script is apparently no longer used as of Pansophy v2.0.
+// This script is apparently no longer used as of Phronesis v2.0.
 
 /*This script handles the printing out of forms for inputting advanced search data and the 
  *processing of that data. It uses the power serach function from the data access manager

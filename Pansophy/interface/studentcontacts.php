@@ -70,8 +70,8 @@ for($i=0; $i < $contactsToView; $i++){
 			// done showing files
 			
 			echo '<tr>
-					<td class="left"><strong><a href="mailto:?subject=Pansophy contact email&body='.rawurlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></a></td>
-					<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'].'
+					<td class="left"><strong><a href="mailto:?subject=Phronesis contact email&body='.rawurlencode(html_entity_decode(stripslashes($contact['Description']))).'"><strong>[Email this contact]</strong></a></td>
+					<td class="right"><a href="./viewissue.php?id='.$contact['Issue'].'" TARGET="Main">Issue '.$contact['Issue'][0].'-'.substr($contact['Issue'],1).'
 				</table><p>';	
 		}
 	}

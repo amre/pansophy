@@ -1561,7 +1561,7 @@ class DataAccessManager {
 		
 		// IMPORTANT: Permission checking is currently not done here. It is done by the web gui. 
 		// Links to delete files only show up when userCanDeleteFile() returns true.
-		// This is something to keep in mind for future pansophy versions.
+		// This is something to keep in mind for future phronesis versions.
 		
 		// delete file from server
 		if(file_exists($file_upload_folder.$fileID)){
@@ -2581,6 +2581,7 @@ class DataAccessManager {
 
 	/**
 	 * Retrieves the information necessary to create an HTML <SELECT> list of active users
+	 * who are First Watch, Privileged, or Administrators.
 	 *
 	 * @return associative array of users and certain fields
 	 */

@@ -2,8 +2,6 @@
 
 /**
  * Page that makes the final call to delete a user from the database
- * On a totally unrelated note, Josh Thomas has  written articles for popular
- * teen girl magazine Girlfriend. (No, seriously - Wiki it)
  */
 
 include('../include/header.inc'); 

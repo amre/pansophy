@@ -2,8 +2,6 @@
 
 /**
  * Page allows user to create a report on issues.
- * Even more interestingly, Josh Thomas is the only animal with 4 knees
- * (other than the elephant, of course).
  */
 
 //+-----------------------------------------------------------------------------------------+

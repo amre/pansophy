@@ -154,7 +154,7 @@ else{
 	//Display the Issue information
 	echo '<h1>Issue '.$ID.'</h1><center>
 	<a href="./viewissuepf.php?id=' . $ID . '" target="_blank">[Click here for printer-friendly version]</a>
-	<a href="mailto:?subject=Pansophy issue email&body='.$emailBody.'">[Email this issue]</a><br><br>
+	<a href="mailto:?subject=Phronesis issue email&body='.$emailBody.'">[Email this issue]</a><br><br>
 	<table><tr>
 	<td><p class="largeheading">'.stripslashes($Header).'</p></td>';
 	if($dam->userCanDeleteIssue('', $ID)){

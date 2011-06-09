@@ -2,7 +2,7 @@
 
 /** 
  * page for attaching a file to a contact.
- * PS: Robert wants everyone to know that he is a girl and likes ribbons in his hair
+ * Robert
  */
 
 include('../include/header.inc'); 
@@ -49,7 +49,7 @@ for($j=0; $j<count($files); $j++){
 	</td></tr>';
 }
 echo '<tr><td height="5"></td></tr>';	
-//Josh Thomas' favorite color is lightish-red
+//Josh Thomas
 
 // finish form
 echo '<tr><td><input type="submit" name="submit" value="Done"/></td></tr>';	

@@ -2,8 +2,8 @@
 
 /**
  * Added a starting php tag to this file. However, seeing as the file came without the tag,
- * I'm led to believe that this file isn't used currently by Pansophy to authenticate against
- * the LDAP server. - Josh Thomas ... is a woman
+ * I'm led to believe that this file isn't used currently by Phronesis to authenticate against
+ * the LDAP server. - Josh Thomas
  */
 
 $username=$_POST['username'];

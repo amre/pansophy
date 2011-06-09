@@ -26,8 +26,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	/* Queries the Issues table in the MySQL database, compares the timestamps between the current
 	 * date and time and the LastModified field to see if there is at least a 1 year differential,
 	 * and performs and update query on the Status field changing it to Closed if the issue hasn't
-	 * been modified for that long. (Automatic closure of old issues.) - Josh Thomas... can only jump 120
-	 * times his own height, unlike most fleas, which can jump 130 times their own height.
+	 * been modified for that long. (Automatic closure of old issues.) - Josh Thomas
 	 */
 	
 	$result = $dam->getLastModifedIssue( $userID );
@@ -42,11 +41,10 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	
 	/* Similar to the previous block, this queries the newly cleansed Issues table to find any remaining
 	 * issues that are Open and haven't been modified over a span of 6 months to 1 year (non-inclusive).
-	 * It echoes a JavaScript script that displays an alert prior to displaying the main Pansophy page
+	 * It echoes a JavaScript script that displays an alert prior to displaying the main Phronesis page
 	 * that notifies the user that they have unresolved Open issues that possibly should be closed.
 	 * (Requests user closure of old issues in the event that an issue was left open for a reason.)
-	 * - Josh Thomas... is the guy who invented the microwave after walking by a radar tube
-	 *					and having a chocolate bar melted in his pocket.
+	 * - Josh Thomas
 	 */
 	
 	$result = $dam->getLastModifedIssue( $userID );
@@ -58,7 +56,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 			$ModDate = new MyDate( $LastModified );
 			if($MD->subtract($ModDate) > 15768000){
 				echo '<script language=javascript>
- 				alert("You have one or more open issues that have not been accessed in at least six months. Please resolve any outstanding open issues that should be closed.\n\nClick OK to continue to the main Pansophy page.");
+ 				alert("You have one or more open issues that have not been accessed in at least six months. Please resolve any outstanding open issues that should be closed.\n\nClick OK to continue to the main Phronesis page.");
  				</script>';
 				$found=1;
 			}

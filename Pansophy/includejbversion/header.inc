@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Pansophy Contact Manager - Student Affairs</title>
+<title>Phronesis Contact Manager - Student Affairs</title>
 <style type="text/css" media="screen">
     @import "site.css";
 </style>

@@ -1,5 +1,5 @@
 <html>
-<head><title>Pansophy Contact Manager - Student Affairs</title></head>
+<head><title>Phronesis Contact Manager - Student Affairs</title></head>
 <!--[if !IE]><!-->
 	
 <FRAMESET ROWS="96,*,50" BORDERCOLOR="000000" FRAMESPACING="0" BORDER="0" style="padding:0;margin:0;">

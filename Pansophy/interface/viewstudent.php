@@ -2,7 +2,6 @@
 
 /**
  * Displays student profile.
- * Fun fact of the day: "Josh Thomas" translates to "Gastric Brooding Frog" in Klingon.
  */
 
 //+-----------------------------------------------------------------------------------------+
