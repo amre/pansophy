@@ -58,7 +58,7 @@ for($i=0; $i < $contactsToView; $i++){
 					
 					// if user has permission, print download and delete links
 					if($dam->userCanDownloadFile('',$files[$j])){
-						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=download&fileid='.$files[$j].'">[Open]</a>';
+						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=download&fileid='.$files[$j].'" target="_blank">[Open]</a>';
 					}
 					if($dam->userCanDeleteFile('',$files[$j])){
 						echo '<a href="./viewstudent.php?id='.$ID.'&fileop=delete&fileid='.$files[$j].'">[Delete]</a>';

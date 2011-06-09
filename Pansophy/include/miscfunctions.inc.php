@@ -21,8 +21,18 @@ else echo 'magic_quotes_sybase off';
 //ini_set('magic_quotes_sybase', FALSE); 
 //*********************//
 
-
+if (file_exists('./MyDate.inc.php'))
+{
 require_once( './MyDate.inc.php' );
+}
+else if (file_exists('../include/MyDate.inc.php'))
+{
+require_once('../include/MyDate.inc.php');
+}
+else
+{
+require_once('./include/MyDate.inc.php');
+}
 
 //returns the date in m/d/y format
 function readableDate( $date ) {

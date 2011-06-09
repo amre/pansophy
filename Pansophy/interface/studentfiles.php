@@ -39,10 +39,10 @@ if(!empty($files)){
       echo '</td><td>';   
       
 		if($dam->userCanDownloadFile('',$file['fileid'])){
-			echo '<a href="./viewstudent.php?id='.$studentId.'&fileop=download&fileid='.$file['fileid'].'">[Open]</a>';
+			echo '<a href="./viewstudent.php?id='.$studentId.'&fileop=download&fileid='.$file['fileid'].'" target="_blank">[Open]</a>';
 		}
 		if($dam->userCanDeleteFile('',$file['fileid'])){
-			echo '<a href="./viewstudent.php?id='.$studentId.'&fileop=delete&fileid='.$file['fileid'].'">[Delete]</a>';
+			echo '<a href="./viewstudent.php?id='.$studentId.'&fileop=delete&fileid='.$file['fileid'].'">[Delete]</a>';			
 		}
 
       echo '</td></tr><tr><td>';

@@ -349,7 +349,7 @@ echo '</td></tr></table></p>';
 // end main table
 if($usingIE)
 {
-echo '</br></br></div>';
+echo '</br></br></br></br></div>';
 }
 echo '</body></html>';
 

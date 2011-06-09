@@ -1510,10 +1510,8 @@ class DataAccessManager {
 			}
 			
 			// do the upload
-			error_reporting(E_ALL);
-ini_set("display_errors", 1); 
+			mkdir("$file_upload_folder$ID");
 			if(move_uploaded_file($userfile_tmp_name, "$file_upload_folder$ID/$userfile_name")) {
-				
 				// send queries to update 'attachments' table
 				$query = "insert into `attachments` (id, extension, alias, contactid)
 					values ('$ID','$extension','$userfile_name', '$contactID')";
@@ -1567,7 +1565,8 @@ ini_set("display_errors", 1);
 		
 		// delete file from server
 		if(file_exists($file_upload_folder.$fileID)){
-			if(unlink($file_upload_folder.$fileID)){	
+			$scan = glob(rtrim($file_upload_folder.$fileID,'/').'/*');
+			if(unlink($scan[0]) and rmdir($file_upload_folder.$fileID)){	
 				// delete references of file from database
 				$query = "DELETE FROM `attachments` WHERE ID='".$fileID."'";
 				return mysql_query( $query );

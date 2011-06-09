@@ -9,6 +9,11 @@ class MyDate {
 	var $integerTimestamp;
 	
 	function MyDate( $strGnuSyntax ) {
+		// use regex to get rid of date formats that confuse php (d-m-yy, etc.)
+		$strGnuSyntax = preg_replace('/-/','/',$strGnuSyntax);
+		$strGnuSyntax = preg_replace('/(\A\d)\//','0$1/',$strGnuSyntax);
+		$strGnuSyntax = preg_replace('/(.*\/)(\d)\//','${1}0$2/',$strGnuSyntax);
+		$strGnuSyntax = preg_replace('/(.*)(\/)(\d{2})(\z)/','$1${2}20$3$4',$strGnuSyntax);
 		$this->integerTimestamp = strtotime( $strGnuSyntax );
 	}
 	

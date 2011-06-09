@@ -87,11 +87,16 @@ else if(strcmp($_POST['submit'], 'Submit') == 0){
 	
 	// set date created
 	if(strcmp($dateCreated,date('m/d/Y')) == 0) $sqlDate = sqlDate('');
-   else $sqlDate = sqlDate($dateCreated);
+ 	else {
+		$datehelper = new MyDate($dateCreated);
+		$dateCreated = $datehelper->humanDateNumerical();
+		$sqlDate = sqlDate($dateCreated);
+	}
 
 	// we must check that our variables have values
 	// DateCreated, Students, and Description are used in both add contact and add issue
-	if($sqlDate === false){
+	if ($sqlDate === false){
+		echo '<h1>'.$dateCreated.'</h1>';
 		echo '<p class="errortext">Error: Incorrect date format. Try to input the date as \'mm/dd/yyyy\'.</p>';
 		$_POST['submit'] = 0;
 	}
@@ -281,7 +286,7 @@ echo '</body></html>';
 // function to counteract the mischief done by magic_quotes
 function antiMagic()
 {
-   global $header, $description, $dateCreated;
+  global $header, $description, $dateCreated;
    
    if(get_magic_quotes_gpc()){
       $header = stripslashes($header);

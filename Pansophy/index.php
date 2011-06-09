@@ -7,7 +7,7 @@
  */
  
 include( 'DataAccessManager.inc.php' );
-include( './include/MyDate.inc.php' );
+include( './include/miscfunctions.inc.php' );
 $MD = new MyDate("now");
 @session_start();
 /*If the user is logged in and has access, load up the frames and their contents*/
