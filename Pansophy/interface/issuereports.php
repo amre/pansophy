@@ -381,7 +381,7 @@ function printIssueReport( $report ) {
 		if($dam->userCanViewIssue('', $ID)){
 			echo "<tr><td>";
 			echo "
-				<a href='./viewissue.php?id=$ID'>Issue $ID: ".stripslashes($Header)."</a><br><br>
+				<a href='./viewissue.php?id=$ID'>Issue ".$ID[0].'-'.substr($ID,1).": ".stripslashes($Header)."</a><br><br>
 				Status: $Status<br>
 				Category: $Category<br>
 				Level: $Level<br>
