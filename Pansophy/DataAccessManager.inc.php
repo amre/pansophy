@@ -1692,6 +1692,7 @@ class DataAccessManager {
 		if($contactID == '')
 			return FALSE;
 		$query="SELECT Issue FROM contacts WHERE ID = '$contactID'";
+
 		$result = mysql_query($query);
 		$value = mysql_fetch_array($result);
 		extract($value);
@@ -2069,10 +2070,10 @@ class DataAccessManager {
 						$table = 'X_PNSY_ADDRESS';
 				}
 			}
-			
-			if($table == 'students'){
-				$query = "SELECT * FROM X_PNSY_STUDENT ss, $table s where s.$field like '%$term%' AND s.StudentID IN
-							(SELECT ID FROM X_PNSY_STUDENT WHERE ID = s.StudentID) AND s.StudentID = ss.ID GROUP BY s.StudentID";
+                               
+                       
+			if($table == 'X_PNSY_STUDENT'){
+                                      $query = "SELECT * FROM $table JOIN X_PNSY_ADDRESS ON $table.ADDRESS_ID = X_PNSY_ADDRESS.ADDRESS_ID WHERE $field like '%$term%'";
 			}
 			elseif($table == 'X_PNSY_ADDRESS'){
 				$query = "SELECT * FROM X_PNSY_STUDENT ss, $table s WHERE s.$field LIKE '%$term%'AND s.ADDRESS_ID IN 
@@ -2095,6 +2096,7 @@ class DataAccessManager {
 			}
 			else
 				$query = "SELECT * FROM $table WHERE $field like '%$term%'";
+
 // Michael Thompson * 12/07/2005 * Added Below line to tack order onto sql sentence
                         if ($order != "") $query .= " ORDER BY $order";
 			$result = mysql_query($query);
