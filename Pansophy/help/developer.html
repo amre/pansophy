@@ -307,13 +307,6 @@ was never actually done and would be good to consider in the future.
 In general, read a good guide about writing secure PHP (what some call an oxymoron).  Go through and right any security wrongs
 which may have been done in the program (We won't go into specifics on this publicly-accessible help guide).
 <br><br>
-<h3>Slightly modify database</h3>
-The database structure was overhauled in version 2.0.  However, there is one small issue left.  The `users-contacts` table
-is entirely unnecessary since each contact already has a "Creator" field which can take care of this.  This was just an
-absent-minded mistake on one developer's part and does not hurt functionality.  However, before removing this table, someone
-should go through DataAccessManager.inc.php and modify all SQL statements that reference it to use the `contacts` table's
-"Creator" field which serves the same purpose (but preserves a 1-1 relationship between users and contacts).
-<br><br>
 <h3>More use of validated CSS, XHTML</h3>
 We are developers first and web designers second, and this shows in the web code.  Some effort was made to convert more of the
 code to use CSS than previously, but there is plenty more that could be done.
