@@ -273,7 +273,7 @@ class DataAccessManager {
 	}
 // ok
 	/**
-	 * Deletes a system user from the database.
+	 * Deletes a system user from the database if they have no associated issues or contacts.
 	 *
 	 * @param $sessionID session information like IP address to verify for security
 	 * @param $username the ID of the user to delete
@@ -281,10 +281,14 @@ class DataAccessManager {
 	function deleteUser( $sessionID, $username ) {
 		//@session_start();
 		if( $this->userCanDeleteUser( $sessionID, $username ) ) {
-			//mysql_select_db('students');
-			$query = "UPDATE `users` SET AccessLevel=0 WHERE ID='".$username."'";
-			//echo $query;
-			return mysql_query( $query );
+			if($this->getUserIssues($ID,0) || $this->getUserContacts($ID,0)){
+				return FALSE;
+			}
+			else{
+				$query = "DELETE FROM `users` WHERE ID='".$username."'";
+				//echo $query;
+				return mysql_query( $query );
+			}
 		}
 	}
 // ok
