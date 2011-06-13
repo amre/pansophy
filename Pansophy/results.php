@@ -147,6 +147,7 @@ else if(strcmp($table, 'students') != 0 && strcmp($table, 'contacts') != 0 && st
 else{
 	$results = array();
 	//Set the special case fields using the special case arrays
+
 	if( $table == 'students' ) {
 		$links = array('LastName', 'Email');
 		$links = array('LAST_NAME', 'WOOSTER_EMAIL');
@@ -157,8 +158,8 @@ else{
 					'Field1', 'Field2', 'Field3', 'AllWatch', 'ParentName1', 'ParentName2', 'City', 'State', 'ZIP', 'Country',
 					'StudentActivities', 'InterimCounter', 'FirstWatch','MAJOR_1','MAJOR_2',
 					'StudentID', 'SUFFIX', 'GENDER', 'BIRTHDAY', 'ADDRESS_ID', 'PRIMARY_EMAIL', 'HOME_PHONE', 'CELL_PHONE', 'CAMPUS_PHONE',
-					'ADVISOR', 'HOUSING_BLDG', 'HOUSING_ROOM', 'PRIVACY_FLAG',
-					'STREET_2', 'STREET_3', 'STREET_4', 'STREET_5', 'CITY', 'STATE', 'ZIP', 'COUNTRY');
+					'ADVISOR', 'HOUSING_BLDG', 'HOUSING_ROOM', 'PRIVACY_FLAG','STREET_1',
+					'STREET_2', 'STREET_3', 'STREET_4', 'STREET_5', 'CITY', /*'STATE',*/ 'ZIP', 'COUNTRY');
 	}
 	if( $table == 'issues' ) {
 		$links = array('Creator', 'Modifier', 'ID');

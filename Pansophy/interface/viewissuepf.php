@@ -91,7 +91,7 @@ $alerts = array_values($alerts);
 $count = (array_count_values($alerts));
 
 //Display the Issue information
-echo '<h1>Issue '.$ID.'</h1><center><br><br>
+echo '<h1>Issue '.$ID[0].'-'.substr($ID,1).'</h1><center><br><br>
 <table><tr>
 <td><p class="largeheading">'.stripslashes($Header).'</p></td>';
 
