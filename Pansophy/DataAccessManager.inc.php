@@ -1692,6 +1692,7 @@ class DataAccessManager {
 		if($contactID == '')
 			return FALSE;
 		$query="SELECT Issue FROM contacts WHERE ID = '$contactID'";
+
 		$result = mysql_query($query);
 		$value = mysql_fetch_array($result);
 		extract($value);
@@ -1843,7 +1844,7 @@ class DataAccessManager {
 			return;
 		}
 	}
-// ok
+// okgetIssues
 	/**
 	 * Returns a numerically indexed array containing the IDs of all the contacts
 	 * assosciated with the designated Issue ID.
