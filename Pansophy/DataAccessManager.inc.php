@@ -1298,7 +1298,7 @@ class DataAccessManager {
 			$Creator =  $_SESSION['userid'];
 			$table='contacts';
 			if(empty($this->link)){
-				echo "Not connected to database  You must instantiate the DataAccessManager before performing
+				echo "Not connected to database.  You must instantiate the DataAccessManager before performing
 					database accesses.";
 				exit;	
 			}

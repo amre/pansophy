@@ -85,7 +85,7 @@ else{
          // if valid, combine the infomation for submittion
          if($valid){
             // format the date
-            $formatedDate = formatDate();
+            $formattedDate = formatDate();
             
             // create a string containing all problems
             $problemString = '';
@@ -109,7 +109,7 @@ else{
             }  
 
             // submit the interim to database
-            $interim = $dam->createInterim('',$studentId,$course,$instructor,$formatedDate,$problemString,$comment,$actionString,$otherAction);
+            $interim = $dam->createInterim('',$studentId,$course,$instructor,$formattedDate,$problemString,$comment,$actionString,$otherAction);
 
             // go to the page for the new interim
             echo '<meta http-equiv="Refresh" content="0; URL=./viewinterim.php?id='.$interim.'">';
@@ -241,7 +241,8 @@ function parseInterim()
       $length = $indices[5] - $start;
       $chunk = substr($text,$start,$length);
       $date = trim($chunk);
-      $date = readableDate(formatDate());
+      $date = new MyDate($date);
+      $date = $date->humanDateNumerical();
    } 
 
    // extract problems
@@ -337,8 +338,8 @@ function checkInput()
    }     
 
    // check date
-   $formatedDate = formatDate();
-   if(empty($formatedDate)){ 
+   $formattedDate = formatDate();
+   if(empty($formattedDate)){ 
       echo '<font color="red">Sorry, invalid \'Date\' format. Try to input the date as \'mm/dd/yyyy\'.</font><br>';
       $valid = false;
    }

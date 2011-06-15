@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 * Session expiration after 3 hours of inactivity-- automatically logs off inactive users.
 *

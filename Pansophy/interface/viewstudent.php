@@ -67,7 +67,7 @@ echo '<p><br />';
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
-	if(!$usingIE) //formatting issues with the floading title
+	if(!$usingIE) //formatting issues with the floating title
 	{
 	echo '</br></br></br>';
 	}
@@ -123,11 +123,18 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 			   echo '<a href="./editstudent.php?studentId='.$studentId.'"><b>[Edit this student]</b></a>';
 		   }
 	   echo '</td></tr></table></p></p>';
-	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>'; 
+	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>';
+
+//Display student picture if there is one on record
+$pictureUrl="http://webapps.wooster.edu/webbadge/ShowImage.ashx?id=".$studentId;
+if(is_array(getimagesize($pictureUrl)))
+{
+	echo "<tr><img src=\"".$pictureUrl."\" width=\"100\" /></tr>";
+}
 
 		   //FOR DISPLAYING PICTURE//<tr><td align="left" nowrap><IMG SRC="'.$picture.'" height="120" width="90" class="darkbd"></td></tr>';
 
-		   echo 'Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
+		   echo '<tr><td>Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
 		   if(!empty($student['Modifier'])){
 			   $modifier = $dam->viewUser('',$student['Modifier']);
 			   echo 'by <a href="mailto:'.$modifier['Email'].'">'.$modifier['FirstName'].' '.$modifier['LastName'].'</a>';
@@ -177,6 +184,7 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 		   if(count($relations) % 2 == 0){
 			   for($i = 0; $i < count($relations); $i = $i + 2){
 				   $parent = $dam->viewStudentParent('',$relations[$i]);
+
 				   $relationship = $relations[$i+1];
 				   if(strcmp($relations[$i+1],'P') == 0) $relationship = 'Parent';
 				   else if(strcmp($relations[$i+1],'SP') == 0) $relationship = 'Step-parent';
