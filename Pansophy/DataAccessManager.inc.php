@@ -51,12 +51,21 @@ class DataAccessManager {
 	 */
 	function DataAccessManager() {
 		@session_start();
-		//Assumes that if settings are not in current directory, they're one directory up.
-		if( file_exists('./settings.php') ) {
-			$file = fopen('./settings.php', 'rb');
+		//check for historical db request
+		if ($_SESSION['historical'] == true)
+		{
+			$settingsfile = "./settingshistorical.php";
 		}
-		else if( file_exists( '../settings.php') ) {
-			$file = fopen('../settings.php', 'rb');
+		else
+		{
+			$settingsfile = "./settings.php";
+		}
+		//Assumes that if settings are not in current directory, they're one directory up.
+		if( file_exists($settingsfile) ) {
+			$file = fopen($settingsfile, 'rb');
+		}
+		else if( file_exists( '.'.$settingsfile) ) {
+			$file = fopen('.'.$settingsfile, 'rb');
 		}
 		
 		if($file){
@@ -1692,6 +1701,7 @@ class DataAccessManager {
 		if($contactID == '')
 			return FALSE;
 		$query="SELECT Issue FROM contacts WHERE ID = '$contactID'";
+
 
 		$result = mysql_query($query);
 		$value = mysql_fetch_array($result);

@@ -22,4 +22,5 @@ else
 	{
 	$_SESSION['lastclick']=time();
 	}
+
 ?>
