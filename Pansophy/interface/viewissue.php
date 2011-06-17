@@ -123,24 +123,24 @@ else{
 		$contact=$dam->viewContact('', $value);
 		$Creator = $dam->viewUser('', $contact['Creator']);
 		//echo $Students; exit;
-		$Students = explode(",", $contact['Students']);
-	   //print_r( $Students );
+		$ContactStudents = explode(",", $contact['Students']);
+	   	//print_r( $Students );
 
-		$lastStudent = $Students[ sizeof( $Students ) - 1 ];
+		$lastStudent = $ContactStudents[ sizeof( $ContactStudents ) - 1 ];
 		if(!empty($lastStudent)) $lastStudent = $dam->ViewStudent( '', $lastStudent );
 
 		$emailStudents = "";
-		foreach($Students as $key => $studentID){
+		foreach($ContactStudents as $key => $studentID){
 			//$emailStudents = '';
-         if(!empty($studentID)){
-			   $Student=$dam->ViewStudent('',$studentID);
-			   $FirstName=$Student['FIRST_NAME'];
-			   $LastName=$Student['LAST_NAME'];
-			   $emailStudents .= "".$FirstName." ".$LastName;
-			   if ( $studentID != $lastStudent['ID'] ) {
-				   $emailStudents .= ", ";
-			   }
-         }
+         		if(!empty($studentID)){
+			   	$Student=$dam->ViewStudent('',$studentID);
+			   	$FirstName=$Student['FIRST_NAME'];
+			   	$LastName=$Student['LAST_NAME'];
+			   	$emailStudents .= "".$FirstName." ".$LastName;
+			   	if ( $studentID != $lastStudent['ID'] ) {
+				   	$emailStudents .= ", ";
+			  	}
+         		}
 		}
 
 		$emailBody .= 'Contact: '.$contact['ID'].'
