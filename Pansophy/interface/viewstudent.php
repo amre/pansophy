@@ -141,7 +141,10 @@ if(is_array(getimagesize($pictureUrl)))
 		   }
 		   echo '</td></tr>		
 		   <tr><td align="left" nowrap>Class year: </td><td align="left">'.$student['CLASS_YEAR'].'</td></tr>
-		   <tr><td align="left" nowrap>Birth date: </td><td align="left">'.readableDate($student['BIRTHDAY']).'</td></tr>
+		   <tr><td align="left" nowrap>Birth date: </td><td align="left">';
+		   if($student['BIRTHDAY']!="0000-00-00 00:00:00"){ echo readableDate($student['BIRTHDAY']);}
+		   else {echo 'Unknown';}
+		   echo '</td></tr>
 		   <tr><td align="left" nowrap>Status: </td><td align="left">'.$student['ENROLL_STATUS'].'</td></tr>
          <tr><td align="left" nowrap>Major(s): </td><td align="left">'.$student['MAJOR_1'];
          if(!empty($student['MAJOR_2'])) echo ', '.$student['MAJOR_2'];
@@ -198,7 +201,25 @@ if(is_array(getimagesize($pictureUrl)))
 				   <br />Home Phone: '.$parent['HOME_PHONE'].'
 				   <br />Cell Phone: '.$parent['CELL_PHONE'];
 
-				   if(!empty($parent['PRIVACY_FLAG'])) echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
+				   if(!empty($parent['PRIVACY_FLAG'])){ echo '<br />No Contact: ';
+				   	//print explanation of parent's privacy flag
+					if($parent['PRIVACY_FLAG']=="LL")
+						echo 'LL - Lost';
+					else if($parent['PRIVACY_FLAG']=="NC")
+						echo 'NC - No contact: College';
+					else if($parent['PRIVACY_FLAG']=="NI")
+						echo 'NI - No contact: Individual';
+					else if($parent['PRIVACY_FLAG']=="NM")
+						echo 'NM - No Mail';
+					else if($parent['PRIVACY_FLAG']=="NS")
+						echo 'NS - No Solicitation';
+					else if($parent['PRIVACY_FLAG']=="NE")
+						echo 'NE - No Email';
+					else if($parent['PRIVACY_FLAG']=="NP")
+						echo 'NP - No Phone';
+					else
+						echo $parent['PRIVACY_FLAG'];
+				   }
 				   else echo '<br />No Contact: N/A';
 				   echo '<br /><br />';
 			   }
@@ -316,9 +337,6 @@ echo '<table><tr><td>';
       echo '<tr><td>'; 
 
       
-      // issue section
-      
-      // end issue section
 
    echo '</td></tr></table>'; 
    // end subtable two
@@ -329,6 +347,8 @@ echo '<table><tr><td>';
    echo '<div style="position:relative;">';
    // subtable three
   echo '<table><tr><td>'; 
+
+// issue section
 
 echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue History</p></td>';
 

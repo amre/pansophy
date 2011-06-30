@@ -77,7 +77,7 @@ if($issues){
 				echo '</dd></td></tr>';
 				if($expanded)
 				{	
-					echo '<tr><td align="right" valign="top"><a style="border: solid 1px #660000;display:block;right:0%;top:0%;height:50%;width:50%;" href="./addcontact.php?issueid='.$issues[$i]['ID'].'&isnewissue=0"><img src="./add1.png" title="Add a contact to this issue" border="0" style="margin:0"/></a></right></td><td>';
+					echo '<tr><td align="right" valign="top"><a style="border: solid 1px #660000;display:block;right:0%;top:0%;height:50%;width:50%;" href="./addcontact.php?issueid='.$issues[$i]['ID'].'&isnewissue=0">+&nbsp<title="Add a contact to this issue" border="0" style="margin:0"/></a></right></td><td>';
 					$contactstring=getIssuedContacts($issues[$i]['ID']);
 					echo $contactstring;
 					echo '</td></tr>';
