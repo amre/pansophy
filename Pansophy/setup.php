@@ -347,6 +347,7 @@ pass:$pass
   		`SUFFIX` varchar(25) default NULL,
   		`GENDER` char(1) default NULL,
   		`ETHNIC` varchar(5) default NULL,
+		`BIRTHDAY` datetime default NULL,
   		`ADDRESS_ID` varchar(10) default NULL,
   		`CAMPUS_BOX` varchar(10) default NULL,
   		`WOOSTER_EMAIL` varchar(45) default NULL,
