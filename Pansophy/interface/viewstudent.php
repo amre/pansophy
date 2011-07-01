@@ -251,17 +251,17 @@ echo '<div style="position:relative;right:0%;left:0%;"></br></br>';
 //watching
 echo '<a href="./viewstudentpf.php?id='.$studentId.'&viewallissues='.$viewAllIssues.'&viewallcontacts='.$viewAllContacts.'" target="_blank">[Click here for printer-friendly version]</a><br><br>';
 if($dam->userIsWatchingStudent( '', $studentId )){
-	echo '<b>You ARE currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=0&id='.$studentId.'">[Stop watching]</a>';
+	echo '<img width="13px" src="../img/watchstu.PNG"><b> You ARE currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=0&id='.$studentId.'">[Stop watching]</a>';
 }
 else{
 	if($dam->userCanWatchStudent('', $studentId)){
-		echo '<b>You are NOT currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=1&id='.$studentId.'">[Watch]</a>';
+		echo '<img width="13px" src="../img/nowatch.PNG"><b> You are NOT currently watching this student</b> <a class="bold" href="./watchstudent.php?watch=1&id='.$studentId.'">[Watch]</a>';
 	}
 }
 //first watch
 if($reasons=$dam->studentOnFW('',$studentId))
 {
-	echo '<br><br><b>This student IS currently on First Watch for: '.$reasons[0];
+	echo '<br><br><img width="13px" src="../img/firstwatch.PNG"><b> This student IS currently on First Watch for: '.$reasons[0];
 	$count=count($reasons);
 	if($count==1)
 		echo ' </b>';
@@ -273,7 +273,7 @@ if($reasons=$dam->studentOnFW('',$studentId))
 	}
 }
 else if($dam->userCanViewFW(''))
-	echo '<br><br><b>This student is NOT currently on First Watch. </b>';
+	echo '<br><br><img width="13px" src="../img/nowatch.PNG"><b> This student is NOT currently on First Watch. </b>';
 
 if($dam->userCanModifyFW(''))
 {
