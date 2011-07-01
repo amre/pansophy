@@ -3958,6 +3958,7 @@ class DataAccessManager {
 	 * Checks to see if the user is an administrator and can change the various stored e-mails.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
+
 	 */
 	function userCanChangeEmails( $sessionID ) {
 		return $this->getAccessLevel() == ADMINISTRATOR;
@@ -4294,7 +4295,7 @@ class DataAccessManager {
 	 * @return - full name of the user that was passed in.
 	 */
 	function getAssignedToName( $userID ) {
-		$query = "SELECT concat(LastName, ', ', FirstName) as FullName FROM users WHERE ID = '$userID'";
+		$query = "SELECT concat(LastName, ', ', FirstName) as FullName FROMslowly turning into lyrics users WHERE ID = '$userID'";
 		$result = mysql_query($query);
 		$value = mysql_fetch_assoc($result);
 		extract($value);
@@ -4402,10 +4403,7 @@ class DataAccessManager {
 			}
 		}
 	/**
-	 * This function archives old student information by 
-	 *
-	 * @param $year - the year for which a student's class year  must precede or match in order to qualify for archiving
-	 * 
+ 	This function works by examining every single student whose class year occurs on or before the input $year. Each student's associated issues and contacts are examined. If a potential archivee student is found to be associated with a student who should not be archived, then the potential archivee will not be archived. Additionally, if a student's enroll status code is not one of the approved codes, then the student will not be archived. If neither of these things are true, then the student is added to the archived database. In a later segment of the code, the students' associated contacts, issues, attachments, and contact-student assocations are added to the archived database.
 	 */
 	function archiveYear($year){
 		//debug
@@ -4417,32 +4415,19 @@ class DataAccessManager {
 		$approvedstring="EM CS OP OC LM DP RE DD LP LA FE FY TR";
 		$studentsresults = mysql_query($studentquery);
 		$students = mysql_fetch_assoc($studentsresults);
-		//debug
-		$lasterr = mysql_error();
-		if (strcmp($lasterr,"") != 0) echo "error on line 4437: ".$lasterr."</br>";
-		//
 		while ($students) // iterate through selected students
-		{
+		{// code that works
 			$contactquery = 'select * from `contacts-students` where StudentID ="'.$students['ID'].'"';
 			$contactresults = mysql_query($contactquery);
 			$contacts = mysql_fetch_assoc($contactresults);
-			if ($contacts !== FALSE) $stucontacts[]=$contacts['ContactID'];
 			$iscurrent = false;
 			if(strpos($approvedstring, $students['ENROLL_STATUS']) !== FALSE) $iscurrent = true;
-			//debug
-			$lasterr = mysql_error();
-			if (strcmp($lasterr,"") != 0) echo "error on line 4446: ".$lasterr."</br>";
-			//
 			while ($contacts and !$iscurrent) // iterate through associated contacts
 			{
 				$contactID = $contacts['ContactID'];
 				$stuIDquery= 'select `StudentID` from `contacts-students` where `ContactID`="'.$contactID.'"';
 				$stuIDresults=mysql_query($stuIDquery);
 				$stuID=mysql_fetch_assoc($stuIDresults);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4459 ".$lasterr."</br>";
-				//
 				while($stuID and !$iscurrent) // iterate through other students involved with said contacts
 				{
 					$checkstuquery='select * from `X_PNSY_STUDENT` where ID="'.$stuID.'"';
@@ -4454,42 +4439,30 @@ class DataAccessManager {
 					if (strcmp($lasterr,"") != 0) echo "error on line 4468: ".$lasterr."</br>";
 				}
 				$contacts = mysql_fetch_assoc($contactresults);
-				if ($contacts !== FALSE) $stucontacts[]=$contacts['ContactID'];
-				
 			}
-					if (!$iscurrent){
-						$stuarray[] = $students;
-						foreach ($stucontacts as $z) $contactarray[] = $z;
+					if (!$iscurrent){ // archive student info if student is not current.
+							// It is important to note that all students must be archived before
+							// archiving any associated contacts, issues, etc. due to foreign key constraints.
+						foreach($y as $key => $s)
+							{
+								if (empty($s)) unset($y[$key]);
+								else $s=addslashes(htmlspecialchars($s));
+							}
+						$stukey = '`'.implode('`,`',array_keys($y)).'`';
+						$stuval = '"'.implode('","',array_values($y)).'"';
+						$squerystring='insert into `pansophyhistorical`.`X_PNSY_STUDENT` ('.$stukey.') values('.$stuval.')';
+						mysql_query($squerystring);
+						//mysql_query("delete from `X_PNSY_STUDENTS` where ID=".$students['ID']);	
 					}
 					$students = mysql_fetch_assoc($studentsresults);
-		}
-			foreach($stuarray as $y) // add students to database. This is handled before everything else to satisfy mySQL foreign key constraints
-			{
-				foreach($y as $key => $s)
-				{
-					if (empty($s)) unset($y[$key]);
-					else $s=addslashes(htmlspecialchars($s));
-				}
-				$stukey = '`'.implode('`,`',array_keys($y)).'`';
-				$stuval = '"'.implode('","',array_values($y)).'"';
-				$squerystring='insert into `pansophyhistorical`.`X_PNSY_STUDENT` ('.$stukey.') values('.$stuval.')';
-				mysql_query($squerystring);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4568: ".$lasterr."</br>";
-				//
-				//mysql_query("delete from `X_PNSY_STUDENTS` where ID=".$students['ID']);
-			}
-			foreach($contactarray as $i){
-			
+		} // end code that works
+			$studentquery = "select * from `pansophyhistorical`.`X_PNSY_STUDENT`";
+			foreach(/* PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived */){
+			// This entire section of code needs to be redone. It should archive all relevant issues, contacts, contact-student associations, and attachments( in that order_
 				if ($i === FALSE) continue;
 				$issueIDquery = 'select `Issue` from `contacts` where ID="'.$i.'"';
 				$issueIDresult = mysql_query($issueIDquery);
 				$issueID = mysql_fetch_assoc($issueIDresult);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4486: ".$lasterr."</br>";
-				//
 				$issuequery = 'select * from `issues` where ID="'.$issueID['Issue'].'"';
 				$issueresult= mysql_query($issuequery);
 				//debug
