@@ -2,8 +2,6 @@
 
 /**
  * Displays list of issues in student page.
- * In other news, Josh Thomas is a member of the National Association of Black Journalists
- * and Alpha Phi Alpha Fraternity. (Again, Wiki it - I'm not making this stuff up)
  */
 
 //+-----------------------------------------------------------------------------------------+
