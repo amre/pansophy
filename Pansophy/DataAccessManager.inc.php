@@ -3959,6 +3959,7 @@ class DataAccessManager {
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
 
+
 	 */
 	function userCanChangeEmails( $sessionID ) {
 		return $this->getAccessLevel() == ADMINISTRATOR;
@@ -4405,7 +4406,7 @@ class DataAccessManager {
 	/**
  	This function works by examining every single student whose class year occurs on or before the input $year. Each student's associated issues and contacts are examined. If a potential archivee student is found to be associated with a student who should not be archived, then the potential archivee will not be archived. Additionally, if a student's enroll status code is not one of the approved codes, then the student will not be archived. If neither of these things are true, then the student is added to the archived database. In a later segment of the code, the students' associated contacts, issues, attachments, and contact-student assocations are added to the archived database.
 	 */
-	function archiveYear($year){
+	/*function archiveYear($year){
 		//debug
 		error_reporting(E_ALL);
 		ini_set("display_errors", 1);
@@ -4457,7 +4458,7 @@ class DataAccessManager {
 					$students = mysql_fetch_assoc($studentsresults);
 		} // end code that works
 			$studentquery = "select * from `pansophyhistorical`.`X_PNSY_STUDENT`";
-			foreach(/* PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived */){
+			foreach( PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived ){//PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived
 			// This entire section of code needs to be redone. It should archive all relevant issues, contacts, contact-student associations, and attachments( in that order_
 				if ($i === FALSE) continue;
 				$issueIDquery = 'select `Issue` from `contacts` where ID="'.$i.'"';
@@ -4557,7 +4558,7 @@ class DataAccessManager {
 			
 
 	}
-	
+*/	
 }
 
 ?>
