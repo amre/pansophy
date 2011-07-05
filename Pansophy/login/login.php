@@ -6,7 +6,6 @@
  */
 
 @session_start();
-
 include_once('../include/loginheader.inc');
 include('../DataAccessManager.inc.php');
 $dam=new DataAccessManager();

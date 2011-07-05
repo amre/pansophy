@@ -3889,7 +3889,7 @@ class DataAccessManager {
 
          // get reasons why student is on list
          $query = "SELECT DISTINCT `Reason` FROM `students-FW` WHERE `StudentID` = '".$studentID."'";
-			$result = mysql_query($query);
+	 $result = mysql_query($query);
          $reasons = "";
          while($temp = mysql_fetch_assoc($result)){
             if(!empty($reasons)) $reasons .= ", ";
@@ -4418,6 +4418,190 @@ class DataAccessManager {
 				}
 			}
 		}
+	/**
+	 * This function archives old student information by 
+	 *
+	 * @param $year - the year for which a student's class year  must precede or match in order to qualify for archiving
+	 * 
+	 */
+	function archiveYear($year){
+		//debug
+		error_reporting(E_ALL);
+		ini_set("display_errors", 1);
+		// 
+		$studentquery='select * from `X_PNSY_STUDENT` where `CLASS_YEAR` <= "'.$year.'"';
+		// list of enroll status codes for students we shouldn't archive
+		$approvedstring="EM CS OP OC LM DP RE DD LP LA FE FY TR";
+		$studentsresults = mysql_query($studentquery);
+		$students = mysql_fetch_assoc($studentsresults);
+		//debug
+		$lasterr = mysql_error();
+		if (strcmp($lasterr,"") != 0) echo "error on line 4437: ".$lasterr."</br>";
+		//
+		while ($students) // iterate through selected students
+		{
+			$contactquery = 'select * from `contacts-students` where StudentID ="'.$students['ID'].'"';
+			$contactresults = mysql_query($contactquery);
+			$contacts = mysql_fetch_assoc($contactresults);
+			if ($contacts !== FALSE) $stucontacts[]=$contacts['ContactID'];
+			$iscurrent = false;
+			if(strpos($approvedstring, $students['ENROLL_STATUS']) !== FALSE) $iscurrent = true;
+			//debug
+			$lasterr = mysql_error();
+			if (strcmp($lasterr,"") != 0) echo "error on line 4446: ".$lasterr."</br>";
+			//
+			while ($contacts and !$iscurrent) // iterate through associated contacts
+			{
+				$contactID = $contacts['ContactID'];
+				$stuIDquery= 'select `StudentID` from `contacts-students` where `ContactID`="'.$contactID.'"';
+				$stuIDresults=mysql_query($stuIDquery);
+				$stuID=mysql_fetch_assoc($stuIDresults);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4459 ".$lasterr."</br>";
+				//
+				while($stuID and !$iscurrent) // iterate through other students involved with said contacts
+				{
+					$checkstuquery='select * from `X_PNSY_STUDENT` where ID="'.$stuID.'"';
+					$checksturesults=mysql_query($checkstuquery);
+					$checkstu=mysql_fetch_assoc($checksturesults);
+					if(strpos($approvedstring, $checkstu['ENROLL_STATUS']) !== FALSE) $iscurrent=true;
+					$stuID=mysql_fetch_assoc($stuIDresults);
+					$lasterr = mysql_error();
+					if (strcmp($lasterr,"") != 0) echo "error on line 4468: ".$lasterr."</br>";
+				}
+				$contacts = mysql_fetch_assoc($contactresults);
+				if ($contacts !== FALSE) $stucontacts[]=$contacts['ContactID'];
+				
+			}
+					if (!$iscurrent){
+						$stuarray[] = $students;
+						foreach ($stucontacts as $z) $contactarray[] = $z;
+					}
+					$students = mysql_fetch_assoc($studentsresults);
+		}
+			foreach($stuarray as $y) // add students to database. This is handled before everything else to satisfy mySQL foreign key constraints
+			{
+				foreach($y as $key => $s)
+				{
+					if (empty($s)) unset($y[$key]);
+					else $s=addslashes(htmlspecialchars($s));
+				}
+				$stukey = '`'.implode('`,`',array_keys($y)).'`';
+				$stuval = '"'.implode('","',array_values($y)).'"';
+				$squerystring='insert into `pansophyhistorical`.`X_PNSY_STUDENT` ('.$stukey.') values('.$stuval.')';
+				mysql_query($squerystring);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4568: ".$lasterr."</br>";
+				//
+				//mysql_query("delete from `X_PNSY_STUDENTS` where ID=".$students['ID']);
+			}
+			foreach($contactarray as $i){
+			
+				if ($i === FALSE) continue;
+				$issueIDquery = 'select `Issue` from `contacts` where ID="'.$i.'"';
+				$issueIDresult = mysql_query($issueIDquery);
+				$issueID = mysql_fetch_assoc($issueIDresult);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4486: ".$lasterr."</br>";
+				//
+				$issuequery = 'select * from `issues` where ID="'.$issueID['Issue'].'"';
+				$issueresult= mysql_query($issuequery);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4493: ".$lasterr."</br>";
+				//
+				$issue = mysql_fetch_assoc($issueresult);
+				if ($issue !== FALSE)
+				{
+					foreach($issue as $key => $s)
+					{
+						if (empty($s)) unset($issue[$key]);
+						else $s=addslashes(htmlspecialchars($s));
+					}
+					$issuekey = '`'.implode('`,`',array_keys($issue)).'`';
+					$issueval = '"'.implode('","',array_values($issue)).'"';
+					$issueinsert='insert into `pansophyhistorical`.`issues` ('.$issuekey.') values('.$issueval.')';
+					mysql_query($issueinsert);
+					echo $issueinsert;
+				}
+				//debug'insert into `pansophyhistorical`.`contacts-students` (ContactID, StudentID) values ("'.$constu['ContactID'].'","'.$constu['StudentID'].'")'
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4503: ".$lasterr."</br>";
+				//
+				//mysql_query('delete from `issues` where ID ="'.$issue['ID'].'"');
+				$attachquery = 'select * from `attachments` where `ContactID`="'.$i.'"';
+				$attachresult = mysql_query($attachquery);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4511: ".$lasterr."</br>";;
+				//
+				$attach = mysql_fetch_assoc($attachresult);
+				if ($attach !== FALSE)
+				{
+					foreach($attach as $key => $s)
+					{
+						if (empty($s)) unset($attach[$key]);
+						else $s=addslashes(htmlspecialchars($s));
+					}
+					$attachkey = '`'.implode('`,`',array_keys($attach)).'`';
+					$attachval = '"'.implode('","',array_values($attach)).'"';
+					mysql_query('insert into `pansophyhistorical`.`attachments` ('.$attachkey.') values ('.$attachval.')');
+					//mysql_query('delete from `attachments` where ID ="'.$attach['ID'].'"');
+				}
+				$nucontactquery='select * from `contacts` where ID="'.$i.'"';
+				$nucontactresult=mysql_query($nucontactquery);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4524: ".$lasterr."</br>";
+				//
+				$nucontact = mysql_fetch_assoc($nucontactresult);
+				if ($nucontact !== FALSE)
+				{
+					foreach($nucontact as $key => $s)
+					{
+						if (empty($s)) unset($nucontact[$key]);
+						else $s=addslashes(htmlspecialchars($s));
+					}
+					$contactkey = '`'.implode('`,`',array_keys($nucontact)).'`';
+					$contactval = '"'.implode('","',array_values($nucontact)).'"';
+					$nucontactinsert= 'insert into `pansophyhistorical`.`contacts` ('.$contactkey.') values('.$contactval.')';
+					mysql_query($nucontactinsert);
+				}
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4535: ".$lasterr."</br>";
+				//
+				//mysql_query('delete from `contacts` where ID="'.$nucontact['ID'].'"');
+				$constuquery='select * from `contacts-students` where ContactID="'.$i.'"';
+				$consturesult=mysql_query($constuquery);
+				//debug
+				$lasterr = mysql_error();
+				if (strcmp($lasterr,"") != 0) echo "error on line 4542: ".$lasterr."</br>";
+				//
+				$constu=mysql_fetch_assoc($consturesult);
+				while($constu)
+				{
+					foreach($constu as $s)
+					{
+						$s=addslashes(htmlspecialchars($s));
+					}
+					$constuinsert = 'insert into `pansophyhistorical`.`contacts-students` (ContactID, StudentID) values ("'.$constu['ContactID'].'","'.$constu['StudentID'].'")';
+					mysql_query($constuinsert);
+					//debug
+					$lasterr = mysql_error();
+					if (strcmp($lasterr,"") != 0) echo "error on line 4554: ".$lasterr."</br>";
+					//
+					//mysql_query('delete from `contacts-students` where ContactID=".$constu['ContactID']." and StudentID="'.$constu['StudentID'].'"');
+					$constu=mysql_fetch_assoc($consturesult);
+				}
+			}
+			
+
+	}
+	
 }
 
 ?>

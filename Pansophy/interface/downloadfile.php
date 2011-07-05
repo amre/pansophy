@@ -17,7 +17,7 @@ $fileExt = $dam->getAttachedFileExt($fileID);
 
 $path = $file_upload_folder.$fileID; // file_upload_folder variable declared in DataAccessManager
 if(file_exists($path)){
-/*
+/* Robert's old attachment management code
 	if ($fd = fopen ($path, "r")) {
 	   $fsize = filesize($path);
 	   switch ($fileExt) {

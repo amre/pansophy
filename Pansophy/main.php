@@ -31,40 +31,9 @@ if(strcmp($_POST['submit'], 'Stop Watching') == 0){
 	echo '<meta http-equiv="Refresh" content="0; URL=./main.php">';
 }
 
-//process database switch
-if(isset($_POST['database']))
-{
-	if(strcmp($_POST['database'],"Historical")==0 and !isset($_SESSION['historical']))
-	{
-		if ($dam->getAccessLevel() == 10) $_SESSION['historical']=TRUE;
-	}
-	else if (strcmp($_POST['database'],"Current")==0 and isset($_SESSION['historical']))
-	{
-		unset($_SESSION['historical']);
-	}
-}
 	
 //print header
 echo '<h1>Phronesis - Student Affairs Contact Manager</h1>';
-
-//print database switcher
-if ($dam->getAccessLevel() == 10 or isset($_SESSION['historical']))
-{
-	echo '<center><p>[ADMIN ONLY] Select database:';
-	echo '<form action="./main.php" method="post">';
-	if ($_SESSION['historical'] === TRUE)
-	{
-		echo '<input type="radio" name="database" value="Current"/> Current';
-		echo '<input type="radio" checked name="database" value="Historical"/> Historical';
-	}
-	else
-	{
-		echo '<input type="radio" checked name="database" value="Current"/> Current';
-		echo '<input type="radio" name="database" value="Historical"/> Historical';
-	}
-	echo '    <input type="submit" value="Select">';
-	echo '</form></p></center>';
-}
 
 //start content table
 echo '<table width=100% cellpadding="0" cellspacing="5" class="darkbg">';

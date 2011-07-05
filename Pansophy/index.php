@@ -6,12 +6,10 @@
  * Redirects to main page if logged in
  */
  
-include( 'DataAccessManager.inc.php' );
-include( './include/miscfunctions.inc.php' );
-$MD = new MyDate("now");
+
 @session_start();
 /*If the user is logged in and has access, load up the frames and their contents*/
-$dam = new DataAccessManager();
+
 
 /*if(!$dam->success){
 	echo 'No DAM, redirecting to setup script.
@@ -19,7 +17,13 @@ $dam = new DataAccessManager();
 	exit;
 }*/
 
-if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
+if( isset( $_SESSION['userid'] )){
+	include( 'DataAccessManager.inc.php' );
+	include( './include/miscfunctions.inc.php' );
+	$MD = new MyDate("now");
+	$dam = new DataAccessManager();
+	if ($dam->getAccessLevel() > 0)
+	{
 	/* This grabs the user's username in order to perform the 'Old Issue'-related queries and updates */
 	$userID = $_SESSION['userid'];
 	
@@ -44,7 +48,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	 * It echoes a JavaScript script that displays an alert prior to displaying the main Phronesis page
 	 * that notifies the user that they have unresolved Open issues that possibly should be closed.
 	 * (Requests user closure of old issues in the event that an issue was left open for a reason.)
-	 * - Josh Thomas
+	 * - Josh Thoma
 	 */
 	
 	$result = $dam->getLastModifedIssue( $userID );
@@ -67,6 +71,7 @@ if( isset( $_SESSION['userid'] ) && $dam->getAccessLevel() > 0 ){
 	}
 
 	include_once('./include/frameset.inc');
+	}
 }
 /*Otherwise, redirect to the login page*/
 else{

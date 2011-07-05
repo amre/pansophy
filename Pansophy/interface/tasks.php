@@ -37,6 +37,10 @@ if( $dam->userCanCreateUser('') ) {
 //if( $dam->userCanCreateOrReplaceStudent( '' ) ) {
 //	echo '<p><div align="left"><a href="../import.php">[Import SRN Student Records]</a></div></p>';
 //}
+if ( $dam->getAccessLevel() == 10 || isset($_SESSION['historical']) )
+{
+echo '<p><div align="left"><a href="./archive.php">[Manage Archives]</a></div></p>';
+}
 echo '</div></td></tr></table></div></body></html>';
 
 

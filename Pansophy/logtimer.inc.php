@@ -22,5 +22,9 @@ else
 	{
 	$_SESSION['lastclick']=time();
 	}
+if (!isset($_SESSION['userid']) and !file_exists("./login.php"))
+{
+	header("Location: http://wooster.edu");
+}
 
 ?>

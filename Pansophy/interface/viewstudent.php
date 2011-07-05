@@ -67,7 +67,7 @@ echo '<p><br />';
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
-	if(!$usingIE) //formatting issues with the floating title
+	if(!$usingIE) //formatting issues with the floading title
 	{
 	echo '</br></br></br>';
 	}
@@ -123,7 +123,7 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 			   echo '<a href="./editstudent.php?studentId='.$studentId.'"><b>[Edit this student]</b></a>';
 		   }
 	   echo '</td></tr></table></p></p>';
-	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>';
+	   echo '<table  cellspacing="5" cellpadding="4">'; 
 
 //Display student picture if there is one on record
 $pictureUrl="http://webapps.wooster.edu/webbadge/ShowImage.ashx?id=".$studentId;
@@ -134,7 +134,7 @@ if(is_array(getimagesize($pictureUrl)))
 
 		   //FOR DISPLAYING PICTURE//<tr><td align="left" nowrap><IMG SRC="'.$picture.'" height="120" width="90" class="darkbd"></td></tr>';
 
-		   echo '<tr><td>Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
+		   echo '<tr><td align="left" nowrap>Modified: </td><td align="left">'.readableDateAndTime( $student['LastModified'] ).' ';
 		   if(!empty($student['Modifier'])){
 			   $modifier = $dam->viewUser('',$student['Modifier']);
 			   echo 'by <a href="mailto:'.$modifier['Email'].'">'.$modifier['FirstName'].' '.$modifier['LastName'].'</a>';
@@ -184,6 +184,8 @@ if(is_array(getimagesize($pictureUrl)))
 		   if(count($relations) % 2 == 0){
 			   for($i = 0; $i < count($relations); $i = $i + 2){
 				   $parent = $dam->viewStudentParent('',$relations[$i]);
+
+
 
 				   $relationship = $relations[$i+1];
 				   if(strcmp($relations[$i+1],'P') == 0) $relationship = 'Parent';
@@ -315,16 +317,7 @@ echo '<table><tr><td>';
 
       
       // issue section
-      echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue History</p></td>';
-
-         if($viewAllIssues) echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallissues=0&viewallcontacts='.$viewAllContacts.'"><b>[Reduce]</b></a>';
-         else echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallissues=1&viewallcontacts='.$viewAllContacts.'"><b>[View All]</b></a>';
-
-	      if($dam->userCanCreateContact('', $studentId)){
-		      // Michael Thompson * 12/14/2005 * Made redirect cap to match other routines
-	      }
-      echo '</tr></table></p></p>';
-      include( './studentissues.php' );
+      
       // end issue section
 
    echo '</td></tr></table>'; 
@@ -337,16 +330,16 @@ echo '<table><tr><td>';
    // subtable three
   echo '<table><tr><td>'; 
 
-      // contacts section
-      echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Contact History</p></td>';
+echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue History</p></td>';
 
-         if($viewAllContacts) echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallcontacts=0&viewallissues='.$viewAllIssues.'"><b>[Reduce]</b></a>';
-         else echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallcontacts=1&viewallissues='.$viewAllIssues.'"><b>[View All]</b></a>';
+         if($viewAllIssues) echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallissues=0&viewallcontacts='.$viewAllContacts.'"><b>[Reduce]</b></a>';
+         else echo '<td nowrap><a href="./viewstudent.php?id='.$studentId.'&viewallissues=1&viewallcontacts='.$viewAllContacts.'"><b>[View All]</b></a>';
 
+	      if($dam->userCanCreateContact('', $studentId)){
+		      // Michael Thompson * 12/14/2005 * Made redirect cap to match other routines
+	      }
       echo '</tr></table></p></p>';
-	   include( './studentcontacts.php' );
-      // end contacts section
-      
+      include( './studentissuesnew.php' );
    echo '</td></tr></table>';
    echo '</div>';
    // end subtable three
