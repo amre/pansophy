@@ -58,7 +58,7 @@ will be denied access to eliminates a lot of confusion.
 PHP class which must be instantiated by every script that requires database access.</dd>
 
 <dt><code>import.php</code></dt>
-<dd>Imports data to the database from a flat file.</dd>
+<dd>Imports data to the database from a flat file. (<i>outdated</i>)</dd>
 
 <dt><code>index.php</code></dt>
 <dd>The index page; it does an include statement and a redirect.</dd>
@@ -173,8 +173,14 @@ screen.</dd>
 <dt><code>edituser.php</code></dt>
 <dd>Interface for editing user information.</dd>
 
+<dt><code>fwreports.php</code></dt>
+<dd>The form for generating a report of students on First Watch.</dd>
+
 <dt><code>getuser.php</code></dt>
 <dd>Performs a search on the username to return the user's contexts for <code>adduser.php</code>.</dd>
+
+<dt><code>interimreports.php</code></dt>
+<dd>The form for generating a report of interims.</dd>
 
 <dt><code>issuecontacts.php</code></dt>
 <dd>The "Contact History" included in <code>viewissue.php</code>.</dd>
@@ -192,7 +198,7 @@ screen.</dd>
 <dd>The "Contact History" included in <code>viewstudent.php</code>.</dd>
 
 <dt><code>studentinterims.php</code></dt>
-<dd>The "Interim Reports" included in <code>viewstudent.php.</code>.</dd>
+<dd>The "Interim Reports" included in <code>viewstudent.php</code>.</dd>
 
 <dt><code>studentissues.php</code></dt>
 <dd>The "Issue History" included in <code>viewstudent.php</code>.</dd>
@@ -214,6 +220,9 @@ screen.</dd>
 
 <dt><code>viewfirstwatch.php</code></dt>
 <dd>Interface for viewing all students currently placed in First Watch.</dd>
+
+<dt><code>viewfirstwatchpf.php</code></dt>
+<dd>Printer-friendly view of <code>viewfirstwatch.php</code>.</dd>
 
 <dt><code>viewinterim.php</code></dt>
 <dd>Interface for viewing information related to a particular interim report.</dd>
@@ -242,11 +251,11 @@ screen.</dd>
 <dt><code>viewuserpf.php</code></dt>
 <dd>Printer-friendly view of <code>viewuser.php</code>.</dd>
 
-<dt><code>watchstudent.php</code></dt>
-<dd>Called by <code>viewstudent.php</code> to watch or stop watching a student.</dd>
-
 <dt><code>watchissue.php</code></dt>
 <dd>Called by <code>viewissue.php</code> to watch or stop watching an issue.</dd>
+
+<dt><code>watchstudent.php</code></dt>
+<dd>Called by <code>viewstudent.php</code> to watch or stop watching a student.</dd>
 </dl>
 
 <h3>./img</h3>
@@ -297,13 +306,6 @@ was never actually done and would be good to consider in the future.
 <br><br>
 In general, read a good guide about writing secure PHP (what some call an oxymoron).  Go through and right any security wrongs
 which may have been done in the program (We won't go into specifics on this publicly-accessible help guide).
-<br><br>
-<h3>Slightly modify database</h3>
-The database structure was overhauled in version 2.0.  However, there is one small issue left.  The `users-contacts` table
-is entirely unnecessary since each contact already has a "Creator" field which can take care of this.  This was just an
-absent-minded mistake on one developer's part and does not hurt functionality.  However, before removing this table, someone
-should go through DataAccessManager.inc.php and modify all SQL statements that reference it to use the `contacts` table's
-"Creator" field which serves the same purpose (but preserves a 1-1 relationship between users and contacts).
 <br><br>
 <h3>More use of validated CSS, XHTML</h3>
 We are developers first and web designers second, and this shows in the web code.  Some effort was made to convert more of the
