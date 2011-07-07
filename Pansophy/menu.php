@@ -57,7 +57,7 @@ echo '<form>
 		if(strcmp($table, 'students')==0 || strcmp($table, 'students')==0){
 			echo '<option value="./menu.php?table=students" SELECTED>Students</option>';
 			//$doNotDisplay = array('DateCreated', 'UsersWatching', 'LastModified', 'Modifier', 'Cellular', 'InterimCounter', 'FirstWatch', 'FWReason');
-			$doNotDisplay = array('DateCreated', 'UsersWatching', 'LastModified', 'Modifier','InterimCounter', 'FirstWatch', 'FWReason',
+			$doNotDisplay = array('DateCreated', 'UsersWatching', 'LastModified', 'Modifier','InterimCounter', 'FirstWatch', 'FWReason', 'FERPA',
 									'ID', 'PRIVACY_FLAG', 'STREET_2', 'STREET_3', 'STREET_4', 'STREET_5');
 		}
 		else

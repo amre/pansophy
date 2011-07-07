@@ -255,7 +255,7 @@ else{
 		
 		echo '
 		<table class="result"><tr>';
-		if ( $table == 'students' || $table == 'issues' ) echo '<th class="nocontent"></th>';	//empty column for checkboxen
+		if ( $table == 'students' || $table == 'issues' ) echo '<th class="nocontent"></th>';	//empty column for checkboxes
 		for ($i = 0; $i <sizeof($columns); $i++) {
 			if( (!in_array($columns[$i], $doNotDisplay)) || ($columns[$i] == $SearchField) ){
 				// Changes heading display to actual flag name and then changes back to display value later - Josh Thomas

@@ -211,10 +211,10 @@ if(is_array(getimagesize($pictureUrl)))
 
 				   //privacy flag
 				   if(!empty($parent['PRIVACY_FLAG'])){
-					if($parent['PRIVACY_FLAG'] == "NC")
-						echo '<br /><font color="mediumblue"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
-					else
+					if(strpos($parent['PRIVACY_FLAG'],'N')===false )
 						echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
+					else
+						echo '<br /><font color="mediumblue"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
 				   }
 				   else echo '<br />No Contact: N/A';
 				   echo '<br /><br />';
