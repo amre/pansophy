@@ -408,7 +408,20 @@ class DataAccessManager {
 	 */
 	function viewStudentRelationships( $sessionID, $studentID ) {
 		if( $this->userCanViewStudent( $sessionID )) {
-			$query = "SELECT * FROM X_PNSY_RELATIONSHIP WHERE ID_1 = '$studentID' OR ID_2 = '$studentID'";
+			$query = "SELECT * FROM X_PNSY_RELATIONSHIP WHERE ID_1 = '$studentID'";
+			$result = mysql_query($query);
+
+			$temp = array();
+
+			while ($row = mysql_fetch_assoc($result)) {
+				array_push( $temp, $row['ID_2'] );
+				array_push( $temp, $row['RELATIONSHIP'] );
+			}	
+			return $temp;
+		}
+			//It appears that ID_1 refers to the student and ID_2 to the parent/relation...
+			//Doing either ID caused an issue when a parent had the same ID as a student.
+			/**$query = "SELECT * FROM X_PNSY_RELATIONSHIP WHERE ID_1 = '$studentID' OR ID_2 = '$studentID'";
 			$result = mysql_query($query);
 
 			$temp = array();
@@ -423,10 +436,23 @@ class DataAccessManager {
 					array_push( $temp, $row['RELATIONSHIP'] );
 				}
 			}	
-			return $temp;
-		}
+			return $temp;*/
 	}
 	
+	/**
+	 * Determines whether a student's parent(s) have requested no contact.
+	 *
+	 * @param $sessionID session information like IP address to verify for security
+	 * @param $studentID the ID of the student
+	 *
+	 * @return true if no contact code, false if not
+	 */
+	function dontContactParents( $sessionID, $studentID ) {
+		if( $this->userCanViewStudent( $sessionID )) {
+			//$query = "SELECT * FROM X_PNSY_RELATIONSHIP R, X_
+		}
+	}
+
 	/**
 	 * Returns an associative array where the keys are names of fields in the X_PNSY_PARENT table
 	 * of the database, and the values are the corresponding values of those fields.

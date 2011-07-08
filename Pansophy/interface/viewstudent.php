@@ -196,8 +196,6 @@ if(is_array(getimagesize($pictureUrl)))
 			   for($i = 0; $i < count($relations); $i = $i + 2){
 				   $parent = $dam->viewStudentParent('',$relations[$i]);
 
-
-
 				   $relationship = $relations[$i+1];
 				   if(strcmp($relations[$i+1],'P') == 0) $relationship = 'Parent';
 				   else if(strcmp($relations[$i+1],'SP') == 0) $relationship = 'Step-parent';
@@ -214,7 +212,7 @@ if(is_array(getimagesize($pictureUrl)))
 					if(strpos($parent['PRIVACY_FLAG'],'N')===false )
 						echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
 					else
-						echo '<br /><font color="mediumblue"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
+						echo '<br /><font color="red"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
 				   }
 				   else echo '<br />No Contact: N/A';
 				   echo '<br /><br />';
