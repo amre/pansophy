@@ -51,7 +51,7 @@ if($issues){
 				}
 				else
 				{
-					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" >+</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
+					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" > +</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
 				}
 				
 					echo $issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): 
