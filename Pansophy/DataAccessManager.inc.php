@@ -449,7 +449,18 @@ class DataAccessManager {
 	 */
 	function dontContactParents( $sessionID, $studentID ) {
 		if( $this->userCanViewStudent( $sessionID )) {
-			//$query = "SELECT * FROM X_PNSY_RELATIONSHIP R, X_
+			$query = "SELECT * FROM X_PNSY_RELATIONSHIP R, X_PNSY_PARENT P
+				WHERE R.ID_1 = '$studentID' 
+				AND R.ID_2 = P.ID 
+				AND P.PRIVACY_FLAG LIKE '%N%'";
+			$result = mysql_query($query);
+
+			$temp = array();
+
+			while ($row = mysql_fetch_assoc($result)) {
+				array_push( $temp, $row['ID_2'] );
+			}	
+			return count($temp);
 		}
 	}
 

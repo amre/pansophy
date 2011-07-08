@@ -56,8 +56,13 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 
 // display title section
 
-echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%;padding:0%;margin:0;;">';
-echo '<h1 style="color:#000000;">'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div></br>';
+if($dam->dontContactParents('',$studentId)){
+	echo '<div style="position:fixed ;background:#f0f0f0;border:thick solid #000000; top: 0%;z-index:95;width:100%;padding:0%;margin:0;"><h1 style="color:red;">';
+}
+else{
+	echo '<div style="position:fixed ;background:#b78f02;border:thick solid #000000; top: 0%;z-index:95;width:100%;padding:0%;margin:0;"><h1 style="color:#000000;">';
+}
+echo $student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1></div></br>';
 if($usingIE)
 {
 echo '<div style = "height:100%;overflow:auto">';
