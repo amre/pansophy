@@ -60,7 +60,7 @@ $ferpaCheck = 1;/*$ferpa = $_POST['ferpa'];*/
 
 
 	
-   // counteract the mischief done by magic_quotes$student['ferpaCheck'] == 1
+   // counteract the mischief done by magic_quotes
    if(get_magic_quotes_gpc()){
       $redflag = stripslashes($redflag);
       $vip = stripslashes($vip);
@@ -115,7 +115,7 @@ echo '<table  cellspacing="5" cellpadding="4">';
 	echo '<tr><td valign="top" align="left" nowrap>RedFlag: </td><td align="left"><TEXTAREA name="redflag" cols="40" rows="5">'.$redflag.'</TEXTAREA></td></tr>
 	<tr><td valign="top" align="left" nowrap>VIP: </td><td align="left"><TEXTAREA name="vip" cols="40" rows="5">'.$vip.'</TEXTAREA></td></tr>';
 //FERPA
-echo '<tr><td valign="top" align="left" nowrap>FERPA: <input type="checkbox" name="ferpaCheck" '.$ferpaCheck.'></td><td align="left"><TEXTAREA name="ferpa" cols="40" rows="1">'.$ferpa.'</TEXTAREA></td></tr>';
+echo '<tr><td valign="top" align="left" nowrap>FERPA: <input type="checkbox" name="ferpaCheck" '.$ferpaCheck.'></td><td align="left"><TEXTAREA name="ferpa" cols="40" rows="5">'.$ferpa.'</TEXTAREA></td></tr>';
 
 	
 
