@@ -65,7 +65,7 @@ echo '<div style = "height:100%;overflow:auto">';
 echo '<p><br />';
 
 // Displays the user controlled flags
-if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
+if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['ferpaCheck'] == 1 || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
 	if(!$usingIE) //formatting issues with the floading title
 	{
@@ -73,13 +73,20 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcP
 	}
 	$flagstream= '<table class="darkbd" RULES="NONE" FRAME="BOX" cellpadding="2" width="90%" align="center" style="background:#ffffff;">';
 	if(!empty($student['RedFlag'])){
-		//$flagstream = "</br>$flagstream";
+		//$flagstream = "</br>$flagstream";errortext
 		$flagstream = $flagstream.'<tr><td><font class="errortext">Red Flag: </font>'.$student['RedFlag'].'</td></tr>';
 	}
 	if(!empty($student['VIP'])){
 		//$flagstream = "</br>$flagstream";
 		$flagstream=$flagstream.'<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
 	}
+        if($student['ferpaCheck'] == 1 ){
+if(!empty($student['FERPA'])){
+$flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA:</b></font>'.$student['FERPA'].'</td></tr>';
+}
+else
+  $flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
+}
 	if($student['AcProbation'] == 1) {
 		//$flagstream = "</br>$flagstream";
 		$flagstream=$flagstream."<tr><td><b>This student is on Academic Probation.</b></td></tr>";
@@ -121,7 +128,8 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
          echo '<p class="largeheading">Student Information</p></td><td nowrap valign="center">';
 		   if($dam->userCanModifyStudent('')){//, $ID)){
 			   echo '<a href="./editstudent.php?studentId='.$studentId.'"><b>[Edit this student]</b></a>';
-		   }
+		   
+}
 	   echo '</td></tr></table></p></p>';
 	   echo '<table  cellspacing="5" cellpadding="4">'; 
 
@@ -201,24 +209,12 @@ if(is_array(getimagesize($pictureUrl)))
 				   <br />Home Phone: '.$parent['HOME_PHONE'].'
 				   <br />Cell Phone: '.$parent['CELL_PHONE'];
 
-				   if(!empty($parent['PRIVACY_FLAG'])){ echo '<br />No Contact: ';
-				   	//print explanation of parent's privacy flag
-					if($parent['PRIVACY_FLAG']=="LL")
-						echo 'LL - Lost';
-					else if($parent['PRIVACY_FLAG']=="NC")
-						echo 'NC - No contact: College';
-					else if($parent['PRIVACY_FLAG']=="NI")
-						echo 'NI - No contact: Individual';
-					else if($parent['PRIVACY_FLAG']=="NM")
-						echo 'NM - No Mail';
-					else if($parent['PRIVACY_FLAG']=="NS")
-						echo 'NS - No Solicitation';
-					else if($parent['PRIVACY_FLAG']=="NE")
-						echo 'NE - No Email';
-					else if($parent['PRIVACY_FLAG']=="NP")
-						echo 'NP - No Phone';
+				   //privacy flag
+				   if(!empty($parent['PRIVACY_FLAG'])){
+					if($parent['PRIVACY_FLAG'] == "NC")
+						echo '<br /><font color="mediumvioletred"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
 					else
-						echo $parent['PRIVACY_FLAG'];
+						echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
 				   }
 				   else echo '<br />No Contact: N/A';
 				   echo '<br /><br />';
