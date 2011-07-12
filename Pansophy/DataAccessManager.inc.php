@@ -1449,10 +1449,11 @@ class DataAccessManager {
 	 * updates 'attachments' table in database. Retrieves file information from $_FILES array.
 	 *
 	 * @param $contactID contact to add file to
+	 * @param $fileType type of file - 1 for Admissions, 0 for normal
 	 *
 	 * @return contact ID
 	 */
-	function attachFile($contactID){
+	function attachFile($contactID, $fileType){
 		
 		global $file_upload_folder;
 		
@@ -1516,8 +1517,8 @@ class DataAccessManager {
 			mkdir("$file_upload_folder$ID");
 			if(move_uploaded_file($userfile_tmp_name, "$file_upload_folder$ID/$userfile_name")) {
 				// send queries to update 'attachments' table
-				$query = "insert into `attachments` (id, extension, alias, contactid)
-					values ('$ID','$extension','$userfile_name', '$contactID')";
+				$query = "insert into `attachments` (id, extension, alias, contactid, admissionsfile)
+					values ('$ID','$extension','$userfile_name', '$contactID', '$fileType')";
 				mysql_query($query);		
 
 	
@@ -1615,6 +1616,49 @@ class DataAccessManager {
 		}
 		//echo 'permission denied to view files';
 	}
+
+	/**
+	 * Retrieves all the normal attached files for a contact
+	 *
+	 * @param $sessionID session information like IP address to verify for security
+	 * @param $contactID contact to view attached files of
+	 *
+
+	 * @return array of file IDs attached to given contact
+	 */
+	function viewNormalFiles($sessionID, $contactID){
+		if( $this->userCanViewFiles( $sessionID, $contactID )){
+			$query = "SELECT * FROM `attachments` WHERE `contactid` = '$contactID' AND `AdmissionsFile` < 1";
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				$IDs[$i]=$results['ID'];
+			}
+			if(empty($IDs)) return;
+			else return $IDs;		
+		}
+		//echo 'permission denied to view files';
+	}
+
+	/**
+	 * Retrieves all the admissions attached files for a contact
+	 *
+	 * @param $sessionID session information like IP address to verify for security
+	 * @param $contactID contact to view attached files of
+	 *
+	 * @return array of file IDs attached to given contact
+	 */
+	function viewAdmissionsFiles($sessionID, $contactID){
+		if( $this->userCanViewFiles( $sessionID, $contactID )){
+			$query = "SELECT * FROM `attachments` WHERE `contactid` = '$contactID' AND `AdmissionsFile` = 1";
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				$IDs[$i]=$results['ID'];
+			}
+			if(empty($IDs)) return;
+			else return $IDs;		
+		}
+		//echo 'permission denied to view files';
+	}
 	
 	/**
 	 * Retrieves the original name that the file had when it was uploaded. Right now
@@ -1629,6 +1673,23 @@ class DataAccessManager {
 		$result = mysql_query($query);
 		$result = mysql_fetch_array($result);	
 		$result = $result['Alias'];
+		return($result);
+	}
+
+	/**
+	 * Retrieves the type of file. Right now
+	 * it requires no sort of user authentication. Perhaps it should...?
+	 *
+	 * @param $fileID file to look up type for
+
+	 *
+	 * @return boolean - whether or not an admissions file
+	 */
+	function getAttachedFileType($fileID){
+		$query = "SELECT `AdmissionsFile` FROM `attachments` WHERE ID='$fileID'";
+		$result = mysql_query($query);
+		$result = mysql_fetch_array($result);	
+		$result = $result['AdmissionsFile'];
 		return($result);
 	}
 	
@@ -1669,6 +1730,72 @@ class DataAccessManager {
          if(!empty($contactID)){
             unset($someFiles);
             $someFiles = $this->viewAttachedFiles('',$contactID);            
+            for($j = 0; $j < sizeof($someFiles); $j++){
+               unset($file);
+               $file['fileid'] = $someFiles[$j];
+               $file['contactid'] = $contactID;
+               $file['name'] = $this->getAttachedFileName($someFiles[$j]);
+               $file['date'] = $contactDate;
+               array_push($allFiles,$file);
+            }
+         }
+      }
+      return($allFiles);
+	}
+
+	/**
+	 * Retrieves all the non-admissions attached files for a student
+	 *
+	 * @param $sessionID session information like IP address to verify for security
+	 * @param $studentID to view attached files of
+	 *
+	 * @return array of file IDs attached to given student
+	 */
+	function viewAllNormalAttachedFiles($sessionID, $studentID){
+      $allFiles = array();
+      $someFiles = array();
+      $file = array();
+      $contacts=$this->getStudentsContacts($studentID);
+      for($i = 0; $i < sizeof($contacts); $i++){
+         $contactID = $contacts[$i];
+         $contact = $this->viewContact('',$contactID);
+         $contactDate = $contact['DateCreated'];
+         if(!empty($contactID)){
+            unset($someFiles);
+            $someFiles = $this->viewNormalFiles('',$contactID);            
+            for($j = 0; $j < sizeof($someFiles); $j++){
+               unset($file);
+               $file['fileid'] = $someFiles[$j];
+               $file['contactid'] = $contactID;
+               $file['name'] = $this->getAttachedFileName($someFiles[$j]);
+               $file['date'] = $contactDate;
+               array_push($allFiles,$file);
+            }
+         }
+      }
+      return($allFiles);
+	}
+
+	/**
+	 * Retrieves all the admissions attached files for a student
+	 *
+	 * @param $sessionID session information like IP address to verify for security
+	 * @param $studentID to view attached files of
+	 *
+	 * @return array of file IDs attached to given student
+	 */
+	function viewAllAdmissionsAttachedFiles($sessionID, $studentID){
+      $allFiles = array();
+      $someFiles = array();
+      $file = array();
+      $contacts=$this->getStudentsContacts($studentID);
+      for($i = 0; $i < sizeof($contacts); $i++){
+         $contactID = $contacts[$i];
+         $contact = $this->viewContact('',$contactID);
+         $contactDate = $contact['DateCreated'];
+         if(!empty($contactID)){
+            unset($someFiles);
+            $someFiles = $this->viewAdmissionsFiles('',$contactID);            
             for($j = 0; $j < sizeof($someFiles); $j++){
                unset($file);
                $file['fileid'] = $someFiles[$j];
@@ -3958,6 +4085,7 @@ class DataAccessManager {
 	 * Checks to see if the user is an administrator and can change the various stored e-mails.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
+
 
 
 	 */

@@ -212,7 +212,11 @@ if(is_array(getimagesize($pictureUrl)))
 				   //privacy flag
 				   if(!empty($parent['PRIVACY_FLAG'])){
 					if($parent['PRIVACY_FLAG'] == "NC")
+<<<<<<< HEAD
 						echo '<br /><font color="mediumvioletred"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
+=======
+						echo '<br /><font color="mediumblue"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
+>>>>>>> 101c6e09473209179c130759a973f308b6590982
 					else
 						echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
 				   }
@@ -315,7 +319,6 @@ echo '<table><tr><td>';
       echo '<tr><td>'; 
 
       // files section
-      echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Attached Files</p></td></tr></table></p></p>';
 	   include('./studentfiles.php');
       // end files section
 
