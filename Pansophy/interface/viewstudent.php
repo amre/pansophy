@@ -82,7 +82,7 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['fer
 	}
         if($student['ferpaCheck'] == 1 ){
 if(!empty($student['FERPA'])){
-$flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA:</b></font>'.$student['FERPA'].'</td></tr>';
+$flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA: </b></font>'.$student['FERPA'].'</td></tr>';
 }
 else
   $flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
@@ -212,11 +212,7 @@ if(is_array(getimagesize($pictureUrl)))
 				   //privacy flag
 				   if(!empty($parent['PRIVACY_FLAG'])){
 					if($parent['PRIVACY_FLAG'] == "NC")
-<<<<<<< HEAD
 						echo '<br /><font color="mediumvioletred"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
-=======
-						echo '<br /><font color="mediumblue"><b>No Contact: '.$parent['PRIVACY_FLAG'].'</b></font>';
->>>>>>> 101c6e09473209179c130759a973f308b6590982
 					else
 						echo '<br />No Contact: '.$parent['PRIVACY_FLAG'];
 				   }
