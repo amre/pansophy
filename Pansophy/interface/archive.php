@@ -29,7 +29,8 @@ if(isset($_POST['database']))
 if (isset($_POST['yes'])) // do purge
 {
 echo "year=".$_POST['year'];
-$dam->archiveYear($_POST['year']);
+//$dam->archiveYear($_POST['year']);
+$dam->archiveEverything('');
 echo '<br/><br/><center><p>System archived</p></center>';
 //echo '<meta http-equiv="Refresh" content="3;URL=../main.php">';
 }

@@ -76,7 +76,7 @@ if($dam->userCanCreateUser('')){
 		
 		//Print the page
 		echo '<h1>Change User Flags</h1>
-		<p class="mediumhead">Type new flags in the text fields or leave them blank to keep the flag the same. (Type "remove" (without quotes) to drop the flag entirely.)<br /><br />Flags that have spaces or special characters in them will have them removed.</p>
+		<p class="mediumhead">Type new flags in the text fields or leave them blank to keep the flag the same. (Type "remove" (without quotes) to drop the flag entirely.)<br/><b>Note:</b> Anyone flagged with modified/removed flag will no longer be flagged for that concern.<br /><br />Flags that have spaces or special characters in them will have them removed.</p>
 		<form action="./editflags.php" method="POST">
 		<table width="80%" >
 		<tr><td align="left"><b>Current Flags</b></td><td>&nbsp;</td><td align="left"><b>New Flags</b></td></tr>

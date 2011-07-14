@@ -66,6 +66,7 @@ pass:$pass
   		`Extension` varchar(5) NOT NULL default '',
   		`Alias` varchar(50) NOT NULL default '',
   		`ContactID` varchar(15) NOT NULL default '',
+		`AdmissionsFile` tinyint(1) NOT NULL default '0',
   		PRIMARY KEY  (`ID`),
   		KEY `attachments_ibfk_1` (`ContactID`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
@@ -190,6 +191,8 @@ pass:$pass
   		`AssignedTo` varchar(20) default NULL,
   		`RedFlag` text NOT NULL,
   		`VIP` text,
+		`FERPA` text,
+		`ferpaCheck` tinyint(1) NOT NULL default '0',
   		`AcProbation` tinyint(1) NOT NULL default '0',
   		`HousingWaitList` tinyint(1) NOT NULL default '0',
   		`Field1` tinyint(1) NOT NULL default '0',

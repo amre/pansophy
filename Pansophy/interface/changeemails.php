@@ -8,7 +8,7 @@ include('../DataAccessManager.inc.php');
 include('../include/header.inc');
 $dam = new DataAccessManager();
 
-if($dam->userCanCreateUser('')){
+if($dam->userCanChangeEmails('')){
 	if(strcmp($_POST['submit'], 'Submit Changes') == 0){
 		$Email1 = $_POST['WCenter'];
 		$Email2 = $_POST['LCenter'];
