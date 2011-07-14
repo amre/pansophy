@@ -30,33 +30,68 @@ if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts
 echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1>';
 echo 	'<center>Assigned to: '.$student['AssignedTo'].'</center><br />';
 
+if($reasons=$dam->studentOnFW('',$studentId))
+{
+	echo '<center> This student IS currently on First Watch for: '.$reasons[0];
+	$count=count($reasons);
+	if($count==1)
+		echo ' </b>';
+	else
+	{
+		for($i=1; $i<$count-1; $i++)
+			echo ', '.$reasons[$i];
+		echo ' and '.$reasons[$count-1].' </b>';
+	}
+}
+else if($dam->userCanViewFW(''))
+	echo '<center> This student is NOT currently on First Watch. </b>';
+
+
 // Displays the user controlled flags
-if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
+if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['ferpaCheck'] == 1 || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
-	
-	echo '<table class="darkbd" RULES="NONE" FRAME="BOX" cellpadding="2" width="90%" align="center">';
+	if(!$usingIE) //formatting issues with the floading title
+	{
+	echo '</br></br></br>';
+	}
+	$flagstream= '<table class="darkbd" RULES="NONE" FRAME="BOX" cellpadding="2" width="90%" align="center" style="background:#ffffff;">';
 	if(!empty($student['RedFlag'])){
-		echo '<tr><td><font class="errortext">Red Flag: </font>'.$student['RedFlag'].'</td></tr>';
+		//$flagstream = "</br>$flagstream";errortext
+		$flagstream = $flagstream.'<tr><td><font class="errortext">Red Flag: </font>'.$student['RedFlag'].'</td></tr>';
 	}
 	if(!empty($student['VIP'])){
-		echo '<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
 	}
+        if($student['ferpaCheck'] == 1 ){
+            if(!empty($student['FERPA'])){
+                  $flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA: </b></font>'.$student['FERPA'].'</td></tr>';
+             }
+            else
+                  $flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
+        }
 	if($student['AcProbation'] == 1) {
-		echo "<tr><td><b>This student is on Academic Probation.</b></td></tr>";
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream."<tr><td><b>This student is on Academic Probation.</b></td></tr>";
 	}
 	if($student['HousingWaitList'] == 1) {
-		echo "<tr><td><b>This student is on the waiting list for housing.</b></td></tr>";
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream."<tr><td><b>This student is on the waiting list for housing.</b></td></tr>";
 	}
 	if($student['Field1'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option1'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option1'].'</b></td></tr>';
 	}
 	if($student['Field2'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option2'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option2'].'</b></td></tr>';
 	}
 	if($student['Field3'] == 1) {
-		echo '<tr><td><b>This student is flagged for: '.$flags['Option3'].'</b></td></tr>';
+		//$flagstream = "</br>$flagstream";
+		$flagstream=$flagstream.'<tr><td><b>This student is flagged for: '.$flags['Option3'].'</b></td></tr>';
 	}
-	echo '</table>';
+	$flagstream=$flagstream.'</table>';	
+	echo $flagstream;
 }
 
 
@@ -71,9 +106,9 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
       // student details section
       echo '<p><p><table cellspacing="3"><tr><td nowrap>';
          echo '<p class="largeheading">Student Information</p></td><td nowrap valign="center">';
-		   if($dam->userCanModifyStudent('')){//, $ID)){
+		   /*if($dam->userCanModifyStudent('')){//, $ID)){
 			   echo '<a href="./editstudent.php?studentId='.$studentId.'"><b>[Edit this student]</b></a>';
-		   }
+		   }*/
 	   echo '</td></tr></table></p></p>';
 	   echo '<table  cellspacing="5" cellpadding="4"><tr><td align="left" nowrap>'; 
 
@@ -164,8 +199,8 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
       echo '<tr><td>'; 
 
       // files section
-      echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Attached Files</p></td></tr></table></p></p>';
-	   include('./studentfiles.php');
+      /*echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Attached Files</p></td></tr></table></p></p>';
+	   include('./studentfiles.php');*/
       // end files section
 
       echo '</td></tr>';
@@ -180,25 +215,10 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
 
       echo '</td></tr>';
       echo '<tr><td>'; 
-
+      echo '</td></tr></table>'; 
       
-      // issue section
-      echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue History</p></td>';
-
-         if($viewAllIssues) echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallissues=0&viewallcontacts='.$viewAllContacts.'"><b>[Reduce]</b></a>';
-         else echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallissues=1&viewallcontacts='.$viewAllContacts.'"><b>[View All]</b></a>';
-
-	      if($dam->userCanCreateContact('', $studentId)){
-		      // Michael Thompson * 12/14/2005 * Made redirect cap to match other routines
-		      echo '<a href="./addcontact.php?isnewissue=1&students='.$studentId.'&Redirect='.$studentId.'"><b>[Add a new issue]</b></a></td>';
-	      }
-      echo '</tr></table></p></p>';
-      include( './studentissues.php' );
-      // end issue section
-
-   echo '</td></tr></table>'; 
-   // end subtable one   
-
+      
+// issue section
    echo '</td>';
    echo '<td valign="top" rowspan="3">';
 
@@ -206,13 +226,31 @@ echo '<p><table width="100%"  cellpadding="5"><tr><td valign="top" rowspan="3" w
    echo '<table><tr><td>'; 
 
       // contacts section
-      echo '<p><p><table  cellspacing="3"><tr><td nowrap><p class="largeheading">Contact History</p></td>';
+     
+echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue History</p></td>';
 
-         if($viewAllContacts) echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallcontacts=0&viewallissues='.$viewAllIssues.'"><b>[Reduce]</b></a>';
-         else echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallcontacts=1&viewallissues='.$viewAllIssues.'"><b>[View All]</b></a>';
+         if($viewAllIssues) echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallissues=0&viewallcontacts='.$viewAllContacts.'"><b>[Reduce]</b></a>';
+         else echo '<td nowrap><a href="./viewstudentpf.php?id='.$studentId.'&viewallissues=1&viewallcontacts='.$viewAllContacts.'"><b>[View All]</b></a>';
 
+	      if($dam->userCanCreateContact('', $studentId)){
+		      // Michael Thompson * 12/14/2005 * Made redirect cap to match other routines
+	      }
       echo '</tr></table></p></p>';
-	   include( './studentcontacts.php' );
+      include( './studentissuespf.php' );
+   echo '</td></tr></table>';
+   echo '</td>';
+   echo '</div>';
+   // end subtable three
+   echo '</td>';
+
+echo '</td></tr></table></p>'; 
+// end main table
+if($usingIE)
+{
+echo '</br></br></br></br></div>';
+}
+echo '</body></html>';
+
       // end contacts section
       
    echo '</td></tr></table>'; 
@@ -222,5 +260,7 @@ echo '</td></tr></table></p>';
 // end main table
 
 echo '</body></html>';
+
+
 
 ?>
