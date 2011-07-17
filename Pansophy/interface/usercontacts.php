@@ -32,7 +32,8 @@ else{
 
 
 // Display contacts
-if ( sizeof( $contacts ) == 0 ) echo 'There are no contacts for this user.';
+if ( sizeof( $contacts ) == 0 && isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) echo 'There are no contacts for this user.';
+else if ( sizeof( $contacts ) == 0) echo 'There are no recent contacts for this user.';
 for($i=0; $i < sizeof($contacts); $i++){
 	$contact=$dam->viewContact('', $contacts[$i]);
 	$Creator = $dam->viewUser('', $contact['Creator']);

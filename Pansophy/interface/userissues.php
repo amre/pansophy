@@ -47,8 +47,11 @@ if($issues){
 		echo '</td></tr>';
 	}
 }
-else {
+else if (isset($_GET['viewallissues']) && $_GET['viewallissues']){
 	echo 'There are no issues for this user.';
+}
+else {
+	echo 'There are no recent issues for this user.';
 }
 echo '</dl></table>';
 ?>
