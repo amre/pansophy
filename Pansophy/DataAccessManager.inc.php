@@ -5009,11 +5009,91 @@ class DataAccessManager {
 				mysql_query($query);
 			}
 			//reports ##PROBLEM## only stores search parameters
+                        $query = "SELECT * FROM `".$this->dbname."`.`reports`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$UserID=$results['UserID'];	
+                                $Type=$results['Type'];
+                                $Name=addslashes(htmlspecialchars($results['Name']));	
+                                $GetLine=addslashes(htmlspecialchars($results['GetLine']));		
+				$query = "REPLACE INTO `".$this->hisdbname."`.`reports` (UserID, Type, Name, GetLine) VALUES ('$UserID','$Type','$Name','$GetLine')";
+				mysql_query($query);
+			}
 			//studentalert ***** alerts when a student is changed/has a new issue, which won't happen in the archived system *****
+                        $query = "SELECT * FROM `".$this->dbname."`.`studentalert`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+                                $ID=$results['ID'];
+				$UserID=$results['UserID'];
+				$StudentID=$results['StudentID'];
+                                $Message=addslashes(htmlspecialchars($results['Message']));
+				$query = "REPLACE INTO `".$this->hisdbname."`.`studentalert` (ID, UserID, StudentID, Message ) VALUES ('$ID','$UserID', '$StudentID', '$Message')";
+				mysql_query($query);
+			}
+
 			//students-FW
+                        $query = "SELECT * FROM `".$this->dbname."`.`students`"; //grab from current
+                        $result = mysql_query($query);
+                        for($i=0; $results = mysql_fetch_array($result); $i++){
+                                $StudentID=$results['StudentID'];
+                                $Reason=addslashes(htmlspecialchars($results['Reason']));
+                                $query = "REPLACE INTO `".$this->hisdbname."`.`students-FW` (StudentID, Reason) VALUES ('$StudentID', '$Reason')";
+				mysql_query($query);
+                        }
+                                 
 			//students
+                        $query = "SELECT * FROM `".$this->dbname."`.`students`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+                                $StudentID=$results['StudentID'];
+                                $AssignedTo=$results['AssignedTo'];
+                                $RedFlag=addslashes(htmlspecialchars($results['RedFlag']));
+                                $VIP=addslashes(htmlspecialchars($results['VIP']));
+                                $AcProbation=$results['AcProbation'];
+                                $HousingWaitList=$results['HousingWaitList'];
+                                $Field1=addslashes(htmlspecialchars($results['Field1']));
+                                $Field2=addslashes(htmlspecialchars($results['Field2']));
+                                $Field3=addslashes(htmlspecialchars($results['Field3']));
+                                $AllWatch=$results['AllWatch'];
+                                $FirstWatch=$results['FirstWatch'];
+                                $InterimCounter=$results['InterimCounter'];
+                                $LastModified=$results['LastModified'];
+                                $Modifier=$results['Modifier'];
+                                $DateCreated=$results['DateCreated'];
+                                $FERPA=addslashes(htmlspecialchars($results['RedFlag']));
+                                $ferpaCheck=$results['ferpaCheck']; 
+
+                                $query = "REPLACE INTO `".$this->hisdbname."`.`students` (StudentID,AssignedTo,RedFlag,VIP,Acprobation,HousingWaitList,Field1,Field2,Field3,AllWatch,FirstWatch,InterimCounter,LastModified,Modifier,DateCreated,
+FERPA,ferpaCheck) VALUES ('$StudentID','$AssignedTo','$RedFlag','$VIP','$AcProbation','$HousingWaitList','$Field1','$Field2','$Field3','$AllWatch','$FirstWatch','$InterimCounter',
+ '$LastModified','$Modifier','$DateCreated','$FERPA','$ferpaCheck')";
+                                mysql_query($query);
+                        }
 			//studentwatch
+                        $query = "SELECT * FROM `".$this->dbname."`.`studentwatch`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables                               
+				$UserID=$results['UserID'];
+				$StudentID=$results['StudentID'];                               
+				$query = "REPLACE INTO `".$this->hisdbname."`.`studentwatch` (UserID, StudentID) VALUES ('$UserID', '$StudentID')";
+				mysql_query($query);
+			}
+
 			//useralert ***** alerts when a user is changed, which won't happen in the archived system *****
+                         $query = "SELECT * FROM `".$this->dbname."`.`useralert`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+                                $ID=$results['ID'];
+				$UserID=$results['UserID'];
+				$OtherID=$results['OtherID'];
+                                $Message=addslashes(htmlspecialchars($results['Message']));
+				$query = "REPLACE INTO `".$this->hisdbname."`.`useralert` (ID, UserID, OtherID, Message ) VALUES ('$ID','$UserID', '$OtherID', '$Message')";
+				mysql_query($query);
+			}
+
 			//users
 			$query = "SELECT * FROM `".$this->dbname."`.`users`"; //grab from current
 			$result = mysql_query($query);
