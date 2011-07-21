@@ -3733,6 +3733,7 @@ class DataAccessManager {
 			      $InterimCounter--;
 			      $query = "UPDATE students SET InterimCounter=".$InterimCounter." WHERE StudentID = '".$studentId."'";
 			      mysql_query($query);
+
             }
 			}
 
@@ -5153,8 +5154,8 @@ class DataAccessManager {
 			/***** Delete actual students first *****/
 
 			//X_PNSY_STUDENT //has to be first
-			$approvedstring="EM CS OP OC LM DP RE DD LP LA FE FY TR";//GAH
-			$query = "DELETE FROM `X_PNSY_STUDENT` WHERE CLASS_YEAR<=$year";
+			//Shouldn't be archived: EM CS OP OC LM DP RE DD LP LA FE FY TR
+			$query = "DELETE FROM `X_PNSY_STUDENT` WHERE CLASS_YEAR<=$year AND ENROLL_STATUS!='EM' AND ENROLL_STATUS!='CS' AND ENROLL_STATUS!='OP' AND ENROLL_STATUS!='OC' AND ENROLL_STATUS!='LM' AND ENROLL_STATUS!='DP' AND ENROLL_STATUS!='RE' AND ENROLL_STATUS!='DD' AND ENROLL_STATUS!='LP' AND ENROLL_STATUS!='LA' AND ENROLL_STATUS!='FE' AND ENROLL_STATUS!='FY' AND ENROLL_STATUS!='TR'";
 			mysql_query($query);
 
 
