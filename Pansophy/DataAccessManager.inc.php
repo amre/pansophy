@@ -121,9 +121,6 @@ class DataAccessManager {
 	 */
 	function getAccessLevel() {
 		$userID = $_SESSION['userid'];
-		//$browser = $_SESSION['browser'];
-		//$operationSystem = $_SESSION['os'];
-		//$ipAddress = $_SESSION['ip'];
 		
 		// THIS NEEDS TO BE CHANGED TO ACTUALLY CHECK SESSION DATA AT SOME POINT
 		$table='users';
@@ -131,7 +128,6 @@ class DataAccessManager {
 			echo "<br>Failed to connect to database.  Operation failed.<br>";
 			exit;
 		}
-		//mysql_select_db('students');
 		$query = "SELECT AccessLevel FROM $table WHERE ID = '$userID'";
 		$result = mysql_query($query);
 		$results = mysql_fetch_array( $result );
@@ -148,15 +144,11 @@ class DataAccessManager {
 	*/
 	function getUserAccessLevel( $user ) {
 		$userID = $user;
-		//$browser = $_SESSION['browser'];
-		//$operationSystem = $_SESSION['os'];
-		//$ipAddress = $_SESSION['ip'];
 		
 		// THIS NEEDS TO BE CHANGED TO ACTUALLY CHECK SESSION DATA AT SOME POINT
 		$table='users';
 		if(empty($this->link)){
 			echo "<br>Failed to connect to database.  Operation failed.<br>";
-			//return 'BLAH!!!';
 			exit;
 		}
 		$query = "SELECT AccessLevel FROM $table WHERE ID = '$userID'";
@@ -332,17 +324,17 @@ class DataAccessManager {
 	function getUserContacts( $userID, $recent ){
 
 		$query = "SELECT `ID` FROM contacts 
-               where `Creator` LIKE '%$userID%' || `Modifier` LIKE '%$userID%'
-               ORDER BY DateCreated DESC";
+               		where `Creator` LIKE '%$userID%' || `Modifier` LIKE '%$userID%'
+               		ORDER BY DateCreated DESC";
 
-      if($recent){
-         //$now = date('Y-m-d H:i:s');
-         $past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
-		   $query = "SELECT `ID` FROM contacts 
-                  where `DateCreated` >= '$past'
-                  and (`Creator` LIKE '%$userID%' || `Modifier` LIKE '%$userID%') 
-                  ORDER BY DateCreated DESC";
-      }
+      		if($recent){
+         		//$now = date('Y-m-d H:i:s');
+         		$past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
+		   	$query = "SELECT `ID` FROM contacts 
+                  		where `DateCreated` >= '$past'
+                  		and (`Creator` LIKE '%$userID%' || `Modifier` LIKE '%$userID%') 
+                  		ORDER BY DateCreated DESC";
+      		}
 
 		$result = mysql_query($query);
 		for($i=0; $results = mysql_fetch_array($result); $i++){
@@ -395,12 +387,12 @@ class DataAccessManager {
 	 */
 	function viewStudent( $sessionID, $studentID ) {
 		if( $this->userCanViewStudent( $sessionID )){
-         if(!empty($studentID)){
-			   $this->verifyStudent($studentID);
-			   $query="SELECT * FROM X_PNSY_STUDENT ss, students s WHERE ss.ID = '$studentID' AND ss.ID = s.StudentID";
-			   $result = mysql_query($query);
-			   return mysql_fetch_assoc($result);
-         }
+         		if(!empty($studentID)){
+			   	$this->verifyStudent($studentID);
+			   	$query="SELECT * FROM X_PNSY_STUDENT ss, students s WHERE ss.ID = '$studentID' AND ss.ID = s.StudentID";
+			   	$result = mysql_query($query);
+			   	return mysql_fetch_assoc($result);
+         		}
 		}
 	}
 
@@ -440,24 +432,9 @@ class DataAccessManager {
 			}	
 			return $temp;
 		}
-			//It appears that ID_1 refers to the student and ID_2 to the parent/relation...
-			//Doing either ID caused an issue when a parent had the same ID as a student.
-			/**$query = "SELECT * FROM X_PNSY_RELATIONSHIP WHERE ID_1 = '$studentID' OR ID_2 = '$studentID'";
-			$result = mysql_query($query);
-
-			$temp = array();
-
-			while ($row = mysql_fetch_assoc($result)) {
-				if($row['ID_1'] == $studentID) {
-					array_push( $temp, $row['ID_2'] );
-					array_push( $temp, $row['RELATIONSHIP'] );
-				}
-				if($row['ID_2'] == $studentID) {
-					array_push( $temp, $row['ID_1'] );
-					array_push( $temp, $row['RELATIONSHIP'] );
-				}
-			}	
-			return $temp;*/
+		//Previously, ID_1 or ID_2 could be the $studentID, but from the table
+		//it appears that ID_1 refers to the student and ID_2 to the parent/relation...
+		//Doing either ID caused an issue when a parent had the same ID as a student.
 	}
 	
 	/**
@@ -597,20 +574,20 @@ class DataAccessManager {
 	function getUserIssues( $userid , $recent) {
 		if( $this->userCanGetUserIssues( $userid ) ) {
 
-		   $query = "select distinct i.ID from issues i, contacts c
-              where c.Creator = '$userid'
-			     and c.issue = i.id
-              order by i.DateCreated desc";
+		   	$query = "select distinct i.ID from issues i, contacts c
+              			where c.Creator = '$userid'
+			     	and c.issue = i.id
+              			order by i.DateCreated desc";
 
-         if($recent){
-            //$now = date('Y-m-d H:i:s');
-            $past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
-			   $query = "select distinct i.ID from issues i, contacts c
-				     where c.datecreated >= '$past'
-                 and c.Creator = '$userid'
-				     and c.issue = i.id
-                 order by i.DateCreated desc";
-         }
+         		if($recent){
+            			//$now = date('Y-m-d H:i:s');
+            			$past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
+			   	$query = "select distinct i.ID from issues i, contacts c
+				     	where c.datecreated >= '$past'
+                 			and c.Creator = '$userid'
+				     	and c.issue = i.id
+                 			order by i.DateCreated desc";
+         		}
 
 			$result = mysql_query($query);
 			$return = array();
@@ -771,55 +748,25 @@ class DataAccessManager {
 	 * @return success or not
 	 */
 	function verifyStudent($studentID){
-      if(!empty($studentID)){
-		   // check X_PNSY_STUDENT table
-		   $query = "select ID from `X_PNSY_STUDENT` where ID = '$studentID'";
-		   $result = mysql_query($query);		
-		   if (mysql_num_rows($result) == 0) return false;
+      		if(!empty($studentID)){
+		   	// check X_PNSY_STUDENT table
+		   	$query = "select ID from `X_PNSY_STUDENT` where ID = '$studentID'";
+		   	$result = mysql_query($query);		
+		   	if (mysql_num_rows($result) == 0) return false;
 
-		
-		   // check students table
-		   $query = "select StudentID from `students` where StudentID = '$studentID'";
-		   $result = mysql_query($query);		
-		   if (mysql_num_rows($result) != 0) return true;
+		   	// check students table
+		   	$query = "select StudentID from `students` where StudentID = '$studentID'";
+		   	$result = mysql_query($query);		
+		   	if (mysql_num_rows($result) != 0) return true;
 
-		
-		   // add student as a default entry
-		   $query = "insert into students (StudentID) value ('$studentID')";
-		   $result = mysql_query($query);	
-		   return $result;
-      }
-
-      return false;
+		   	// add student as a default entry
+		   	$query = "insert into students (StudentID) value ('$studentID')";
+		   	$result = mysql_query($query);	
+		   	return $result;
+      		}
+      		return false;
 	}
 	
-	/**
-	 * Policy implementation. Returns true if the user has permission to perform the
-	 * action, false if not. Currently deletion of students it not permitted. Not supported at this time.
-	 *
-	 * @param $sessionID session information like IP address to verify for security
-	 * @param $studentID the ID of the student to delete
-	 */
-//	function userCanDeleteStudent( $sessionID, $studentID ) {
-//		return FALSE;
-//	}
-
-// ok
-	/**
-	 * Deletes a student record from the database.  May break things that are associated
-	 * with the student. Not supported at this time.
-	 *
-	 * @param $sessionID session information like IP address to verify for security
-	 * @param $studentID the ID of the student to delete
-	 */
-//	function deleteStudent( $sessionID, $studentID ) {
-//		if( $this->userCanDeleteStudent( $sessionID, $studentID ) ) {
-//			$query = "DELETE FROM students WHERE ID='".$studentID."'";
-//			return mysql_query($query);
-//		}
-//	}
-
-// ok
 	/**
 	 * Policy implementation. Returns true if the user has permission to perform the
 	 * action, false if not.  Currently the user must be active and cannot be read-only.
@@ -1421,41 +1368,6 @@ class DataAccessManager {
 				$this->setFirstWatchToWatch( $Issue );
 			}
 			
-			/*
-			$query = "SELECT * FROM issues WHERE ID='$Issue'";
-			$result = mysql_query($query);
-			@$results = mysql_fetch_array($result);
-			if(!$results){
-				echo 'There is no issue with that ID.';
-				exit;
-			}
-			$IssueStudents = explode(",", $results['Students']);
-			$Students = array_diff($Students, $IssueStudents);
-			if(sizeof($Students) > 0){
-				$Students = implode(",", $Students);
-				$Students = ','.$Students;
-				$query="UPDATE issues SET Students=CONCAT(Students,'$Students') WHERE ID='$Issue'";
-				mysql_query($query);
-			}
-
-			$Staff = "";//explode(',', $results['Staff']);
-			$nothing = array('');
-			$Staff = array_diff($Staff, $nothing);
-			if(!in_array($Creator, $Staff)){
-				if (sizeof($Staff) > 0){
-					$query="UPDATE issues SET Staff=CONCAT(Staff,',$Creator') WHERE ID='$Issue'";
-				}
-				else{
-					$query="UPDATE issues SET Staff=CONCAT(Staff,'$Creator') WHERE ID='$Issue'";
-				}
-				mysql_query($query);
-			}
-			if (sizeof($Staff) > 0){
-					$query="UPDATE issues SET Modifier='$Creator' WHERE ID='$Issue'";
-					mysql_query($query);
-			}
-			*/
-			
 			return $ID; //Yay, it works!	
 		}
 			return false; //Oh no, failure!
@@ -1635,7 +1547,7 @@ class DataAccessManager {
 		
 		// IMPORTANT: Permission checking is currently not done here. It is done by the web gui. 
 		// Links to delete files only show up when userCanDeleteFile() returns true.
-		// This is something to keep in mind for future phronesis versions.
+		// This is something to keep in mind for future pansophy versions.
 		
 		// delete file from server
 		if(file_exists($file_upload_folder.$fileID)){
@@ -1789,28 +1701,28 @@ class DataAccessManager {
 	 * @return array of file IDs attached to given student
 	 */
 	function viewAllAttachedFiles($sessionID, $studentID){
-      $allFiles = array();
-      $someFiles = array();
-      $file = array();
-      $contacts=$this->getStudentsContacts($studentID);
-      for($i = 0; $i < sizeof($contacts); $i++){
-         $contactID = $contacts[$i];
-         $contact = $this->viewContact('',$contactID);
-         $contactDate = $contact['DateCreated'];
-         if(!empty($contactID)){
-            unset($someFiles);
-            $someFiles = $this->viewAttachedFiles('',$contactID);            
-            for($j = 0; $j < sizeof($someFiles); $j++){
-               unset($file);
-               $file['fileid'] = $someFiles[$j];
-               $file['contactid'] = $contactID;
-               $file['name'] = $this->getAttachedFileName($someFiles[$j]);
-               $file['date'] = $contactDate;
-               array_push($allFiles,$file);
-            }
-         }
-      }
-      return($allFiles);
+      		$allFiles = array();
+      		$someFiles = array();
+      		$file = array();
+      		$contacts=$this->getStudentsContacts($studentID);
+      		for($i = 0; $i < sizeof($contacts); $i++){
+         		$contactID = $contacts[$i];
+         		$contact = $this->viewContact('',$contactID);
+         		$contactDate = $contact['DateCreated'];
+         		if(!empty($contactID)){
+            			unset($someFiles);
+            			$someFiles = $this->viewAttachedFiles('',$contactID);            
+            			for($j = 0; $j < sizeof($someFiles); $j++){
+               				unset($file);
+               				$file['fileid'] = $someFiles[$j];
+               				$file['contactid'] = $contactID;
+               				$file['name'] = $this->getAttachedFileName($someFiles[$j]);
+               				$file['date'] = $contactDate;
+               				array_push($allFiles,$file);
+            			}
+         		}
+      		}
+      		return($allFiles);
 	}
 
 	/**
@@ -1822,28 +1734,28 @@ class DataAccessManager {
 	 * @return array of file IDs attached to given student
 	 */
 	function viewAllNormalAttachedFiles($sessionID, $studentID){
-      $allFiles = array();
-      $someFiles = array();
-      $file = array();
-      $contacts=$this->getStudentsContacts($studentID);
-      for($i = 0; $i < sizeof($contacts); $i++){
-         $contactID = $contacts[$i];
-         $contact = $this->viewContact('',$contactID);
-         $contactDate = $contact['DateCreated'];
-         if(!empty($contactID)){
-            unset($someFiles);
-            $someFiles = $this->viewNormalFiles('',$contactID);            
-            for($j = 0; $j < sizeof($someFiles); $j++){
-               unset($file);
-               $file['fileid'] = $someFiles[$j];
-               $file['contactid'] = $contactID;
-               $file['name'] = $this->getAttachedFileName($someFiles[$j]);
-               $file['date'] = $contactDate;
-               array_push($allFiles,$file);
-            }
-         }
-      }
-      return($allFiles);
+      		$allFiles = array();
+      		$someFiles = array();
+      		$file = array();
+      		$contacts=$this->getStudentsContacts($studentID);
+      		for($i = 0; $i < sizeof($contacts); $i++){
+         		$contactID = $contacts[$i];
+         		$contact = $this->viewContact('',$contactID);
+         		$contactDate = $contact['DateCreated'];
+         		if(!empty($contactID)){
+            			unset($someFiles);
+            			$someFiles = $this->viewNormalFiles('',$contactID);            
+            			for($j = 0; $j < sizeof($someFiles); $j++){
+               				unset($file);
+               				$file['fileid'] = $someFiles[$j];
+               				$file['contactid'] = $contactID;
+               				$file['name'] = $this->getAttachedFileName($someFiles[$j]);
+               				$file['date'] = $contactDate;
+               				array_push($allFiles,$file);
+            			}
+         		}
+      		}
+      		return($allFiles);
 	}
 
 	/**
@@ -1855,28 +1767,28 @@ class DataAccessManager {
 	 * @return array of file IDs attached to given student
 	 */
 	function viewAllAdmissionsAttachedFiles($sessionID, $studentID){
-      $allFiles = array();
-      $someFiles = array();
-      $file = array();
-      $contacts=$this->getStudentsContacts($studentID);
-      for($i = 0; $i < sizeof($contacts); $i++){
-         $contactID = $contacts[$i];
-         $contact = $this->viewContact('',$contactID);
-         $contactDate = $contact['DateCreated'];
-         if(!empty($contactID)){
-            unset($someFiles);
-            $someFiles = $this->viewAdmissionsFiles('',$contactID);            
-            for($j = 0; $j < sizeof($someFiles); $j++){
-               unset($file);
-               $file['fileid'] = $someFiles[$j];
-               $file['contactid'] = $contactID;
-               $file['name'] = $this->getAttachedFileName($someFiles[$j]);
-               $file['date'] = $contactDate;
-               array_push($allFiles,$file);
-            }
-         }
-      }
-      return($allFiles);
+      		$allFiles = array();
+      		$someFiles = array();
+      		$file = array();
+      		$contacts=$this->getStudentsContacts($studentID);
+      		for($i = 0; $i < sizeof($contacts); $i++){
+         		$contactID = $contacts[$i];
+         		$contact = $this->viewContact('',$contactID);
+         		$contactDate = $contact['DateCreated'];
+         		if(!empty($contactID)){
+            			unset($someFiles);
+            			$someFiles = $this->viewAdmissionsFiles('',$contactID);            
+            			for($j = 0; $j < sizeof($someFiles); $j++){
+               				unset($file);
+               				$file['fileid'] = $someFiles[$j];
+               				$file['contactid'] = $contactID;
+               				$file['name'] = $this->getAttachedFileName($someFiles[$j]);
+               				$file['date'] = $contactDate;
+               				array_push($allFiles,$file);
+            			}
+         		}
+      		}
+      		return($allFiles);
 	}
 	
 	 
@@ -2809,7 +2721,7 @@ class DataAccessManager {
 			$return = mysql_query($query);
 	// Michael Thompson * 12/13/2005 * Add user to watch list and post a contact message to the issue
 			$this->watchIssue("",$issueId);
-            $Description = $userToAssign.' assigned to issue '.$issueId;
+            		$Description = $userToAssign.' assigned to issue '.$issueId;
 
 			// get students involved with issue
 			$query = "select distinct (studentid) from `contacts-students`
@@ -3221,7 +3133,7 @@ class DataAccessManager {
 		return $return;
 	}
 
-   /**
+   	/**
 	 * Used to generate a report of interims.
 	 * 
 	 * @param $startdate - date to start report on
@@ -3234,171 +3146,170 @@ class DataAccessManager {
 	 * This is why result sets generally end up being enumerated arrays of associative arrays.
 	 */
 	function getInterimReport( $startdate, $enddate ){
-      $userid = $_SESSION['userid'];
+      		$userid = $_SESSION['userid'];
 
-      $query = "select `ID` as interimid, `StudentID` as studentid, `DateProcessed` as dateprocessed, `CourseNumberTitle` as course from `interims`";
+      		$query = "select `ID` as interimid, `StudentID` as studentid, `DateProcessed` as dateprocessed, `CourseNumberTitle` as course from `interims`";
 
-      if($startdate && $enddate) $query .= " where `DateProcessed` >= '".getMySqlDate( $startdate )."' and `DateProcessed` <= '".getMySqlDate( $enddate )."'";
-      else if( $startdate ) $query .= " where `DateProcessed` >= '".getMySqlDate( $startdate )."'";
-      else if( $enddate ) $query .= " where `DateProcessed` <= '".getMySqlDate( $enddate )."'";
+      		if($startdate && $enddate) $query .= " where `DateProcessed` >= '".getMySqlDate( $startdate )."' and `DateProcessed` <= '".getMySqlDate( $enddate )."'";
+      		else if( $startdate ) $query .= " where `DateProcessed` >= '".getMySqlDate( $startdate )."'";
+      		else if( $enddate ) $query .= " where `DateProcessed` <= '".getMySqlDate( $enddate )."'";
 
-      $query .= " order by `DateProcessed`";
+      		$query .= " order by `DateProcessed`";
 
-      $result =  mysql_query($query);
-      $interims = array();
-      while( $row = mysql_fetch_assoc( $result ) ) {
+      		$result =  mysql_query($query);
+      		$interims = array();
+      		while( $row = mysql_fetch_assoc( $result ) ) {
 			array_push( $interims, $row );
-	   }
-      return($interims);   
-   }
+	   	}
+      		return($interims);   
+   	}
 	
 
-   /**
-
+   	/**
 	 * Used to generate a report on the first watch list.
 	 * 
 	 * @param $startdate - date to start report on
 	 * @param $enddate - date to end report on
-    * @param $reason - reason for being placed on first watch
-    * 
-    * @return array of first watch entries. each entries has the following fields:
-    *         studentID, reason, add date, removal date                        
+    	 * @param $reason - reason for being placed on first watch
+    	 * 
+    	 * @return array of first watch entries. each entries has the following fields:
+    	 *         studentID, reason, add date, removal date                        
 	 */
 	function getFirstWatchReport( $startdate, $enddate, $reason){
 
-      $startdate = strtotime($startdate);
-      $enddate = strtotime($enddate);
+      		$startdate = strtotime($startdate);
+      		$enddate = strtotime($enddate);
 
-      $userid = $_SESSION['userid'];
+      		$userid = $_SESSION['userid'];
 
-      $query = "select c.ID, c.DateCreated, c.Description from `contacts` c, `issues` i where i.Header = 'INTERIM AND FIRST WATCH HISTORY' and i.ID = c.Issue order by c.DateCreated";
+      		$query = "select c.ID, c.DateCreated, c.Description from `contacts` c, `issues` i where i.Header = 'INTERIM AND FIRST WATCH HISTORY' and i.ID = c.Issue order by c.DateCreated";
 
-      //if( $startdate ) $query .= " and c.DateCreated >= '".getMySqlDate( $startdate )."'";
-      //if( $enddate ) $query .= " and c.DateCreated <= '".getMySqlDate( $enddate )."'";
-      //$query .= " order by c.DateCreated";
-      $result =  mysql_query($query);
+      		//if( $startdate ) $query .= " and c.DateCreated >= '".getMySqlDate( $startdate )."'";
+      		//if( $enddate ) $query .= " and c.DateCreated <= '".getMySqlDate( $enddate )."'";
+      		//$query .= " order by c.DateCreated";
+      		$result =  mysql_query($query);
    
-      $fw = array();
-      while( $contact = mysql_fetch_assoc( $result ) ) {
+      		$fw = array();
+      		while( $contact = mysql_fetch_assoc( $result ) ) {
 
-         // flag for indicating this contact is one we are looking for
-         $flag = true;
+         		// flag for indicating this contact is one we are looking for
+         		$flag = true;
 
-         // check date
-         if(strpos($contact['Description'], "Student placed on the First Watch List [") === 0){
-            if(strtotime($contact['DateCreated']) > $enddate) $flag = false; 
-         }
-         else if(strpos($contact['Description'], "Student removed from First Watch List [") === 0){
-            if(strtotime($contact['DateCreated']) < $startdate) $flag = false; 
-         }
-         else{ 
-            $flag = false;
-         }   
+         		// check date
+         		if(strpos($contact['Description'], "Student placed on the First Watch List [") === 0){
+            			if(strtotime($contact['DateCreated']) > $enddate) $flag = false; 
+         		}
+         		else if(strpos($contact['Description'], "Student removed from First Watch List [") === 0){
+            			if(strtotime($contact['DateCreated']) < $startdate) $flag = false; 
+         		}
+         		else{ 
+            			$flag = false;
+         		}   
 
-         // if contact checks out, see what it says
-         if($flag){
+         		// if contact checks out, see what it says
+         		if($flag){
 
-            // get student id
-            $query2 = "select distinct `StudentID` from `contacts-students` where `ContactID` = '".$contact['ID']."'";
-            $result2 =  mysql_query($query2);
-            if($result2 = mysql_fetch_assoc($result2)) $studentid = $result2['StudentID'];
+            			// get student id
+            			$query2 = "select distinct `StudentID` from `contacts-students` where `ContactID` = '".$contact['ID']."'";
+            			$result2 =  mysql_query($query2);
+            			if($result2 = mysql_fetch_assoc($result2)) $studentid = $result2['StudentID'];
 
-            // get reason
-            $offset = 38;
-            $allreasons = array('Academic','Financial','Interim Reports','Medical','Possible Transfer','Personal','Watch List');
-            for($i = 0; $i < count($allreasons); $i++){
-               if(strpos($contact['Description'], $allreasons[$i], $offset) !== false){
-                  // add an array for the student in the firstwatch array
-                  if(!isset($fw[$studentid])){
-                     $fw[$studentid] = array();
-                  }
-                  // add reason to array
-                  $fw[$studentid][] = $allreasons[$i];
-               }
-            }
-         }
-	   }
+            			// get reason
+            			$offset = 38;
+            			$allreasons = array('Academic','Financial','Interim Reports','Medical','Possible Transfer','Personal','Watch List');
+            			for($i = 0; $i < count($allreasons); $i++){
+               				if(strpos($contact['Description'], $allreasons[$i], $offset) !== false){
+                  				// add an array for the student in the firstwatch array
+                  				if(!isset($fw[$studentid])){
+                     					$fw[$studentid] = array();
+                  				}
+                  				// add reason to array
+                  				$fw[$studentid][] = $allreasons[$i];
+               				}
+            			}
+         		}
+	   	}
 
-      // if a reason search criteria was provided, filter the results
-      if(!empty($reason)){
-         foreach(array_keys($fw) as $id){
-            if(array_search($reason,$fw[$id]) === false) unset($fw[$id]);
-         }
-      }
+      		// if a reason search criteria was provided, filter the results
+      		if(!empty($reason)){
+         		foreach(array_keys($fw) as $id){
+            			if(array_search($reason,$fw[$id]) === false) unset($fw[$id]);
+         		}
+      		}
 
-      // clean up array, remove duplicates,
-      foreach(array_keys($fw) as $id){
-         $fw[$id] = array_unique($fw[$id]);
-      }
+      		// clean up array, remove duplicates,
+      		foreach(array_keys($fw) as $id){
+         		$fw[$id] = array_unique($fw[$id]);
+      		}
 
-      return $fw;   
-   }
+      		return $fw;   
+   	}
 
 
-   /**
+   	/**
 	 * Used to search database for a faculty member with the given name. Since an interim can be 
-    * submitted with the faculty name in various different formats, we must be careful how we 
-    * search the database. Not very robust, but hopefully good enough..
+  	 * submitted with the faculty name in various different formats, we must be careful how we 
+    	 * search the database. Not very robust, but hopefully good enough..
 	 * 
 	 * @param $unformattedName - name of faculty member, as provided by the submittor
 	 *
 	 * @return an array containing ID Number, First Name, Last Name, and Email. If a match cannot
-    *  be found, return false.
+    	 *  be found, return false.
 	 */
 	function findInstructor($unformattedName){
 
-      if(empty($unformattedName)) return false;
+      		if(empty($unformattedName)) return false;
 
-      // remove commas, periods, and such
-      $toRemove = array(".",",");
-      $name = str_replace($toRemove, "", $unformattedName);
+      		// remove commas, periods, and such
+      		$toRemove = array(".",",");
+      		$name = str_replace($toRemove, "", $unformattedName);
 
-      // split name into words
-      $name = explode(' ',$name);
+      		// split name into words
+      		$name = explode(' ',$name);
       
-      // remove titles
-      $titles = array("Dr","dr","Prof","prof","");
-      $name = array_diff($name,$titles);
+      		// remove titles
+      		$titles = array("Dr","dr","Prof","prof","");
+      		$name = array_diff($name,$titles);
 
-      // reset indices
-      $name = array_values($name);
+      		// reset indices
+      		$name = array_values($name);
 
-      // with any luck, our array only contains the first and last names, and maybe middle
-      $subQuery = "SELECT DISTINCT `ID`, `FIRST_NAME`, `MIDDLE_NAME`, `LAST_NAME`, `WOOSTER_EMAIL` FROM `X_PNSY_FACULTY` WHERE ";
+      		// with any luck, our array only contains the first and last names, and maybe middle
+      		$subQuery = "SELECT DISTINCT `ID`, `FIRST_NAME`, `MIDDLE_NAME`, `LAST_NAME`, `WOOSTER_EMAIL` FROM `X_PNSY_FACULTY` WHERE ";
 
-      if(count($name) < 2) return false;
-      if(count($name) > 1){
-         // FIRST LAST
-         $query1 = "".$subQuery."`FIRST_NAME`='".$name[0]."' AND `LAST_NAME`='".$name[1]."'";
+      		if(count($name) < 2) return false;
+      		if(count($name) > 1){
+         		// FIRST LAST
+         		$query1 = "".$subQuery."`FIRST_NAME`='".$name[0]."' AND `LAST_NAME`='".$name[1]."'";
 
-         // LAST FIRST
-         $query2 = $subQuery."`FIRST_NAME`='".$name[1]."' AND `LAST_NAME`='".$name[0]."'";
-      }
-      if(count($name) > 2){
-         // FIRST MIDDLE LAST
-         $query3 = $subQuery."`FIRST_NAME`='".$name[0]."' AND `MIDDLE_NAME`='".$name[1]."' AND `LAST_NAME`='".$name[2]."'";
+         		// LAST FIRST
+         		$query2 = $subQuery."`FIRST_NAME`='".$name[1]."' AND `LAST_NAME`='".$name[0]."'";
+      		}
+      		if(count($name) > 2){
+         		// FIRST MIDDLE LAST
+         		$query3 = $subQuery."`FIRST_NAME`='".$name[0]."' AND `MIDDLE_NAME`='".$name[1]."' AND `LAST_NAME`='".$name[2]."'";
 
-         // LAST FIRST MIDDLE
-         $query4 = $subQuery."`FIRST_NAME`='".$name[1]."' AND `MIDDLE_NAME`='".$name[2]."' AND `LAST_NAME`='".$name[0]."'";
-      }
+         		// LAST FIRST MIDDLE
+         		$query4 = $subQuery."`FIRST_NAME`='".$name[1]."' AND `MIDDLE_NAME`='".$name[2]."' AND `LAST_NAME`='".$name[0]."'";
+      		}
 
-      // make queries
-      $result = mysql_query($query1);
-      if($info = mysql_fetch_assoc($result)) return $info;
-      $result = mysql_query($query2);
-      if($info = mysql_fetch_assoc($result)) return $info;
-      if(!empty($query3)){
-         $result = mysql_query($query3);
-         if($info = mysql_fetch_assoc($result)) return $info;
-      }
-      if(!empty($query4)){
-         $result = mysql_query($query4);
-         if($info = mysql_fetch_assoc($result)) return $info;
-      }
+      		// make queries
+      		$result = mysql_query($query1);
+      		if($info = mysql_fetch_assoc($result)) return $info;
+      		$result = mysql_query($query2);
+      		if($info = mysql_fetch_assoc($result)) return $info;
+      		if(!empty($query3)){
+         		$result = mysql_query($query3);
+         		if($info = mysql_fetch_assoc($result)) return $info;
+      		}
+      		if(!empty($query4)){
+         		$result = mysql_query($query4);
+         		if($info = mysql_fetch_assoc($result)) return $info;
+      		}
 
-      // return false if nothing works
-      return false;   
-   }
+      		// return false if nothing works
+      		return false;   
+   	}
 
 
 	/**
@@ -3645,7 +3556,7 @@ class DataAccessManager {
 			$ID ='R'.$ID.$idnumber;
 			// end hack to create ID number
 
-         $DateProcessed = date('Y-m-d');
+         		$DateProcessed = date('Y-m-d');
 			$query = "INSERT INTO interims (ID, StudentID, Date, CourseNumberTitle, Instructor, Problem, Comments, RecommendAction, OtherAction, DateProcessed)
 				  values ('$ID', '$stuID', '$Date', '$Course', '$Prof', '$Probs', '$Comment', '$Actions', '$Other', '$DateProcessed')";
 			mysql_query($query);
@@ -3655,7 +3566,7 @@ class DataAccessManager {
 			$value = mysql_fetch_assoc($result);
 			extract($value);
 			
-         // increment interim counter
+         		// increment interim counter
 			$InterimCounter++;
 			
 			$query = "UPDATE students SET InterimCounter=".$InterimCounter." WHERE StudentID = '".$stuID."'";
@@ -3666,11 +3577,11 @@ class DataAccessManager {
 			$value = mysql_fetch_assoc($result);
 			extract($value);    
 
-         // add an issue/contact to show that an interim was submitted
-         $description = 'Interim Report '.$ID.' submitted.';
-         $this->updateSpecialHistory($stuID,$description,0);
+         		// add an issue/contact to show that an interim was submitted
+         		$description = 'Interim Report '.$ID.' submitted.';
+         		$this->updateSpecialHistory($stuID,$description,0);
       
-         // check the interim counter
+         		// check the interim counter
 			if($InterimCounter > 2){
 				$query = "UPDATE students SET FirstWatch = 1 WHERE StudentID = '".$stuID."' AND FirstWatch=0";
 				mysql_query($query);
@@ -3682,12 +3593,11 @@ class DataAccessManager {
 					$query = "INSERT INTO `students-FW` (StudentID, Reason) VALUES ('".$stuID."', 'Interim Reports')";
 					mysql_query($query);
 
-               // add a contact indicating that the student was added to first watch
-               $description = "Student placed on the First Watch List [".$InterimCounter." Interim Reports].";
-               $this->updateSpecialHistory($stuID,$description,1);
+               				// add a contact indicating that the student was added to first watch
+               				$description = "Student placed on the First Watch List [".$InterimCounter." Interim Reports].";
+               				$this->updateSpecialHistory($stuID,$description,1);
 				}
 			}
-
 			return $ID; //Yay, it works!
 		}
 		else {
@@ -3725,37 +3635,33 @@ class DataAccessManager {
 			   return false;
 			}			
 
-         // first get associated student id
-         $query = "select `StudentID` from `interims` where `ID`='$interimId'";
-         $result = mysql_query($query);
-         $studentId = mysql_fetch_assoc($result);
-         $studentId = $studentId['StudentID'];
+         		// first get associated student id
+         		$query = "select `StudentID` from `interims` where `ID`='$interimId'";
+         		$result = mysql_query($query);
+         		$studentId = mysql_fetch_assoc($result);
+         		$studentId = $studentId['StudentID'];
 
-         // delete interim
-         $query = "delete from `interims` where id='$interimId'";
-         $result = mysql_query($query);
+         		// delete interim
+         		$query = "delete from `interims` where id='$interimId'";
+         		$result = mysql_query($query);
       
-         // update interim counter
-	      $query = "SELECT InterimCounter FROM students WHERE StudentID = '".$studentId."'";
+         		// update interim counter
+	      		$query = "SELECT InterimCounter FROM students WHERE StudentID = '".$studentId."'";
 			$result = mysql_query($query);
 			if($value = mysql_fetch_assoc($result)){
-			   extract($value);	
-            // decrement interim counter
-            if($InterimCounter > 0){
-			      $InterimCounter--;
-			      $query = "UPDATE students SET InterimCounter=".$InterimCounter." WHERE StudentID = '".$studentId."'";
-			      mysql_query($query);
-
-
-            }
+				extract($value);	
+            			// decrement interim counter
+            			if($InterimCounter > 0){
+			      		$InterimCounter--;
+			      		$query = "UPDATE students SET InterimCounter=".$InterimCounter." WHERE StudentID = '".$studentId."'";
+			      		mysql_query($query);
+            			}
 			}
-
-         // add an issue/contact to show that an interim was deleted
-         if(!empty($studentId)){
-            $description = 'Interim Report '.$interimId.' deleted.';
-            $this->updateSpecialHistory($studentId,$description,0);
-         }
-
+         		// add an issue/contact to show that an interim was deleted
+         		if(!empty($studentId)){
+            			$description = 'Interim Report '.$interimId.' deleted.';
+            			$this->updateSpecialHistory($studentId,$description,0);
+         		}
 			return true;
 		}
 		else {
@@ -3781,7 +3687,7 @@ class DataAccessManager {
 	 * Edits a pre-existing interim report.
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
-    * @param $interimID - ID of interim to edit
+    	 * @param $interimID - ID of interim to edit
 	 * @param $stuID - ID of student to generate interim for
 	 * @param $Course - course student recieved interim for
 	 * @param $Prof - professor of the course
@@ -3799,18 +3705,18 @@ class DataAccessManager {
 			   return false;
 			}			
 
-         $query = "UPDATE `interims` SET 
-                     StudentID='".$stuID."',
-                     Date='".$Date."',
-                     CourseNumberTitle='".$Course."',
-                     Instructor='".$Prof."',
-                     Problem='".$Probs."',
-                     Comments='".$Comment."',
-                     RecommendAction='".$Actions."',
-                     OtherAction='".$Other."' 
-                     WHERE ID = '".$interimId."'"; 
+         		$query = "UPDATE `interims` SET 
+                     		StudentID='".$stuID."',
+                     		Date='".$Date."',
+                     		CourseNumberTitle='".$Course."',
+                     		Instructor='".$Prof."',
+                     		Problem='".$Probs."',
+                     		Comments='".$Comment."',
+                     		RecommendAction='".$Actions."',
+                     		OtherAction='".$Other."' 
+                     		WHERE ID = '".$interimId."'"; 
 
-         $result = mysql_query($query);
+         		$result = mysql_query($query);
 
 			return true;
 		}
@@ -3853,10 +3759,8 @@ class DataAccessManager {
 	 * @return - array of interim information
 	 */
 	function viewInterim( $sessionID, $interimID ) {
-		//@session_start();
 		if( $this->userCanViewInterim( $sessionID ) ) {
 			$query="SELECT * FROM interims WHERE ID = '$interimID'";
-			//echo $query."<br>";
 			$result = mysql_query($query);
 			$interim = mysql_fetch_array($result);
 			
@@ -3958,76 +3862,55 @@ class DataAccessManager {
 					}
 					return $return;
 				}
-					//return $result;
-					//return mysql_fetch_assoc($result);
-			}//return true;
-
-
-			/*$query = "SELECT Reason FROM students-FW WHERE StudentID = $studentID";
-			$result = mysql_query($query);
-			$return = array();
-			while( $row = mysql_fetch_assoc($result) ) {
-				if( $this->userCanViewFW('') ) {
-					array_push( $return, $row );
-				}
-
 			}
-			return $return;*/
-
-			/*$query = "SELECT x.ID, x.FIRST_NAME, x.LAST_NAME, f.Reason FROM `students` s, `X_PNSY_STUDENT` x, `students-FW` f WHERE s.FirstWatch=1 AND s.StudentID = f.StudentID AND s.StudentID = x.ID ORDER BY x.LAST_NAME, f.Reason";
-			$result = mysql_query($query);*/
-			//echo $result;
-			
-			//return $result;
 		}
 	}
 	
-   /** 
-    * Create and update an interim report / first watch history for each student for whom this is a concern.
-    * History is in a contact/issue format. There is only one issue with the title INTERIM AND FIRST WATCH HISTORY.
-    * All activity is appended to this issue as contacts. Such activity includes, but is not limited to, when and why 
-    * a student is added or removed from the first watch list, or when a student receives an interim.
-    *
-    * @param $studentId - id number or student
-    * @param $description - text describing the latest activity. Ex: "student removed from first watch"
-    *                       or "student added to first watch because..."
-    * @param $timeOffset - kludge to space out contacts from the same issue that are submitted at nearly the same time
-                           can be 0 (no offset), or 1 (one second offset). The reason for this option is so that when
-                           the issue displays, contacts are sure to be in chronological order.
-    * @return $issueId - id number of the issue containing the special history
-    */
-   function updateSpecialHistory($studentId, $description, $timeOffset){
+   	/** 
+    	 * Create and update an interim report / first watch history for each student for whom this is a concern.
+    	 * History is in a contact/issue format. There is only one issue with the title INTERIM AND FIRST WATCH HISTORY.
+    	 * All activity is appended to this issue as contacts. Such activity includes, but is not limited to, when and why 
+    	 * a student is added or removed from the first watch list, or when a student receives an interim.
+    	 *
+    	 * @param $studentId - id number or student
+    	 * @param $description - text describing the latest activity. Ex: "student removed from first watch"
+    	 *                       or "student added to first watch because..."
+    	 * @param $timeOffset - kludge to space out contacts from the same issue that are submitted at nearly the same time
+         *                      can be 0 (no offset), or 1 (one second offset). The reason for this option is so that when
+         *                      the issue displays, contacts are sure to be in chronological order.
+    	 * @return $issueId - id number of the issue containing the special history
+    	 */
+   	function updateSpecialHistory($studentId, $description, $timeOffset){
       
-      // add an issue/contact to show there has been recent first watch activity for student
-      $modifier =  $_SESSION['userid'];
-      $header = 'INTERIM AND FIRST WATCH HISTORY';
-      if($timeOffset > 0) $date = date("Y-m-d H:i:s",time()+1);
-      else $date = date("Y-m-d H:i:s");
+      		// add an issue/contact to show there has been recent first watch activity for student
+      		$modifier =  $_SESSION['userid'];
+      		$header = 'INTERIM AND FIRST WATCH HISTORY';
+      		if($timeOffset > 0) $date = date("Y-m-d H:i:s",time()+1);
+      		else $date = date("Y-m-d H:i:s");
 
-      // check to see if there is already an issue with this header
-      $query = "select distinct i.ID from issues i, contacts c, `contacts-students` cs
-	               where cs.studentid = '$studentId'
-	               and cs.contactid = c.id
-	               and c.issue = i.id
-                  and i.Header = '$header'
-                  order by i.DateCreated asc";
-      $result = mysql_query($query);
-      if($result = mysql_fetch_assoc($result)){
-         $issueId = $result['ID'];
-         if(!empty($issueId)){
-            // there is already an issue in the system with the header
-            // no need to add another
-            $this->createContact( '', $date, $studentId, $description, $issueId, '-1');
-         }
-      }
-      else{
-         // there is no issue in the system with the header
-         // we should add one!
-         $issueId = $this->createIssue( '', $header, "Closed", $date, $studentId, $description, "0", "B" , "Other");
-      }
-
-      return $issueId;
-   }   
+      		// check to see if there is already an issue with this header
+      		$query = "select distinct i.ID from issues i, contacts c, `contacts-students` cs
+	               	where cs.studentid = '$studentId'
+	               	and cs.contactid = c.id
+	               	and c.issue = i.id
+                  	and i.Header = '$header'
+                  	order by i.DateCreated asc";
+      		$result = mysql_query($query);
+      		if($result = mysql_fetch_assoc($result)){
+         		$issueId = $result['ID'];
+         		if(!empty($issueId)){
+            			// there is already an issue in the system with the header
+            			// no need to add another
+            			$this->createContact( '', $date, $studentId, $description, $issueId, '-1');
+         		}
+      		}
+      		else{
+         		// there is no issue in the system with the header
+         		// we should add one!
+         		$issueId = $this->createIssue( '', $header, "Closed", $date, $studentId, $description, "0", "B" , "Other");
+      		}
+      		return $issueId;
+   	}   
    
 
 	/**
@@ -4041,11 +3924,11 @@ class DataAccessManager {
 	function clearStudentFW ( $sessionID, $studentID, $Reason ) {
 		if($this->userCanModifyFW($sessionID)) {
 
-         // add a contact indicating that the student was removed
-         $description = "Student removed from First Watch List [".$Reason."].";
-         $this->updateSpecialHistory($studentID,$description,0);   
+         		// add a contact indicating that the student was removed
+         		$description = "Student removed from First Watch List [".$Reason."].";
+         		$this->updateSpecialHistory($studentID,$description,0);   
 
-         // update db
+         		// update db
 			$query = "DELETE FROM `students-FW` WHERE StudentID = '".$studentID."' AND Reason= '".$Reason."'";
 			mysql_query($query);		
 			$query = "SELECT * FROM `students-FW` WHERE StudentID = '".$studentID."'";
@@ -4069,20 +3952,20 @@ class DataAccessManager {
 	function clearStudentAllFW ( $sessionID, $studentID ) {
 		if($this->userCanModifyFW($sessionID)) {
 
-         // get reasons why student is on list
-         $query = "SELECT DISTINCT `Reason` FROM `students-FW` WHERE `StudentID` = '".$studentID."'";
-	 $result = mysql_query($query);
-         $reasons = "";
-         while($temp = mysql_fetch_assoc($result)){
-            if(!empty($reasons)) $reasons .= ", ";
-            $reasons .= $temp['Reason'];            
-         }
+         		// get reasons why student is on list
+         		$query = "SELECT DISTINCT `Reason` FROM `students-FW` WHERE `StudentID` = '".$studentID."'";
+	 		$result = mysql_query($query);
+         		$reasons = "";
+         		while($temp = mysql_fetch_assoc($result)){
+            			if(!empty($reasons)) $reasons .= ", ";
+            			$reasons .= $temp['Reason'];            
+         		}
 
-         // add a contact indicating that the student was removed
-         $description = "Student removed from First Watch List [".$reasons."].";
-         $this->updateSpecialHistory($studentID,$description,0);   
+         		// add a contact indicating that the student was removed
+         		$description = "Student removed from First Watch List [".$reasons."].";
+         		$this->updateSpecialHistory($studentID,$description,0);   
 
-         // update db
+         		// update db
 			$query = "DELETE FROM `students-FW` WHERE `StudentID` = '".$studentID."'";
 			mysql_query($query);
 			$query = "UPDATE `students` SET `FirstWatch` = 0 WHERE `StudentID` = '".$studentID."'";
@@ -4106,9 +3989,9 @@ class DataAccessManager {
 					values ('$studentID','$FWReason')";		  
 			mysql_query($query);
 
-         // add a contact indicating the student was added to first watch and why
-         $description = "Student placed on the First Watch List [".$FWReason."].";
-         $this->updateSpecialHistory($studentID, $description, 0);
+        		// add a contact indicating the student was added to first watch and why
+         		$description = "Student placed on the First Watch List [".$FWReason."].";
+         		$this->updateSpecialHistory($studentID, $description, 0);
 		}
 	}
 	
@@ -4175,28 +4058,28 @@ class DataAccessManager {
 	function changeEmails( $sessionID, $Email1, $Email2, $Email3 ) {
 		if( $this->userCanChangeEmails( $sessionID ) ) {
 
-         if($Email1 == "CLEAR" || $Email1 == "clear"){
-            $query = "UPDATE emails SET WritingCenter=''";
+         		if($Email1 == "CLEAR" || $Email1 == "clear"){
+            			$query = "UPDATE emails SET WritingCenter=''";
 				mysql_query($query);
-         }
+         		}
 			else if($Email1 != "") {
 				$query = "UPDATE emails SET WritingCenter='".$Email1."'";
 				mysql_query($query);
 			}
 
-         if($Email2 == "CLEAR" || $Email2 == "clear"){
-            $query = "UPDATE emails SET LearningCenter=''";
+         		if($Email2 == "CLEAR" || $Email2 == "clear"){
+            			$query = "UPDATE emails SET LearningCenter=''";
 				mysql_query($query);
-         }
+         		}
 			else if($Email2 != "") {
 				$query = "UPDATE emails SET LearningCenter='".$Email2."'";
 				mysql_query($query);
 			}
 
-         if($Email3 == "CLEAR" || $Email3 == "clear"){
-            $query = "UPDATE emails SET MathCenter=''";
+         		if($Email3 == "CLEAR" || $Email3 == "clear"){
+            			$query = "UPDATE emails SET MathCenter=''";
 				mysql_query($query);
-         }
+         		}
 			else if($Email3 != "") {
 				$query = "UPDATE emails SET MathCenter='".$Email3."'";
 				mysql_query($query);
@@ -4236,91 +4119,63 @@ class DataAccessManager {
 			while ($row = mysql_fetch_assoc($result)){
 				$courseID =	$row['course_id'];		
 				
-            // course information	
+            			// course information	
 				$query = "select * from `X_PNSY_COURSE` where course_id = '$courseID'";
 				$courseInfo = mysql_fetch_assoc(mysql_query($query));
 				
-            // retrieve all the course days/times. note: there can be more than one.
+            			// retrieve all the course days/times. note: there can be more than one.
 				$query = "select * from `X_PNSY_COURSE_DAYS` where course_id = '$courseID'";
-            $daysResult = mysql_query($query);
-            $meetingInfo = array();
-            while($dayRow = mysql_fetch_assoc($daysResult)){
-				   $meetingInfo[] = $dayRow;
-            }				
+            			$daysResult = mysql_query($query);
+            			$meetingInfo = array();
+            			while($dayRow = mysql_fetch_assoc($daysResult)){
+				   	$meetingInfo[] = $dayRow;
+            			}				
 
-            // retrieve prof
+            			// retrieve prof
 				$facultyID = $courseInfo['FACULTY_ID'];
-            if(!empty($facultyID)){
-   				$query = "select * from `X_PNSY_FACULTY` where id = '$facultyID'";
-   				$facultyInfo = mysql_fetch_assoc(mysql_query($query));
+            			if(!empty($facultyID)){
+   					$query = "select * from `X_PNSY_FACULTY` where id = '$facultyID'";
+   					$facultyInfo = mysql_fetch_assoc(mysql_query($query));
 				}
 
 				// parse time of day. remember, there can be more than one day/time
-            $courseDateInfo = '';
-            for($i = 0; $i < count($meetingInfo); $i++){
-               if(!empty($meetingInfo[$i]['DAYS'])){
-				      $startTime[$i] = explode(' ',$meetingInfo[$i]['START_TIME']);
-				      $startTime[$i] = explode(':',$startTime[$i][1]);
-				      $startTime[$i] = $startTime[$i][0].':'.$startTime[$i][1];
-				      $endTime[$i] = explode(' ',$meetingInfo[$i]['END_TIME']);
-				      $endTime[$i] = explode(':',$endTime[$i][1]);
-				      $endTime[$i] = $endTime[$i][0].':'.$endTime[$i][1];
-
-                  if($i > 0) $courseDateInfo .= '<br>';
-            
-                  $courseDateInfo .= $meetingInfo[$i]['DAYS'].', '.$startTime[$i].'-'.$endTime[$i].', '.$meetingInfo[$i]['COURSE_BLDG'].' '.$meetingInfo[$i]['COURSE_ROOM'];
-               }				
-            }
+            			$courseDateInfo = '';
+            			for($i = 0; $i < count($meetingInfo); $i++){
+               				if(!empty($meetingInfo[$i]['DAYS'])){
+				      		$startTime[$i] = explode(' ',$meetingInfo[$i]['START_TIME']);
+				      		$startTime[$i] = explode(':',$startTime[$i][1]);
+				      		$startTime[$i] = $startTime[$i][0].':'.$startTime[$i][1];
+				      		$endTime[$i] = explode(' ',$meetingInfo[$i]['END_TIME']);
+				      		$endTime[$i] = explode(':',$endTime[$i][1]);
+				      		$endTime[$i] = $endTime[$i][0].':'.$endTime[$i][1];
+                  				if($i > 0) $courseDateInfo .= '<br>';
+                  				$courseDateInfo .= $meetingInfo[$i]['DAYS'].', '.$startTime[$i].'-'.$endTime[$i].', '.$meetingInfo[$i]['COURSE_BLDG'].' '.$meetingInfo[$i]['COURSE_ROOM'];
+               				}				
+            			}
 
 				unset($course);	
-            $course['id'] = 'n/a';
-            $course['title'] = 'n/a';
-            $course['info'] = 'n/a';
-            $course['credits'] = 'n/a';
-            $course['faculty'] = 'n/a';
-            $course['email'] = 'n/a';
-            $course['phone'] = 'n/a';
+            			$course['id'] = 'n/a';
+            			$course['title'] = 'n/a';
+            			$course['info'] = 'n/a';
+            			$course['credits'] = 'n/a';
+            			$course['faculty'] = 'n/a';
+            			$course['email'] = 'n/a';
+            			$course['phone'] = 'n/a';
 
 				$course['id'] = $courseID;
 				if(!empty($courseInfo['TITLE'])) $course['title'] = $courseInfo['TITLE'];
-            if(!empty($courseDateInfo)) $course['info'] = $courseDateInfo;
+            			if(!empty($courseDateInfo)) $course['info'] = $courseDateInfo;
 				if(!empty($courseInfo['CREDITS'])) $course['credits'] = $courseInfo['CREDITS'];
-            if(!empty($facultyID)){
-				   $course['faculty'] = $facultyInfo['FIRST_NAME'].' '.$facultyInfo['LAST_NAME'];
-				   if(!empty($facultyInfo['WOOSTER_EMAIL'])) $course['email'] = $facultyInfo['WOOSTER_EMAIL'];
-               if(!empty($facultyInfo['CAMPUS_PHONE'])) $course['phone'] = $facultyInfo['CAMPUS_PHONE'];
-            }
-				
+            			if(!empty($facultyID)){
+				   	$course['faculty'] = $facultyInfo['FIRST_NAME'].' '.$facultyInfo['LAST_NAME'];
+				   	if(!empty($facultyInfo['WOOSTER_EMAIL'])) $course['email'] = $facultyInfo['WOOSTER_EMAIL'];
+               				if(!empty($facultyInfo['CAMPUS_PHONE'])) $course['phone'] = $facultyInfo['CAMPUS_PHONE'];
+            			}
 				$schedule[] = $course;
 			}
-			
 			return $schedule;
 		}
 	 }
-	 
-	 /**
-	  * Retrieves profile pic for a student
-	  *
-	  * @param $studentID the ID of the student to look up photo of
-	  *
-	  * @return photo of the student or default if no picture available
-	  */
-	 /*function getProfilePicture($studentID){
-		global $file_upload_folder;
-		if($this->userCanViewStudent('')){
-	 		$target = $file_upload_folder.'profile_pics/';
-	 		$ext = 'jpg,jpeg,png,gif,tif';
-	 		$ext = explode(',',$ext);
-	 		
-	 		// check for picture with all possible extensions
-	 		for($i=0; $i<count($ext); $i++){
-	 			if(file_exists($target.$studentID.'.'.$ext[$i])){
-	 				return $target.$studentID.'.'.$ext[$i];
-	 			}
-			}
-	 	}
-		return $target.'no_photo_available.jpg';
-	 }*/
 	 
 	 /**
 	  * Retrieves the LastModified date and ID for each non-closed issue that a user has.
@@ -4533,17 +4388,41 @@ class DataAccessManager {
 	 */
 	function createInterimEmailContact($interimId){
 
-      // get student id
-      $query = "select `StudentID` from `interims` where `ID`='$interimId'";
-      $result = mysql_query($query);
+      		// get student id
+      		$query = "select `StudentID` from `interims` where `ID`='$interimId'";
+      		$result = mysql_query($query);
 		$value = mysql_fetch_assoc($result);
-      if(!isset($value['StudentID'])) return false;
-      $studentId = $value['StudentID'];
+      		if(!isset($value['StudentID'])) return false;
+      		$studentId = $value['StudentID'];
 
-      // submit special contact showing that an email has been sent for the given interim
-      $description = "Email sent to student concerning interim ".$interimId;
-      $this->updateSpecialHistory($studentId,$description,0);
-   }
+      		// submit special contact showing that an email has been sent for the given interim
+      		$description = "Email sent to student concerning interim ".$interimId;
+      		$this->updateSpecialHistory($studentId,$description,0);
+   	}
+
+
+
+
+
+
+
+
+
+
+ //////////////////////VERSION 3 ADDITIONS....//////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************Lockouts*****************************************************/
+
 	/**
 	 * Modifies the database to reflect an incorrect login attempt (used for password lockout feature)
 	 *
@@ -4603,168 +4482,7 @@ class DataAccessManager {
 		}
 	}
 
-/*****************************************************SPENCER'S CODE****************************************************************/
-	/**
- 	This function works by examining every single student whose class year occurs on or before the input $year. Each student's associated issues and contacts are examined. If a potential archivee student is found to be associated with a student who should not be archived, then the potential archivee will not be archived. Additionally, if a student's enroll status code is not one of the approved codes, then the student will not be archived. If neither of these things are true, then the student is added to the archived database. In a later segment of the code, the students' associated contacts, issues, attachments, and contact-student assocations are added to the archived database.
-	 */
-	/*function archiveYear($year){
-		//debug
-		error_reporting(E_ALL);
-		ini_set("display_errors", 1);
-		// 
-		$studentquery='select * from `X_PNSY_STUDENT` where `CLASS_YEAR` <= "'.$year.'"';
-		// list of enroll status codes for students we shouldn't archive
-		$approvedstring="EM CS OP OC LM DP RE DD LP LA FE FY TR";
-		$studentsresults = mysql_query($studentquery);
-		$students = mysql_fetch_assoc($studentsresults);
-		while ($students) // iterate through selected students
-		{// code that works
-			$contactquery = 'select * from `contacts-students` where StudentID ="'.$students['ID'].'"';
-			$contactresults = mysql_query($contactquery);
-			$contacts = mysql_fetch_assoc($contactresults);
-			$iscurrent = false;
-			if(strpos($approvedstring, $students['ENROLL_STATUS']) !== FALSE) $iscurrent = true;
-			while ($contacts and !$iscurrent) // iterate through associated contacts
-			{
-				$contactID = $contacts['ContactID'];
-				$stuIDquery= 'select `StudentID` from `contacts-students` where `ContactID`="'.$contactID.'"';
-				$stuIDresults=mysql_query($stuIDquery);
-				$stuID=mysql_fetch_assoc($stuIDresults);
-				while($stuID and !$iscurrent) // iterate through other students involved with said contacts
-				{
-					$checkstuquery='select * from `X_PNSY_STUDENT` where ID="'.$stuID.'"';
-					$checksturesults=mysql_query($checkstuquery);
-					$checkstu=mysql_fetch_assoc($checksturesults);
-					if(strpos($approvedstring, $checkstu['ENROLL_STATUS']) !== FALSE) $iscurrent=true;
-					$stuID=mysql_fetch_assoc($stuIDresults);
-					$lasterr = mysql_error();
-					if (strcmp($lasterr,"") != 0) echo "error on line 4468: ".$lasterr."</br>";
-				}
-				$contacts = mysql_fetch_assoc($contactresults);
-			}
-					if (!$iscurrent){ // archive student info if student is not current.
-							// It is important to note that all students must be archived before
-							// archiving any associated contacts, issues, etc. due to foreign key constraints.
-						foreach($y as $key => $s)
-							{
-								if (empty($s)) unset($y[$key]);
-								else $s=addslashes(htmlspecialchars($s));
-							}
-						$stukey = '`'.implode('`,`',array_keys($y)).'`';
-						$stuval = '"'.implode('","',array_values($y)).'"';
-						$squerystring='insert into `pansophyhistorical`.`X_PNSY_STUDENT` ('.$stukey.') values('.$stuval.')';
-						mysql_query($squerystring);
-						//mysql_query("delete from `X_PNSY_STUDENTS` where ID=".$students['ID']);	
-					}
-					$students = mysql_fetch_assoc($studentsresults);
-		} // end code that works
-			$studentquery = "select * from `pansophyhistorical`.`X_PNSY_STUDENT`";
-			foreach( PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived ){//PLACEHOLDER-- in the below code, $i is an iterator for an array of contact IDs for all contacts to be archived
-			// This entire section of code needs to be redone. It should archive all relevant issues, contacts, contact-student associations, and attachments( in that order_
-				if ($i === FALSE) continue;
-				$issueIDquery = 'select `Issue` from `contacts` where ID="'.$i.'"';
-				$issueIDresult = mysql_query($issueIDquery);
-				$issueID = mysql_fetch_assoc($issueIDresult);
-				$issuequery = 'select * from `issues` where ID="'.$issueID['Issue'].'"';
-				$issueresult= mysql_query($issuequery);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4493: ".$lasterr."</br>";
-				//
-				$issue = mysql_fetch_assoc($issueresult);
-				if ($issue !== FALSE)
-				{
-					foreach($issue as $key => $s)
-					{
-						if (empty($s)) unset($issue[$key]);
-						else $s=addslashes(htmlspecialchars($s));
-					}
-					$issuekey = '`'.implode('`,`',array_keys($issue)).'`';
-					$issueval = '"'.implode('","',array_values($issue)).'"';
-					$issueinsert='insert into `pansophyhistorical`.`issues` ('.$issuekey.') values('.$issueval.')';
-					mysql_query($issueinsert);
-					echo $issueinsert;
-				}
-				//debug'insert into `pansophyhistorical`.`contacts-students` (ContactID, StudentID) values ("'.$constu['ContactID'].'","'.$constu['StudentID'].'")'
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4503: ".$lasterr."</br>";
-				//
-				//mysql_query('delete from `issues` where ID ="'.$issue['ID'].'"');
-				$attachquery = 'select * from `attachments` where `ContactID`="'.$i.'"';
-				$attachresult = mysql_query($attachquery);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4511: ".$lasterr."</br>";;
-				//
-				$attach = mysql_fetch_assoc($attachresult);
-				if ($attach !== FALSE)
-				{
-					foreach($attach as $key => $s)
-					{
-						if (empty($s)) unset($attach[$key]);
-						else $s=addslashes(htmlspecialchars($s));
-					}
-					$attachkey = '`'.implode('`,`',array_keys($attach)).'`';
-					$attachval = '"'.implode('","',array_values($attach)).'"';
-					mysql_query('insert into `pansophyhistorical`.`attachments` ('.$attachkey.') values ('.$attachval.')');
-					//mysql_query('delete from `attachments` where ID ="'.$attach['ID'].'"');
-				}
-				$nucontactquery='select * from `contacts` where ID="'.$i.'"';
-				$nucontactresult=mysql_query($nucontactquery);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4524: ".$lasterr."</br>";
-				//
-				$nucontact = mysql_fetch_assoc($nucontactresult);
-				if ($nucontact !== FALSE)
-				{
-					foreach($nucontact as $key => $s)
-					{
-						if (empty($s)) unset($nucontact[$key]);
-						else $s=addslashes(htmlspecialchars($s));
-					}
-					$contactkey = '`'.implode('`,`',array_keys($nucontact)).'`';
-					$contactval = '"'.implode('","',array_values($nucontact)).'"';
-					$nucontactinsert= 'insert into `pansophyhistorical`.`contacts` ('.$contactkey.') values('.$contactval.')';
-					mysql_query($nucontactinsert);
-				}
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4535: ".$lasterr."</br>";
-				//
-				//mysql_query('delete from `contacts` where ID="'.$nucontact['ID'].'"');
-				$constuquery='select * from `contacts-students` where ContactID="'.$i.'"';
-				$consturesult=mysql_query($constuquery);
-				//debug
-				$lasterr = mysql_error();
-				if (strcmp($lasterr,"") != 0) echo "error on line 4542: ".$lasterr."</br>";
-				//
-				$constu=mysql_fetch_assoc($consturesult);
-				while($constu)
-				{
-					foreach($constu as $s)
-					{
-						$s=addslashes(htmlspecialchars($s));
-					}
-					$constuinsert = 'insert into `pansophyhistorical`.`contacts-students` (ContactID, StudentID) values ("'.$constu['ContactID'].'","'.$constu['StudentID'].'")';
-					mysql_query($constuinsert);
-					//debug
-					$lasterr = mysql_error();
-					if (strcmp($lasterr,"") != 0) echo "error on line 4554: ".$lasterr."</br>";
-					//
-					//mysql_query('delete from `contacts-students` where ContactID=".$constu['ContactID']." and StudentID="'.$constu['StudentID'].'"');
-					$constu=mysql_fetch_assoc($consturesult);
-				}
-			}
-			
-
-	}
-*/
-
-/**
-	 * temp...
-	 */
-/*************************************************************************************************/
+/************************************************ARCHIVING******************************************************************/
 
 	
 	/**

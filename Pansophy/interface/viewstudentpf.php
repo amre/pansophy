@@ -24,8 +24,6 @@ $viewAllContacts = false;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $viewAllIssues = true;
 if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts = true;
 
-//FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
-
 // display title section
 echo '<h1>'.$student['FIRST_NAME'].' '.$student['MIDDLE_NAME'].' '.$student['LAST_NAME'].' - '.$studentId.'</h1>';
 echo 	'<center>Assigned to: '.$student['AssignedTo'].'</center><br />';

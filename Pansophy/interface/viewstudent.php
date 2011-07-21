@@ -51,9 +51,6 @@ $viewAllContacts = false;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $viewAllIssues = true;
 if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts = true;
 
-
-//FOR DISPLAYING PICTURE//$picture = $dam->getProfilePicture($studentId);
-
 // display title section
 
 if($dam->dontContactParents('',$studentId)){
