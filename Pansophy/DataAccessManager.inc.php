@@ -3734,6 +3734,7 @@ class DataAccessManager {
 			      $query = "UPDATE students SET InterimCounter=".$InterimCounter." WHERE StudentID = '".$studentId."'";
 			      mysql_query($query);
 
+
             }
 			}
 
@@ -5544,6 +5545,366 @@ class DataAccessManager {
 			return true; //success!
 		}
 		else{return false;} //user not allowed to archive
+	}
+	function putBack( $sessionID ){
+		if($this->userCanArchive($sessionID))
+		{
+
+			//X_PNSY_ADDRESS
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_ADDRESS`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$STREET_1=addslashes(htmlspecialchars($results['STREET_1']));
+				$STREET_2=addslashes(htmlspecialchars($results['STREET_2']));
+				$STREET_3=addslashes(htmlspecialchars($results['STREET_3']));
+				$STREET_4=addslashes(htmlspecialchars($results['STREET_4']));
+				$STREET_5=addslashes(htmlspecialchars($results['STREET_5']));
+				$CITY=addslashes(htmlspecialchars($results['CITY']));
+				$STATE=addslashes(htmlspecialchars($results['STATE']));
+				$ZIP=$results['ZIP'];
+				$COUNTRY=addslashes(htmlspecialchars($results['COUNTRY']));
+				//insert into archive (replace in case someone's address has changed since last archive)
+				$query = "REPLACE INTO `".$this->dbname."`.`X_PNSY_ADDRESS` (ADDRESS_ID, STREET_1, STREET_2, STREET_3, STREET_4, STREET_5, CITY, STATE, ZIP, COUNTRY) VALUES ('$ADDRESS_ID', '$STREET_1', '$STREET_2', '$STREET_3', '$STREET_4', '$STREET_5', '$CITY', '$STATE', '$ZIP', '$COUNTRY')";
+				mysql_query($query);
+			}
+			//X_PNSY_COURSE ***** schedules change each semester, so obsolete for archived students *****
+			//X_PNSY_COURSE_DAYS ***** schedules change each semester, so obsolete for archived students *****
+			//X_PNSY_FACULTY
+			$query = "SELECT * FROM ".$this->hisdbname.".`X_PNSY_FACULTY`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$FIRST_NAME=addslashes(htmlspecialchars($results['FIRST_NAME']));
+				$MIDDLE_NAME=addslashes(htmlspecialchars($results['MIDDLE_NAME']));
+				$LAST_NAME=addslashes(htmlspecialchars($results['LAST_NAME']));
+				$SUFFIX=addslashes(htmlspecialchars($results['SUFFIX']));
+				$WOOSTER_EMAIL=$results['WOOSTER_EMAIL'];
+				$PRIMARY_EMAIL=$results['PRIMARY_EMAIL'];
+				$CAMPUS_PHONE=$results['CAMPUS_PHONE'];
+				$HOME_PHONE=$results['HOME_PHONE'];
+				$CELL_PHONE=$results['CELL_PHONE'];
+				//insert into archive (replace in case a faculty member's name/phone/etc has changed since last archive)
+				$query = "REPLACE INTO `".$this->dbname."`.`X_PNSY_FACULTY` (ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, WOOSTER_EMAIL, PRIMARY_EMAIL, CAMPUS_PHONE, HOME_PHONE, CELL_PHONE) VALUES ('$ID', '$FIRST_NAME', '$MIDDLE_NAME', '$LAST_NAME', '$SUFFIX', '$WOOSTER_EMAIL', '$PRIMARY_EMAIL', '$CAMPUS_PHONE', '$HOME_PHONE', '$CELL_PHONE')";
+				mysql_query($query);
+			}
+			//X_PNSY_PARENT
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_PARENT`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$FIRST_NAME=addslashes(htmlspecialchars($results['FIRST_NAME']));
+				$MIDDLE_NAME=addslashes(htmlspecialchars($results['MIDDLE_NAME']));
+				$LAST_NAME=addslashes(htmlspecialchars($results['LAST_NAME']));
+				$SUFFIX=addslashes(htmlspecialchars($results['SUFFIX']));
+				$GENDER=$results['GENDER'];
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$PRIMARY_EMAIL=$results['PRIMARY_EMAIL'];
+				$HOME_PHONE=$results['HOME_PHONE'];
+				$CELL_PHONE=$results['CELL_PHONE'];
+				$PRIVACY_FLAG=$results['PRIVACY_FLAG'];
+				//insert into archive (replace in case a parent's name/gender/phone has changed since last archive)
+				$query = "REPLACE INTO `".$this->dbname."`.`X_PNSY_PARENT` (ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, GENDER, ADDRESS_ID, PRIMARY_EMAIL, HOME_PHONE, CELL_PHONE, PRIVACY_FLAG) VALUES ('$ID', '$FIRST_NAME', '$MIDDLE_NAME', '$LAST_NAME', '$SUFFIX', '$GENDER', '$ADDRESS_ID', '$PRIMARY_EMAIL', '$HOME_PHONE', '$CELL_PHONE', '$PRIVACY_FLAG')";
+				mysql_query($query);
+			}
+			//X_PNSY_RELATIONSHIP
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_RELATIONSHIP`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID_1=$results['ID_1']; //student
+				$ID_2=$results['ID_2']; //parent/relative/etc
+				$RELATIONSHIP=addslashes(htmlspecialchars($results['RELATIONSHIP']));
+				//insert into archive (replace relationship if duplicate... just in case)
+				$query = "INSERT INTO `".$this->dbname."`.`X_PNSY_RELATIONSHIP` (ID_1, ID_2, RELATIONSHIP) VALUES ('$ID_1', '$ID_2', '$RELATIONSHIP') ON DUPLICATE KEY UPDATE RELATIONSHIP='$RELATIONSHIP'";
+				mysql_query($query);
+			}
+			//X_PNSY_SCHEDULE --- In case readmitted students are brought right back into the system...
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_SCHEDULE`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$STUDENT_ID=$results['STUDENT_ID'];
+				$COURSE_ID=$results['COURSE_ID'];
+				//insert into archive (replace even though they would be equal so no errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`X_PNSY_SCHEDULE` (STUDENT_ID, COURSE_ID) VALUES ('$STUDENT_ID', '$COURSE_ID')";
+				mysql_query($query);
+			}
+			//X_PNSY_STUDENT
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_STUDENT` where ID NOT IN (select ID from `".$this->dbname."`.`X_PNSY_STUDENT` ORDER BY LAST_NAME)"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$FIRST_NAME=addslashes(htmlspecialchars($results['FIRST_NAME']));
+				$MIDDLE_NAME=addslashes(htmlspecialchars($results['MIDDLE_NAME']));
+				$LAST_NAME=addslashes(htmlspecialchars($results['LAST_NAME']));
+				$SUFFIX=addslashes(htmlspecialchars($results['SUFFIX']));
+				$GENDER=$results['GENDER'];
+				$ETHNIC=$results['ETHNIC'];
+				$BIRTHDAY=$results['BIRTHDAY'];
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$CAMPUS_BOX=$results['CAMPUS_BOX'];
+				$WOOSTER_EMAIL=addslashes(htmlspecialchars($results['WOOSTER_EMAIL']));
+				$PRIMARY_EMAIL=addslashes(htmlspecialchars($results['PRIMARY_EMAIL']));
+				$CAMPUS_PHONE=$results['CAMPUS_PHONE'];
+				$HOME_PHONE=$results['HOME_PHONE'];
+				$CELL_PHONE=$results['CELL_PHONE'];
+				$CLASS_YEAR=$results['CLASS_YEAR'];
+				$ENROLL_STATUS=$results['ENROLL_STATUS'];
+				$HOUSING_BLDG=addslashes(htmlspecialchars($results['HOUSING_BLDG']));
+				$HOUSING_ROOM=$results['HOUSING_ROOM'];
+				$ADVISOR=$results['ADVISOR'];
+				$PRIVACY_FLAG=addslashes(htmlspecialchars($results['PRIVACY_FLAG']));
+				$MAJOR_1=addslashes(htmlspecialchars($results['MAJOR_1']));
+				$MAJOR_1=addslashes(htmlspecialchars($results['MAJOR_2']));
+				//insert into archive (replace in case a student's name/gender/phone has changed since last archive)
+				$query = "REPLACE INTO `".$this->dbname."`.`X_PNSY_STUDENT` (ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, GENDER, ETHNIC, BIRTHDAY, ADDRESS_ID, CAMPUS_BOX, WOOSTER_EMAIL, PRIMARY_EMAIL, CAMPUS_PHONE, HOME_PHONE, CELL_PHONE, CLASS_YEAR, ENROLL_STATUS, HOUSING_BLDG, HOUSING_ROOM, ADVISOR, PRIVACY_FLAG, MAJOR_1, MAJOR_2) VALUES ('$ID', '$FIRST_NAME', '$MIDDLE_NAME', '$LAST_NAME', '$SUFFIX', '$GENDER', '$ETHNIC', '$BIRTHDAY', '$ADDRESS_ID', '$CAMPUS_BOX', '$WOOSTER_EMAIL', '$PRIMARY_EMAIL', '$CAMPUS_PHONE', '$HOME_PHONE', '$CELL_PHONE', '$CLASS_YEAR', '$ENROLL_STATUS', '$HOUSING_BLDG', '$HOUSING_ROOM', '$ADVISOR', '$PRIVACY_FLAG', '$MAJOR_1', '$MAJOR_2')";
+				mysql_query($query);
+			}
+			//attachments
+			$query = "SELECT * FROM `".$this->hisdbname."`.`attachments`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$Extension=$results['Extension'];
+				$Alias=addslashes(htmlspecialchars($results['Alias']));
+				$ContactID=$results['ContactID'];
+				$AdmissionsFile=$results['AdmissionsFile'];
+				//insert into archive (##PROBLEM## When an attachment is deleted from the current system, the archive keeps a link to a non-existent file)
+				$query = "INSERT INTO `".$this->dbname."`.`attachments` (ID, Extension, Alias, ContactID, AdmissionsFile) VALUES ('$ID', '$Extension', '$Alias', '$ContactID', '$AdmissionsFile') ON DUPLICATE KEY UPDATE AdmissionsFile='$AdmissionsFile'";
+				mysql_query($query);
+			}
+			//contacts-students
+			$query = "SELECT * FROM `".$this->hisdbname."`.`contacts-students`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ContactID=$results['ContactID'];
+				$StudentID=$results['StudentID'];
+				//insert into archive (replace even though they would be equal so no errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`contacts-students` (ContactID, StudentID) VALUES ('$ContactID', '$StudentID')";
+				mysql_query($query);
+			}
+			//contacts
+			for($year=2003; $year <= (date('Y')+1); $year++){//one year at a time due to memory issues (2003-current year)
+				$query = "SELECT * FROM `".$this->hisdbname."`.`contacts` WHERE ID LIKE '%$year-%'"; //grab from current
+				//query goes by ID timestamp rather than the chosen date created since that chosen date could be earlier than the system was created.
+				$result = mysql_query($query);
+				for($i=0; $results = mysql_fetch_array($result); $i++){
+					//process variables
+					$ID=$results['ID'];
+					$Creator=$results['Creator'];
+					$Issue=$results['Issue'];
+					$Modifier=$results['Modifier'];
+					$DateCreated=$results['DateCreated'];
+					$LastModified=$results['LastModified'];
+					$Description = addslashes(htmlspecialchars($results['Description']));
+					//insert into archive (update description/last modified for duplicate contacts)
+					$query = "INSERT INTO `".$this->dbname."`.`contacts` (ID, Creator, Issue, Modifier, DateCreated, LastModified, Description) VALUES ('$ID', '$Creator', '$Issue', '$Modifier', '$DateCreated', '$LastModified', '$Description') ON DUPLICATE KEY UPDATE Description='$Description', LastModified='$LastModified'";
+					mysql_query($query);
+				}
+			}
+			//datecleared ***** only used when clearing the interim counter, which is irrelevant before the current semester *****
+			//emails ***** only used to send emails of interims, which are irrelevant for past semesters, to Writing/Learning/Math Centers *****
+			//flags
+			$query = "SELECT * FROM `".$this->hisdbname."`.`flags`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$Option1=addslashes(htmlspecialchars($results['Option1']));
+				$Option2=addslashes(htmlspecialchars($results['Option2']));
+
+				$Option3=addslashes(htmlspecialchars($results['Option3']));
+				//remove old flag names from archive
+				$query = "DELETE FROM `".$this->dbname."`.`flags`";
+				mysql_query($query);
+				//insert new flag names into archive (##PROBLEM## Any students in the archive flagged with old flags
+				//						 will be flagged for the new corresponding flags)
+				$query = "INSERT INTO `".$this->dbname."`.`flags` (Option1, Option2, Option3) VALUES ('$Option1', '$Option2', '$Option3')";
+				mysql_query($query);
+			}
+			//interims
+			$query = "SELECT * FROM `".$this->hisdbname."`.`interims`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$StudentID=$results['StudentID'];
+				$Date=$results['Date'];
+				$CourseNumberTitle=addslashes(htmlspecialchars($results['CourseNumberTitle']));
+				$Instructor=addslashes(htmlspecialchars($results['Instructor']));
+				$Problem=addslashes(htmlspecialchars($results['Problem']));
+				$Comments=addslashes(htmlspecialchars($results['Comments']));
+				$RecommendAction=addslashes(htmlspecialchars($results['RecommendAction']));
+				$OtherAction=addslashes(htmlspecialchars($results['OtherAction']));
+				$DateProcessed=$results['DateProcessed'];
+				//insert into archive (update description/last modified for duplicate contacts)
+				$query = "REPLACE INTO `".$this->dbname."`.`interims` (ID, StudentID, Date, CourseNumberTitle, Instructor, Problem, Comments, RecommendAction, OtherAction, DateProcessed) VALUES ('$ID', '$StudentID', '$Date', '$CourseNumberTitle', '$Instructor', '$Problem', '$Comments', '$RecommendAction', '$OtherAction', '$DateProcessed')";
+				mysql_query($query);
+			}
+			//issuealert ***** alerts when an issue is changed, which won't happen in the archived system *****
+			//issues
+			for($year=2003; $year <= (date('Y')+1); $year++){//one year at a time due to memory issues (2003-current year)
+				$query = "SELECT * FROM `".$this->hisdbname."`.`issues` WHERE ID LIKE '%$year-%'"; //grab from current
+				//query goes by ID timestamp rather than the chosen date created since that chosen date could be earlier than the system was created.
+				$result = mysql_query($query);
+				for($i=0; $results = mysql_fetch_array($result); $i++){
+					//process variables
+					$ID=$results['ID'];
+					$Header=addslashes(htmlspecialchars($results['Header']));
+					$Creator=$results['Creator'];
+					$Modifier=$results['Modifier'];
+					$DateCreated=$results['DateCreated'];
+					$Status=$results['Status'];
+					$Level=$results['Level'];
+					$Category=$results['Category'];
+					$LastModified=$results['LastModified'];
+					$AssignedTo=$results['AssignedTo'];
+					//insert into archive (replace in case Status/Category/etc has changed since last archive)
+					$query = "REPLACE INTO `".$this->dbname."`.`issues` (ID, Header, Creator, Modifier, DateCreated, Status, Level, Category, LastModified, AssignedTo) VALUES ('$ID', '$Header', '$Creator', '$Modifier', '$DateCreated', '$Status', '$Level', '$Category', '$LastModified', '$AssignedTo')";
+					mysql_query($query);
+				}
+			}
+			//issuewatch
+			$query = "SELECT * FROM `".$this->hisdbname."`.`issuewatch`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$UserID=$results['UserID'];
+				$IssueID=$results['IssueID'];
+				//insert into archive (replace even though they would be equal so no errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`issuewatch` (UserID, IssueID) VALUES ('$UserID', '$IssueID')";
+				mysql_query($query);
+			}
+			//reports ##PROBLEM## only stores search parameters
+                        $query = "SELECT * FROM `".$this->hisdbname."`.`reports`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$UserID=$results['UserID'];	
+                                $Type=$results['Type'];
+                                $Name=addslashes(htmlspecialchars($results['Name']));	
+                                $GetLine=addslashes(htmlspecialchars($results['GetLine']));
+				//insert into archive		
+				$query = "INSERT INTO `".$this->dbname."`.`reports` (UserID, Type, Name, GetLine) VALUES ('$UserID','$Type','$Name','$GetLine') ON DUPLICATE KEY UPDATE UserID='$UserID'";
+				mysql_query($query);
+			}
+			//studentalert ***** alerts when a student is changed/has a new issue, which won't happen in the archived system *****
+                        /*$query = "SELECT * FROM `".$this->hisdbname."`.`studentalert`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+                                $ID=$results['ID'];
+				$UserID=$results['UserID'];
+				$StudentID=$results['StudentID'];
+                                $Message=addslashes(htmlspecialchars($results['Message']));
+				//insert into archive (replace in case duplicates so no errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`studentalert` (ID, UserID, StudentID, Message ) VALUES ('$ID','$UserID', '$StudentID', '$Message')";
+				mysql_query($query);
+			}*/
+			//students-FW
+                        $query = "SELECT * FROM `".$this->hisdbname."`.`students-FW`"; //grab from current
+                        $result = mysql_query($query);
+                        for($i=0; $results = mysql_fetch_array($result); $i++){
+                                $StudentID=$results['StudentID'];
+                                $Reason=addslashes(htmlspecialchars($results['Reason']));
+				//insert into archive (replace in case duplicates so no errors)
+                                $query = "REPLACE INTO `".$this->dbname."`.`students-FW` (StudentID, Reason) VALUES ('$StudentID', '$Reason')";
+				mysql_query($query);
+                        }
+			//students
+                        $query = "SELECT * FROM `".$this->hisdbname."`.`students`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+                                $StudentID=$results['StudentID'];
+                                $AssignedTo=$results['AssignedTo'];
+                                $RedFlag=addslashes(htmlspecialchars($results['RedFlag']));
+                                $VIP=addslashes(htmlspecialchars($results['VIP']));
+                                $AcProbation=$results['AcProbation'];
+                                $HousingWaitList=$results['HousingWaitList'];
+                                $Field1=$results['Field1'];
+                                $Field2=$results['Field2'];
+                                $Field3=$results['Field3'];
+                                $AllWatch=$results['AllWatch'];
+                                $FirstWatch=$results['FirstWatch'];
+                                $InterimCounter=$results['InterimCounter'];
+                                $LastModified=$results['LastModified'];
+                                $Modifier=$results['Modifier'];
+                                $DateCreated=$results['DateCreated'];
+                                $FERPA=addslashes(htmlspecialchars($results['FERPA']));
+                                $ferpaCheck=$results['ferpaCheck'];
+				//insert into archive (replace in case a student's information has changed since last archive)
+                                $query = "REPLACE INTO `".$this->dbname."`.`students` (StudentID, AssignedTo, RedFlag, VIP, Acprobation, HousingWaitList, Field1, Field2, Field3, AllWatch, FirstWatch, InterimCounter, LastModified, Modifier, DateCreated, FERPA, ferpaCheck) VALUES ('$StudentID', '$AssignedTo', '$RedFlag', '$VIP', '$AcProbation', '$HousingWaitList', '$Field1', '$Field2', '$Field3', '$AllWatch', '$FirstWatch', '$InterimCounter', '$LastModified', '$Modifier', '$DateCreated', '$FERPA', '$ferpaCheck')";
+                                mysql_query($query);
+                        }
+			//studentwatch
+                        $query = "SELECT * FROM `".$this->hisdbname."`.`studentwatch`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables                               
+				$UserID=$results['UserID'];
+				$StudentID=$results['StudentID'];
+				//insert into archive (replace if duplicates to avoid errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`studentwatch` (UserID, StudentID) VALUES ('$UserID', '$StudentID')";
+				mysql_query($query);
+			}
+			//useralert ***** alerts when a user is changed, which won't happen in the archived system *****
+			/*$query = "SELECT * FROM `".$this->hisdbname."`.`useralert`"; //grab from current
+
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+                                $ID=$results['ID'];
+				$UserID=$results['UserID'];
+
+				$OtherID=$results['OtherID'];
+                                $Message=addslashes(htmlspecialchars($results['Message']));
+				//insert into archive
+				$query = "REPLACE INTO `".$this->dbname."`.`useralert` (ID, UserID, OtherID, Message ) VALUES ('$ID','$UserID', '$OtherID', '$Message')";
+
+				mysql_query($query);
+			}*/
+			//users
+			/**$query = "SELECT * FROM `".$this->hisdbname."`.`users`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$Context1=$results['Context1'];
+				$Context2=$results['Context2'];
+				$FirstName=addslashes(htmlspecialchars($results['FirstName']));
+				$MiddleIn=addslashes(htmlspecialchars($results['MiddleName']));
+				$LastName=addslashes(htmlspecialchars($results['LastName']));
+				$AccessLevel=$results['AccessLevel'];
+				if($AccessLevel==ADMINISTRATOR || $AccessLevel==PRIVILEGED || $AccessLevel==FIRSTWATCH)
+					$AccessLevel=READONLYFULL; //make high-level users read-only for archive
+				else
+					$AccessLevel=NOACCESS;
+				$Email=$results['Email'];
+				$Extension=$results['Extension'];
+				$IsFaculty=$results['IsFaculty'];
+				$IsStaff=$results['IsStaff'];
+				//insert into archive (replace in case the user's name/email/etc has changed since last archive)
+				$query = "REPLACE INTO `".$this->dbname."`.`users` (ID, Context1, Context2, FirstName, MiddleIn, LastName, AccessLevel, Email, Extension, IsFaculty, IsStaff) VALUES ('$ID', '$Context1', '$Context2', '$FirstName', '$MiddleIn', '$LastName', '$AccessLevel', '$Email', '$Extension', '$IsFaculty', '$IsStaff')";
+				mysql_query($query);
+			}**/
+			//userwatch
+			$query = "SELECT * FROM `".$this->hisdbname."`.`userwatch`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables                               
+				$UserID=$results['UserID'];
+				$OtherUserID=$results['OtherUserID'];
+				//insery into archive (replace if duplicates to avoid errors)
+				$query = "REPLACE INTO `".$this->dbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
+				mysql_query($query);
+			}
+		}
 	}
 
 }
