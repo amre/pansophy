@@ -18,10 +18,16 @@ $ID = $_GET['id'];
 $expand = $_GET['expand'];
 
 $issues=$dam->getStudentIssues($ID);
-
+$recent=1;
 $issuesToView = 8;
-if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $issuesToView = sizeof($issues);
-else if(sizeof($issues) < $issuesToView) $issuesToView = sizeof($issues);
+if(isset($_GET['viewallissues']) && $_GET['viewallissues']){
+	$issues=$dam->getStudentIssues($ID,0); //retrieve all issues
+	$recent=0;
+}
+else {
+	$issues=$dam->getStudentIssues($ID,1); //only retrieve recent issues
+	$recent=1;
+}
 
 echo '<table><dl>';
 if($issues){
@@ -85,7 +91,10 @@ echo '<tr><td><center><a href="./viewstudentpf.php?id='.$ID.'&expand='.$urlstrin
 	}
 }
 else {
-	echo 'There are no issues for this student.';
+	if($recent)
+		echo 'There are no current issues for this student.';
+	else
+		echo 'There are no issues for this student.';
 }
 echo '</dl></table>';
 ?>

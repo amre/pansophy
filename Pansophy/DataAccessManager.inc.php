@@ -538,17 +538,28 @@ class DataAccessManager {
 	* Gets the issues for the specified student.
 	*
 	* @param $studentid the ID of the student to get issues for
+	* @param $recent flag indicating the we should only retrieve the most recent issues
 	*
 	* @return the students issues in an array
 	*/
-	function getStudentIssues( $studentid ) {
+	function getStudentIssues( $studentid, $recent ) {
 		if( $this->userCanGetStudentIssues( $studentid ) ) {
 			$query = "select distinct i.ID from issues i, contacts c, `contacts-students` cs
 				  where cs.studentid = '$studentid'
 				  and cs.contactid = c.id
 				  and c.issue = i.id
-              order by i.DateCreated desc";
+              			  order by i.DateCreated desc";
 
+			if($recent) {
+				//$now = date('Y-m-d H:i:s');
+            			$past = date('Y-m-d H:i:s', time() - (30*24*60*60)); // a month ago
+				$query = "select distinct i.ID from issues i, contacts c, `contacts-students` cs
+				  	where c.datecreated >= '$past'
+					and cs.studentid = '$studentid'
+				  	and cs.contactid = c.id
+				  	and c.issue = i.id
+              				order by i.DateCreated desc";
+			}
 
 			$result = mysql_query($query);
 			$return = array();
@@ -580,6 +591,7 @@ class DataAccessManager {
 	*
 	* @param $userid the uid for the user to get issues for
    	* @param $recent flag indicating the we should only retrieve the most recent issues
+	*
 	* @return return the issues as an array
 	*/
 	function getUserIssues( $userid , $recent) {

@@ -16,16 +16,20 @@ $dam = new DataAccessManager();
 
 $ID = $_GET['id'];
 $expand = $_GET['expand'];
-
-$issues=$dam->getStudentIssues($ID);
-
+$recent=1;
 $issuesToView = 8;
-if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $issuesToView = sizeof($issues);
-else if(sizeof($issues) < $issuesToView) $issuesToView = sizeof($issues);
+if(isset($_GET['viewallissues']) && $_GET['viewallissues']){
+	$issues=$dam->getStudentIssues($ID,0); //retrieve all issues
+	$recent=0;
+}
+else {
+	$issues=$dam->getStudentIssues($ID,1); //only retrieve recent issues
+	$recent=1;
+}
 
 echo '<table><dl>';
 if($issues){
-	for($i=0; $i < $issuesToView; $i++){
+	for($i=0; $i < sizeof($issues); $i++){
 		$staff=array();
 // Michael Thompson * 12/07/2005 * Fixed bug in link
 		if($issues[$i]['ID'] == ''){
@@ -85,7 +89,10 @@ if($issues){
 	}
 }
 else {
-	echo 'There are no issues for this student.';
+	if($recent)
+		echo 'There are no current issues for this student.';
+	else
+		echo 'There are no issues for this student.';
 }
 echo '</dl></table>';
 ?>
