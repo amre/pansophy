@@ -68,7 +68,7 @@ if($usingIE)
 echo '<div style = "height:100%;overflow:auto">';
 }
 echo '<p><br />';
-
+/*
 // Displays the user controlled flags
 if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['ferpaCheck'] == 1 || $student['AcProbation'] == 1 || $student['HousingWaitList'] == 1 || $student['Field1'] == 1 || $student['Field2'] == 1 || $student['Field3'] == 1) {
 	$flags = $dam->extractFlags();
@@ -86,21 +86,13 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['fer
 		$flagstream=$flagstream.'<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
 	}
         if($student['ferpaCheck'] == 1 ){
-<<<<<<< HEAD
+
 		if(!empty($student['FERPA'])){
 			$flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA: </font></font>'.$student['FERPA'].'</td></tr>';
 		}
 		else
-  		$flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
+  			$flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
 	}
-=======
-            if(!empty($student['FERPA'])){
-                  $flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA: </b></font>'.$student['FERPA'].'</td></tr>';
-             }
-            else
-                  $flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
-        }
->>>>>>> 266fde08e538ab7ce1f2dee08d520597a23e0cd5
 	if($student['AcProbation'] == 1) {
 		//$flagstream = "</br>$flagstream";
 		$flagstream=$flagstream."<tr><td><b>This student is on Academic Probation.</b></td></tr>";
@@ -372,7 +364,7 @@ echo '<p><p><table cellspacing="3"><tr><td nowrap><p class="largeheading">Issue 
    // end subtable three
    echo '</td>';
 
-echo '</td></tr></table></p>'; 
+echo '</td></tr></table></p>'; */
 // end main table
 if($usingIE)
 {

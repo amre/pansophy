@@ -86,21 +86,12 @@ if ( !empty( $student['RedFlag'] ) || !empty( $student['VIP'] ) || $student['fer
 		$flagstream=$flagstream.'<tr><td><font class="viptext">VIP: </font>'.$student['VIP'].'</td></tr>';
 	}
         if($student['ferpaCheck'] == 1 ){
-<<<<<<< HEAD
 		if(!empty($student['FERPA'])){
 			$flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA: </font></font>'.$student['FERPA'].'</td></tr>';
 		}
 		else
   		$flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
 	}
-=======
-            if(!empty($student['FERPA'])){
-                  $flagstream=$flagstream.'<tr><td><font size="2" font face="Arial" color="blue"><b>FERPA: </b></font>'.$student['FERPA'].'</td></tr>';
-             }
-            else
-                  $flagstream=$flagstream.'<tr><td><font class="viptext"><font color="blue">FERPA </font></td></tr>';
-        }
->>>>>>> 266fde08e538ab7ce1f2dee08d520597a23e0cd5
 	if($student['AcProbation'] == 1) {
 		//$flagstream = "</br>$flagstream";
 		$flagstream=$flagstream."<tr><td><b>This student is on Academic Probation.</b></td></tr>";

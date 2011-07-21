@@ -337,7 +337,7 @@ class DataAccessManager {
 
       if($recent){
          //$now = date('Y-m-d H:i:s');
-         $past = date('Y-m-d H:i:s', time() - (5*24*60*60)); // a month ago
+         $past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
 		   $query = "SELECT `ID` FROM contacts 
                   where `DateCreated` >= '$past'
                   and (`Creator` LIKE '%$userID%' || `Modifier` LIKE '%$userID%') 
@@ -592,7 +592,7 @@ class DataAccessManager {
 
          if($recent){
             //$now = date('Y-m-d H:i:s');
-            $past = date('Y-m-d H:i:s', time() - (30*24*60*60)); // a month ago
+            $past = date('Y-m-d H:i:s', time() - (7*24*60*60)); // a week ago
 			   $query = "select distinct i.ID from issues i, contacts c
 				     where c.datecreated >= '$past'
                  and c.Creator = '$userid'
@@ -5016,12 +5016,13 @@ class DataAccessManager {
 				$UserID=$results['UserID'];	
                                 $Type=$results['Type'];
                                 $Name=addslashes(htmlspecialchars($results['Name']));	
-                                $GetLine=addslashes(htmlspecialchars($results['GetLine']));		
-				$query = "REPLACE INTO `".$this->hisdbname."`.`reports` (UserID, Type, Name, GetLine) VALUES ('$UserID','$Type','$Name','$GetLine')";
+                                $GetLine=addslashes(htmlspecialchars($results['GetLine']));
+				//insert into archive		
+				$query = "INSERT INTO `".$this->hisdbname."`.`reports` (UserID, Type, Name, GetLine) VALUES ('$UserID','$Type','$Name','$GetLine') ON DUPLICATE KEY UPDATE UserID='$UserID'";
 				mysql_query($query);
 			}
 			//studentalert ***** alerts when a student is changed/has a new issue, which won't happen in the archived system *****
-                        $query = "SELECT * FROM `".$this->dbname."`.`studentalert`"; //grab from current
+                        /*$query = "SELECT * FROM `".$this->dbname."`.`studentalert`"; //grab from current
 			$result = mysql_query($query);
 			for($i=0; $results = mysql_fetch_array($result); $i++){
 				//process variables
@@ -5029,20 +5030,20 @@ class DataAccessManager {
 				$UserID=$results['UserID'];
 				$StudentID=$results['StudentID'];
                                 $Message=addslashes(htmlspecialchars($results['Message']));
+				//insert into archive (replace in case duplicates so no errors)
 				$query = "REPLACE INTO `".$this->hisdbname."`.`studentalert` (ID, UserID, StudentID, Message ) VALUES ('$ID','$UserID', '$StudentID', '$Message')";
 				mysql_query($query);
-			}
-
+			}*/
 			//students-FW
-                        $query = "SELECT * FROM `".$this->dbname."`.`students`"; //grab from current
+                        $query = "SELECT * FROM `".$this->dbname."`.`students-FW`"; //grab from current
                         $result = mysql_query($query);
                         for($i=0; $results = mysql_fetch_array($result); $i++){
                                 $StudentID=$results['StudentID'];
                                 $Reason=addslashes(htmlspecialchars($results['Reason']));
+				//insert into archive (replace in case duplicates so no errors)
                                 $query = "REPLACE INTO `".$this->hisdbname."`.`students-FW` (StudentID, Reason) VALUES ('$StudentID', '$Reason')";
 				mysql_query($query);
                         }
-                                 
 			//students
                         $query = "SELECT * FROM `".$this->dbname."`.`students`"; //grab from current
 			$result = mysql_query($query);
@@ -5053,21 +5054,19 @@ class DataAccessManager {
                                 $VIP=addslashes(htmlspecialchars($results['VIP']));
                                 $AcProbation=$results['AcProbation'];
                                 $HousingWaitList=$results['HousingWaitList'];
-                                $Field1=addslashes(htmlspecialchars($results['Field1']));
-                                $Field2=addslashes(htmlspecialchars($results['Field2']));
-                                $Field3=addslashes(htmlspecialchars($results['Field3']));
+                                $Field1=$results['Field1'];
+                                $Field2=$results['Field2'];
+                                $Field3=$results['Field3'];
                                 $AllWatch=$results['AllWatch'];
                                 $FirstWatch=$results['FirstWatch'];
                                 $InterimCounter=$results['InterimCounter'];
                                 $LastModified=$results['LastModified'];
                                 $Modifier=$results['Modifier'];
                                 $DateCreated=$results['DateCreated'];
-                                $FERPA=addslashes(htmlspecialchars($results['RedFlag']));
-                                $ferpaCheck=$results['ferpaCheck']; 
-
-                                $query = "REPLACE INTO `".$this->hisdbname."`.`students` (StudentID,AssignedTo,RedFlag,VIP,Acprobation,HousingWaitList,Field1,Field2,Field3,AllWatch,FirstWatch,InterimCounter,LastModified,Modifier,DateCreated,
-FERPA,ferpaCheck) VALUES ('$StudentID','$AssignedTo','$RedFlag','$VIP','$AcProbation','$HousingWaitList','$Field1','$Field2','$Field3','$AllWatch','$FirstWatch','$InterimCounter',
- '$LastModified','$Modifier','$DateCreated','$FERPA','$ferpaCheck')";
+                                $FERPA=addslashes(htmlspecialchars($results['FERPA']));
+                                $ferpaCheck=$results['ferpaCheck'];
+				//insert into archive (replace in case a student's information has changed since last archive)
+                                $query = "REPLACE INTO `".$this->hisdbname."`.`students` (StudentID, AssignedTo, RedFlag, VIP, Acprobation, HousingWaitList, Field1, Field2, Field3, AllWatch, FirstWatch, InterimCounter, LastModified, Modifier, DateCreated, FERPA, ferpaCheck) VALUES ('$StudentID', '$AssignedTo', '$RedFlag', '$VIP', '$AcProbation', '$HousingWaitList', '$Field1', '$Field2', '$Field3', '$AllWatch', '$FirstWatch', '$InterimCounter', '$LastModified', '$Modifier', '$DateCreated', '$FERPA', '$ferpaCheck')";
                                 mysql_query($query);
                         }
 			//studentwatch
@@ -5076,13 +5075,13 @@ FERPA,ferpaCheck) VALUES ('$StudentID','$AssignedTo','$RedFlag','$VIP','$AcProba
 			for($i=0; $results = mysql_fetch_array($result); $i++){
 				//process variables                               
 				$UserID=$results['UserID'];
-				$StudentID=$results['StudentID'];                               
+				$StudentID=$results['StudentID'];
+				//insert into archive (replace if duplicates to avoid errors)
 				$query = "REPLACE INTO `".$this->hisdbname."`.`studentwatch` (UserID, StudentID) VALUES ('$UserID', '$StudentID')";
 				mysql_query($query);
 			}
-
 			//useralert ***** alerts when a user is changed, which won't happen in the archived system *****
-                         $query = "SELECT * FROM `".$this->dbname."`.`useralert`"; //grab from current
+			/*$query = "SELECT * FROM `".$this->dbname."`.`useralert`"; //grab from current
 			$result = mysql_query($query);
 			for($i=0; $results = mysql_fetch_array($result); $i++){
 				//process variables
@@ -5090,10 +5089,10 @@ FERPA,ferpaCheck) VALUES ('$StudentID','$AssignedTo','$RedFlag','$VIP','$AcProba
 				$UserID=$results['UserID'];
 				$OtherID=$results['OtherID'];
                                 $Message=addslashes(htmlspecialchars($results['Message']));
+				//insert into archive
 				$query = "REPLACE INTO `".$this->hisdbname."`.`useralert` (ID, UserID, OtherID, Message ) VALUES ('$ID','$UserID', '$OtherID', '$Message')";
 				mysql_query($query);
-			}
-
+			}*/
 			//users
 			$query = "SELECT * FROM `".$this->dbname."`.`users`"; //grab from current
 			$result = mysql_query($query);
@@ -5119,10 +5118,432 @@ FERPA,ferpaCheck) VALUES ('$StudentID','$AssignedTo','$RedFlag','$VIP','$AcProba
 				mysql_query($query);
 			}
 			//userwatch
+			$query = "SELECT * FROM `".$this->dbname."`.`userwatch`"; //grab from current
+			$result = mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables                               
+				$UserID=$results['UserID'];
+				$OtherUserID=$results['OtherUserID'];
+				//insery into archive (replace if duplicates to avoid errors)
+				$query = "REPLACE INTO `".$this->hisdbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
+				mysql_query($query);
+			}
 		}
-		
 	}
 
+	/**
+	 * Deletes information for students before a given year from the  
+	 * current database. An archive is performed before deleting to
+	 * prevent deleting information completely. Each wave is dependent
+	 * upon the previous "wave", so queries should not be moved outside
+	 * of their designated wave.
+	 *
+	 * @param $sessionID - session information like IP address to verify for security
+	 * @param $year - Students with ClassYear <= $year will be deleted
+	 *		  from the current system
+	 */
+
+	function deleteFromCurrent( $sessionID, $year )
+	{
+		if($this->userCanArchive($sessionID))
+		{
+			/***** Archive everything before deleting anything *****/
+			$this->archiveEverything($sessionID);
+
+			/***** Delete actual students first *****/
+
+			//X_PNSY_STUDENT //has to be first
+			$approvedstring="EM CS OP OC LM DP RE DD LP LA FE FY TR";//GAH
+			$query = "DELETE FROM `X_PNSY_STUDENT` WHERE CLASS_YEAR<=$year";
+			mysql_query($query);
+
+
+			/***************2nd wave***************/
+			//students
+			$query = "DELETE FROM `students` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//X_PNSY_SCHEDULE
+			$query = "DELETE FROM `X_PNSY_SCHEDULE` WHERE STUDENT_ID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//X_PNSY_RELATIONSHIP
+			$query = "DELETE FROM `X_PNSY_RELATIONSHIP` WHERE ID_1 NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//students-FW
+			$query = "DELETE FROM `students-FW` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//studentwatch
+			$query = "DELETE FROM `studentwatch` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//studentalert
+			$query = "DELETE FROM `studentalert` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//contacts-students
+			$query = "DELETE FROM `contacts-students` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+			//interims
+			$query = "DELETE FROM `interims` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
+			mysql_query($query);
+
+
+			/***************3rd wave***************/
+
+
+			//X_PNSY_PARENT
+			$query = "DELETE FROM `X_PNSY_PARENT` WHERE ID NOT IN (SELECT ID_2 FROM `X_PNSY_RELATIONSHIP`)";
+			mysql_query($query);
+
+			//contacts
+			$query = "DELETE FROM `contacts` WHERE ID NOT IN (SELECT ContactID FROM `contacts-students`)";
+			mysql_query($query);
+
+
+			/***************4th wave***************/
+
+
+			//X_PNSY_ADDRESS
+			$query = "DELETE FROM `X_PNSY_ADDRESS` WHERE ADDRESS_ID NOT IN ((SELECT ADDRESS_ID FROM `X_PNSY_STUDENT`) UNION (SELECT ADDRESS_ID FROM `X_PNSY_PARENT`))";
+			mysql_query($query);
+
+			//attachments
+			$query = "DELETE FROM `attachments` WHERE ContactID NOT IN (SELECT ID FROM `contacts`";
+			mysql_query($query);
+
+			//issues
+			$query = "DELETE FROM `issues` WHERE ID NOT IN (SELECT Issue FROM `contacts`)";
+			mysql_query($query);
+
+
+			/***************5th wave***************/
+
+
+			//issuewatch
+			$query = "DELETE FROM `issuewatch` WHERE IssueID NOT IN (SELECT ID FROM `issues`)";
+			mysql_query($query);
+
+			//issuealert
+			$query = "DELETE FROM `issuealert` WHERE IssueID NOT IN (SELECT ID FROM `issues`)";
+			mysql_query($query);
+
+
+			/********Any other tables wouldn't be modified during an archive********/
+
+		}
+	}
+
+	/**
+ 	* Brings an archived student's information back into the current 
+ 	* database. The student's information remains in the archive.
+ 	*
+ 	* @param $sessionID - session information like IP address to verify for security
+ 	* @param $archivedStudentID - StudentID of the desired student
+	* @return false if student ID does not exist
+ 	*/
+	//Should there be a check to see if the student is already in the current database??
+
+	function pullStudentFromArchive( $sessionID, $archivedStudentID)
+	{
+		if($this->userCanArchive($sessionID))
+		{
+	
+			/***************Just by studentID***************/
+			//X_PNSY_STUDENT
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_STUDENT` WHERE ID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			if(!mysql_num_rows($result))	//student doesn't exist
+				return FALSE;
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$FIRST_NAME=addslashes(htmlspecialchars($results['FIRST_NAME']));
+				$MIDDLE_NAME=addslashes(htmlspecialchars($results['MIDDLE_NAME']));
+				$LAST_NAME=addslashes(htmlspecialchars($results['LAST_NAME']));
+				$SUFFIX=addslashes(htmlspecialchars($results['SUFFIX']));
+				$GENDER=$results['GENDER'];
+				$ETHNIC=$results['ETHNIC'];
+				$BIRTHDAY=$results['BIRTHDAY'];
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$CAMPUS_BOX=$results['CAMPUS_BOX'];
+				$WOOSTER_EMAIL=$results['WOOSTER_EMAIL'];
+				$PRIMARY_EMAIL=$results['PRIMARY_EMAIL'];
+				$CAMPUS_PHONE=$results['CAMPUS_PHONE'];
+				$HOME_PHONE=$results['HOME_PHONE'];
+				$CELL_PHONE=$results['CELL_PHONE'];
+				$CLASS_YEAR=$results['CLASS_YEAR'];
+				$ENROLL_STATUS=$results['ENROLL_STATUS'];
+				$HOUSING_BLDG=addslashes(htmlspecialchars($results['HOUSING_BLDG']));
+				$HOUSING_ROOM=$results['HOUSING_ROOM'];
+				$ADVISOR=$results['ADVISOR'];
+				$PRIVACY_FLAG=addslashes(htmlspecialchars($results['PRIVACY_FLAG']));
+				$MAJOR_1=addslashes(htmlspecialchars($results['MAJOR_1']));
+				$MAJOR_1=addslashes(htmlspecialchars($results['MAJOR_2']));
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `X_PNSY_STUDENT` (ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, GENDER, ETHNIC, BIRTHDAY, ADDRESS_ID, CAMPUS_BOX, WOOSTER_EMAIL, PRIMARY_EMAIL, CAMPUS_PHONE, HOME_PHONE, CELL_PHONE, CLASS_YEAR, ENROLL_STATUS, HOUSING_BLDG, HOUSING_ROOM, ADVISOR, PRIVACY_FLAG, MAJOR_1, MAJOR_2) VALUES ('$ID', '$FIRST_NAME', '$MIDDLE_NAME', '$LAST_NAME', '$SUFFIX', '$GENDER', '$ETHNIC', '$BIRTHDAY', '$ADDRESS_ID', '$CAMPUS_BOX', '$WOOSTER_EMAIL', '$PRIMARY_EMAIL', '$CAMPUS_PHONE', '$HOME_PHONE', '$CELL_PHONE', '$CLASS_YEAR', '$ENROLL_STATUS', '$HOUSING_BLDG', '$HOUSING_ROOM', '$ADVISOR', '$PRIVACY_FLAG', '$MAJOR_1', '$MAJOR_2') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			//students
+			$query = "SELECT * FROM `".$this->hisdbname."`.`students` WHERE ID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+			$StudentID=$results['StudentID'];
+                                $AssignedTo=$results['AssignedTo'];
+                                $RedFlag=addslashes(htmlspecialchars($results['RedFlag']));
+                                $VIP=addslashes(htmlspecialchars($results['VIP']));
+                                $AcProbation=$results['AcProbation'];
+                                $HousingWaitList=$results['HousingWaitList'];
+                                $Field1=$results['Field1'];
+                                $Field2=$results['Field2'];
+                                $Field3=$results['Field3'];
+                                $AllWatch=$results['AllWatch'];
+                                $FirstWatch=$results['FirstWatch'];
+                                $InterimCounter=$results['InterimCounter'];
+                                $LastModified=$results['LastModified'];
+                                $Modifier=$results['Modifier'];
+                                $DateCreated=$results['DateCreated'];
+                                $FERPA=addslashes(htmlspecialchars($results['FERPA']));
+                                $ferpaCheck=$results['ferpaCheck'];
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `students` `students` (StudentID, AssignedTo, RedFlag, VIP, Acprobation, HousingWaitList, Field1, Field2, Field3, AllWatch, FirstWatch, InterimCounter, LastModified, Modifier, DateCreated, FERPA, ferpaCheck) VALUES ('$StudentID', '$AssignedTo', '$RedFlag', '$VIP', '$AcProbation', '$HousingWaitList', '$Field1', '$Field2', '$Field3', '$AllWatch', '$FirstWatch', '$InterimCounter', '$LastModified', '$Modifier', '$DateCreated', '$FERPA', '$ferpaCheck') ON DUPLICATE KEY UPDATE StudentID='$StudentID'";
+				mysql_query($query);
+			}
+
+
+			//X_PNSY_SCHEDULE
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_SCHEDULE` WHERE STUDENT_ID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$STUDENT_ID=$results['STUDENT_ID'];
+				$COURSE_ID=$results['COURSE_ID'];
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `X_PNSY_SCHEDULE` (STUDENT_ID, COURSE_ID) VALUES ('$STUDENT_ID', '$COURSE_ID') ON DUPLICATE KEY UPDATE STUDENT_ID='$STUDENT_ID'";
+				mysql_query($query);
+			}
+
+
+			//X_PNSY_RELATIONSHIP
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_RELATIONSHIP` WHERE ID_1=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID_1=$results['ID_1']; //student
+				$ID_2=$results['ID_2']; //parent/relative/etc
+				$RELATIONSHIP=addslashes(htmlspecialchars($results['RELATIONSHIP']));
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `X_PNSY_RELATIONSHIP` (ID_1, ID_2, RELATIONSHIP
+) VALUES ('$ID_1', '$ID_2', '$RELATIONSHIP') ON DUPLICATE KEY UPDATE ID_1='$ID_1'";
+			mysql_query($query);
+			}
+
+
+			//studentalert ***** Not archived... ##? *****
+			/*$query = "SELECT * FROM `".$this->hisdbname."`.`studentalert` WHERE StudentID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+			//process variables
+			//...
+			//insert into current
+			$query = "INSERT INTO `studentalert` (ID, ...) VALUES ('$ID', ...)";
+			mysql_query($query);
+			}*/
+
+
+			//students-FW
+			$query = "SELECT * FROM `".$this->hisdbname."`.`students-FW` WHERE StudentID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$StudentID=$results['StudentID'];
+                                $Reason=addslashes(htmlspecialchars($results['Reason']));
+                                $query = "REPLACE INTO `".$this->hisdbname."`.`students-FW` (StudentID, Reason) VALUES ('$StudentID', '$Reason')";
+				mysql_query($query);
+				//insert into current (replace if duplicates to avoid errors)
+				$query = "REPLACE INTO `students-FW` (StudentID, Reason) VALUES ('$StudentID', '$Reason')";
+				mysql_query($query);
+			}
+
+
+			//studentwatch
+			$query = "SELECT * FROM `".$this->hisdbname."`.`studentwatch` WHERE StudentID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$UserID=$results['UserID'];
+				$StudentID=$results['StudentID'];
+				//insert into current (replace if duplicates to avoid errors)
+				$query = "REPLACE INTO `studentwatch` (UserID, StudentID) VALUES ('$UserID', '$StudentID')";
+				mysql_query($query);
+			}
+
+
+			//contacts-students
+			$query = "SELECT * FROM `".$this->hisdbname."`.`contacts-students` WHERE StudentID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ContactID=$results['ContactID'];
+				$StudentID=$results['StudentID'];
+				//insert into current (replace even though they would be equal to avoid errors)
+				$query = "REPLACE INTO `contacts-students` (ContactID, StudentID) VALUES ('$ContactID', '$StudentID')";
+				mysql_query($query);
+			}
+
+
+			//interims
+			$query = "SELECT * FROM `".$this->hisdbname."`.`interims` WHERE StudentID=$archivedStudentID"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$StudentID=$results['StudentID'];
+				$Date=$results['Date'];
+				$CourseNumberTitle=addslashes(htmlspecialchars($results['CourseNumberTitle']));
+				$Instructor=addslashes(htmlspecialchars($results['Instructor']));
+				$Problem=addslashes(htmlspecialchars($results['Problem']));
+				$Comments=addslashes(htmlspecialchars($results['Comments']));
+				$RecommendAction=addslashes(htmlspecialchars($results['RecommendAction']));
+				$OtherAction=addslashes(htmlspecialchars($results['OtherAction']));
+				$DateProcessed=$results['DateProcessed'];
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `interims` (ID, StudentID, Date, CourseNumberTitle, Instructor, Problem, Comments, RecommendAction, OtherAction, DateProcessed) VALUES ('$ID', '$StudentID', '$Date', '$CourseNumberTitle', '$Instructor', '$Problem', '$Comments', '$RecommendAction', '$OtherAction', '$DateProcessed') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			/***************Nested checks***************/
+			//X_PNSY_PARENT
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_PARENT` WHERE ID IN (SELECT ID_2 FROM `".$this->hisdbname."`.`X_PNSY_RELATIONSHIP` WHERE ID_1=$archivedStudentID)"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$FIRST_NAME=addslashes(htmlspecialchars($results['FIRST_NAME']));
+				$MIDDLE_NAME=addslashes(htmlspecialchars($results['MIDDLE_NAME']));
+				$LAST_NAME=addslashes(htmlspecialchars($results['LAST_NAME']));
+				$SUFFIX=addslashes(htmlspecialchars($results['SUFFIX']));
+				$GENDER=$results['GENDER'];
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$PRIMARY_EMAIL=$results['PRIMARY_EMAIL'];
+				$HOME_PHONE=$results['HOME_PHONE'];
+				$CELL_PHONE=$results['CELL_PHONE'];
+				$PRIVACY_FLAG=$results['PRIVACY_FLAG'];
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `X_PNSY_PARENT` (ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, GENDER, ADDRESS_ID, PRIMARY_EMAIL, HOME_PHONE, CELL_PHONE, PRIVACY_FLAG) VALUES ('$ID', '$FIRST_NAME', '$MIDDLE_NAME', '$LAST_NAME', '$SUFFIX', '$GENDER', '$ADDRESS_ID', '$PRIMARY_EMAIL', '$HOME_PHONE', '$CELL_PHONE', '$PRIVACY_FLAG') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			//X_PNSY_ADDRESS
+			$query = "SELECT * FROM `".$this->hisdbname."`.`X_PNSY_ADDRESS` WHERE ADDRESS_ID IN ((SELECT ADDRESS_ID FROM `".$this->hisdbname."`.`X_PNSY_STUDENT`) UNION (SELECT ADDRESS_ID FROM `".$this->hisdbname."`.`X_PNSY_PARENT` WHERE ID IN (SELECT ID_2 FROM `".$this->hisdbname."`.`X_PNSY_RELATIONSHIP` WHERE ID_1=$archivedStudentID)))"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ADDRESS_ID=$results['ADDRESS_ID'];
+				$STREET_1=addslashes(htmlspecialchars($results['STREET_1']));
+				$STREET_2=addslashes(htmlspecialchars($results['STREET_2']));
+				$STREET_3=addslashes(htmlspecialchars($results['STREET_3']));
+				$STREET_4=addslashes(htmlspecialchars($results['STREET_4']));
+				$STREET_5=addslashes(htmlspecialchars($results['STREET_5']));
+				$CITY=addslashes(htmlspecialchars($results['CITY']));
+				$STATE=addslashes(htmlspecialchars($results['STATE']));
+				$ZIP=$results['ZIP'];
+				$COUNTRY=addslashes(htmlspecialchars($results['COUNTRY']));
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `X_PNSY_ADDRESS` (ADDRESS_ID, STREET_1, STREET_2, STREET_3, STREET_4, STREET_5, CITY, STATE, ZIP, COUNTRY) VALUES ('$ADDRESS_ID', '$STREET_1', '$STREET_2', '$STREET_3', '$STREET_4', '$STREET_5', '$CITY', '$STATE', '$ZIP', '$COUNTRY') ON DUPLICATE KEY UPDATE ADDRESS_ID='$ADDRESS_ID'";
+				mysql_query($query);
+			}
+
+
+			//contacts
+			$query = "SELECT * FROM `".$this->hisdbname."`.`contacts` WHERE ID IN (SELECT ContactID FROM `".$this->hisdbname."`.`contacts-students` WHERE StudentID=$archivedStudentID)"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$Creator=$results['Creator'];
+				$Issue=$results['Issue'];
+				$Modifier=$results['Modifier'];
+				$DateCreated=$results['DateCreated'];
+				$LastModified=$results['LastModified'];
+				$Description = addslashes(htmlspecialchars($results['Description']));
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `contacts` (ID, Creator, Issue, Modifier, DateCreated, LastModified, Description) VALUES ('$ID', '$Creator', '$Issue', '$Modifier', '$DateCreated', '$LastModified', '$Description') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			//attachments
+			$query = "SELECT * FROM `".$this->hisdbname."`.`attachments` WHERE ContactID IN (SELECT ContactID FROM `".$this->hisdbname."`.`contacts-students` WHERE StudentID=$archivedStudentID)"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$Extension=$results['Extension'];
+				$Alias=addslashes(htmlspecialchars($results['Alias']));
+				$ContactID=$results['ContactID'];
+				$AdmissionsFile=$results['AdmissionsFile'];
+				//insert into current (keep current info if duplicate)
+				$query = "INSERT INTO `attachments` (ID, Extension, Alias, ContactID, AdmissionsFile) VALUES ('$ID', '$Extension', '$Alias', '$ContactID', '$AdmissionsFile') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			//issues
+			$query = "SELECT * FROM `".$this->hisdbname."`.`issues` WHERE ID IN (SELECT Issue FROM `".$this->hisdbname."`.`contacts` WHERE ID IN (SELECT ContactID FROM `".$this->hisdbname."`.`contacts-students` WHERE StudentID=$archivedStudentID))"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$ID=$results['ID'];
+				$Header=addslashes(htmlspecialchars($results['Header']));
+				$Creator=$results['Creator'];
+				$Modifier=$results['Modifier'];
+				$DateCreated=$results['DateCreated'];
+				$Status=$results['Status'];
+				$Level=$results['Level'];
+				$Category=$results['Category'];
+				$LastModified=$results['LastModified'];
+				$AssignedTo=$results['AssignedTo'];
+				//insert into current (keep current if duplicate)
+				$query = "INSERT INTO `issues` (ID, Header, Creator, Modifier, DateCreated, Status, Level, Category, LastModified, AssignedTo) VALUES ('$ID', '$Header', '$Creator', '$Modifier', '$DateCreated', '$Status', '$Level', '$Category', '$LastModified', '$AssignedTo') ON DUPLICATE KEY UPDATE ID='$ID'";
+				mysql_query($query);
+			}
+
+
+			//issuealert ***** Not archived...##? *****
+			/*$query = "SELECT * FROM `".$this->hisdbname."`.`issuealert` WHERE IssueID IN (SELECT ID FROM `".$this->hisdbname."`.`issues` WHERE ID 			IN (SELECT Issue FROM `".$this->hisdbname."`.`contacts` WHERE ID IN (SELECT ContactID FROM `".$this->hisdbname."`.`contacts-students` 				WHERE StudentID=$archivedStudentID)))"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+			//process variables
+			//...
+			//insert into current (ignore duplicates)
+			$query = "INSERT INTO `issuealert` (ID, ...) VALUES ('$ID', ...) ON DUPLICATE KEY UPDATE IssueID='$IssueID'";
+			mysql_query($query);
+			}*/
+
+
+			//issuewatch
+			$query = "SELECT * FROM `".$this->hisdbname."`.`issuewatch` WHERE IssueID IN (SELECT ID FROM `".$this->hisdbname."`.`issues` WHERE ID IN (SELECT Issue FROM `".$this->hisdbname."`.`contacts` WHERE ID IN (SELECT ContactID FROM `".$this->hisdbname."`.`contacts-students` WHERE StudentID=$archivedStudentID)))"; //grab from historical
+			$result=mysql_query($query);
+			for($i=0; $results = mysql_fetch_array($result); $i++){
+				//process variables
+				$UserID=$results['UserID'];
+				$IssueID=$results['IssueID'];
+				//insert into current (ignore duplicates)
+				$query = "REPLACE INTO `issuewatch` (UserID, IssueID) VALUES ('$UserID', '$IssueID')";
+				mysql_query($query);
+			}
+			return true; //success!
+		}
+		else{return false;} //user not allowed to archive
+	}
 
 }
 
