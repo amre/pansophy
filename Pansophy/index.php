@@ -45,7 +45,7 @@ if( isset( $_SESSION['userid'] )){
 	
 	/* Similar to the previous block, this queries the newly cleansed Issues table to find any remaining
 	 * issues that are Open and haven't been modified over a span of 6 months to 1 year (non-inclusive).
-	 * It echoes a JavaScript script that displays an alert prior to displaying the main Phronesis page
+	 * It echoes a JavaScript script that displays an alert prior to displaying the main Pansophy page
 	 * that notifies the user that they have unresolved Open issues that possibly should be closed.
 	 * (Requests user closure of old issues in the event that an issue was left open for a reason.)
 	 * - Josh Thoma

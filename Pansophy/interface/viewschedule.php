@@ -19,7 +19,7 @@ $studentID = $_GET['studentid'];
 // get student info array
 $studentID = $dam->viewStudent('', $studentID);
 $keys = array_keys($studentID);
-// using the previous phronesis group's lovely variable variables...
+// using the previous pansophy group's lovely variable variables...
 for($i=0; $i<count($keys); $i++){
 	$$keys[$i]=$studentID[$keys[$i]];
 }

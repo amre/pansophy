@@ -33,9 +33,10 @@ function parseRow( $string ) {
 	$return[ 'Advisor' ] = trim( $srnFields[12] );
 	$return[ 'Status' ] = trim( $srnFields[13] );
 	$return[ 'Ethnic' ] = trim( $srnFields[14] );
+	$return[ 'Birthday' ] = trim( $srnFields[15] );
 	
-	if( $HomeAreaCode = trim( $srnFields[15] ) ) $HomeAreaCode = '('.$HomeAreaCode.')';
-	$return[ 'HomePhone' ] = $HomeAreaCode.' '.$srnFields[16];
+	if( $HomeAreaCode = trim( $srnFields[16] ) ) $HomeAreaCode = '('.$HomeAreaCode.')';
+	$return[ 'HomePhone' ] = $HomeAreaCode.' '.$srnFields[17];
 	//print_r( $return );
 	//echo '<br><br>';
 	

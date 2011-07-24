@@ -384,7 +384,7 @@ pass:$pass
 		<center>
 		<p>
 		<p>
-		<h1>Phronesis Contact Manager Setup - Step 2</h1>
+		<h1>Pansophy Contact Manager Setup - Step 2</h1>
 		<table><td><h3>Administrator Information</h3></td><td><a href="./help/" class="black" target="_blank">[Help]</a></td></table>
 		<table border="1" class="darkbg" RULES="BOX" cellpadding="4">
 		<tr><td>
@@ -429,7 +429,7 @@ pass:$pass
 else{
 	echo '<p>
 	     <p>
-	<h1>Phronesis Contact Manager Setup - Step 1</h1>
+	<h1>Pansophy Contact Manager Setup - Step 1</h1>
 	<form action="./setup.php" method="POST">
 		<center>
 		<table><td><h3>Database Information</h3></td><td><a href="./help/" class="black" target="_blank">[Help]</a></td></table>
