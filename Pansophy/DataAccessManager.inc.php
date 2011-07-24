@@ -4856,7 +4856,7 @@ class DataAccessManager {
 				//process variables                               
 				$UserID=$results['UserID'];
 				$OtherUserID=$results['OtherUserID'];
-				//insery into archive (replace if duplicates to avoid errors)
+				//insert into archive (replace if duplicates to avoid errors)
 				$query = "REPLACE INTO `".$this->hisdbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
 				mysql_query($query);
 			}
@@ -5630,7 +5630,7 @@ class DataAccessManager {
 				//process variables                               
 				$UserID=$results['UserID'];
 				$OtherUserID=$results['OtherUserID'];
-				//insery into archive (replace if duplicates to avoid errors)
+				//insert into archive (replace if duplicates to avoid errors)
 				$query = "REPLACE INTO `".$this->dbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
 				mysql_query($query);
 			}
