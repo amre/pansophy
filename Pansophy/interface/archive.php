@@ -41,8 +41,11 @@ if (isset($_POST['yes'])) // do purge
 	}
 	@ob_start();
 	//begin archive/deletion
-	$dam->deleteFromCurrent('', $_POST['year']);
-	echo '<br/><br/><center><p>Success! System archived.</p></center>';
+	if($dam->deleteFromCurrent('', $_POST['year'])) //archives in the process
+		echo '<br/><br/><center><p>Success! System archived.</p></center>';
+	else
+		echo '<br/><br/><center><p>You are not permitted to archive.</p></center>';
+	//$dam->putBack('');
 }
 else if (isset($_POST['no'])) // cancel purge
 {

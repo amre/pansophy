@@ -16,15 +16,15 @@ $dam = new DataAccessManager();
 
 $ID = $_GET['id'];
 $expand = $_GET['expand'];
-$recent=1;
+$recent=0;
 $issuesToView = 8;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']){
 	$issues=$dam->getStudentIssues($ID,0); //retrieve all issues
-	$recent=0;
+	$recent=1;
 }
 else {
 	$issues=$dam->getStudentIssues($ID,1); //only retrieve recent issues
-	$recent=1;
+	$recent=0;
 }
 
 echo '<table><dl>';
@@ -51,11 +51,11 @@ if($issues){
 				}
 				if ($expanded)
 				{
-					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height: 16px;padding-bottom:4px;display:block;" TARGET="Main"><b>-</b></a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" >';
+					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&viewallissues='.$recent.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height: 16px;padding-bottom:4px;display:block;" TARGET="Main"><b>-</b></a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" >';
 				}
 				else
 				{
-					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" > +</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
+					echo '<tr><td><center><a href="./viewstudent.php?id='.$ID.'&viewallissues='.$recent.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" > + </a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
 				}
 				
 					echo $issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): 
@@ -89,7 +89,7 @@ if($issues){
 	}
 }
 else {
-	if($recent)
+	if(!$recent)
 		echo 'There are no current issues for this student.';
 	else
 		echo 'There are no issues for this student.';

@@ -4504,6 +4504,8 @@ class DataAccessManager {
 	 *	 ##    indicates a potential data integrity problem
 	 *
 	 * @param $sessionID - session information like IP address to verify for security
+	 *
+	 * @return whether or not copying was successful (based on whether or not the user can archive)
 	 */
 
 	function archiveEverything( $sessionID ){
@@ -4860,7 +4862,9 @@ class DataAccessManager {
 				$query = "REPLACE INTO `".$this->hisdbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
 				mysql_query($query);
 			}
+			return true; //success
 		}
+		else{return false;} //user not allowed to archive
 	}
 
 	/**
@@ -4873,6 +4877,7 @@ class DataAccessManager {
 	 * @param $sessionID - session information like IP address to verify for security
 	 * @param $year - Students with ClassYear <= $year will be deleted
 	 *		  from the current system
+	 * @return whether or not deletion was successful (based on whether or not the user can archive)
 	 */
 
 	function deleteFromCurrent( $sessionID, $year )
@@ -4880,7 +4885,8 @@ class DataAccessManager {
 		if($this->userCanArchive($sessionID))
 		{
 			/***** Archive everything before deleting anything *****/
-			$this->archiveEverything($sessionID);
+			if($this->archiveEverything($sessionID)){}	//make sure copying occurs....
+			else{return false;}	//archiving failed
 
 			/***** Delete actual students first *****/
 
@@ -4890,7 +4896,7 @@ class DataAccessManager {
 			mysql_query($query);
 
 
-			/***************2nd wave***************/
+			/***************2nd wave***************/ //(all dependent upon a non-existent student ID)
 			//students
 			$query = "DELETE FROM `students` WHERE StudentID NOT IN (SELECT ID FROM `X_PNSY_STUDENT`)";
 			mysql_query($query);
@@ -4929,27 +4935,27 @@ class DataAccessManager {
 
 			//X_PNSY_PARENT
 			$query = "DELETE FROM `X_PNSY_PARENT` WHERE ID NOT IN (SELECT ID_2 FROM `X_PNSY_RELATIONSHIP`)";
-			mysql_query($query);
+			mysql_query($query); //deleting from `parent` dependent upon non-existent relaionships
 
 			//contacts
 			$query = "DELETE FROM `contacts` WHERE ID NOT IN (SELECT ContactID FROM `contacts-students`)";
-			mysql_query($query);
+			mysql_query($query); //deleting from `contacts` dependent upon no student associations in `contacts-students`
 
 
 			/***************4th wave***************/
 
 
 			//X_PNSY_ADDRESS
-			$query = "DELETE FROM `X_PNSY_ADDRESS` WHERE ADDRESS_ID NOT IN ((SELECT ADDRESS_ID FROM `X_PNSY_STUDENT`) UNION (SELECT ADDRESS_ID FROM `X_PNSY_PARENT`))";
+			$query = "DELETE FROM `X_PNSY_ADDRESS` WHERE ADDRESS_ID NOT IN ((SELECT ADDRESS_ID FROM `X_PNSY_STUDENT`) UNION (SELECT ADDRESS_ID FROM `X_PNSY_PARENT`))"; //deleting from `address` dependent upon no student OR parent with those address IDs
 			mysql_query($query);
 
 			//attachments
 			$query = "DELETE FROM `attachments` WHERE ContactID NOT IN (SELECT ID FROM `contacts`";
-			mysql_query($query);
+			mysql_query($query); //deleting from `attachments` dependent upon non-existent contacts
 
 			//issues
 			$query = "DELETE FROM `issues` WHERE ID NOT IN (SELECT Issue FROM `contacts`)";
-			mysql_query($query);
+			mysql_query($query); //deleting from `issues` dependent upon non-existent contacts
 
 
 			/***************5th wave***************/
@@ -4957,16 +4963,18 @@ class DataAccessManager {
 
 			//issuewatch
 			$query = "DELETE FROM `issuewatch` WHERE IssueID NOT IN (SELECT ID FROM `issues`)";
-			mysql_query($query);
+			mysql_query($query); //deleting from `issuewatch` dependent upon non-existent issues
 
 			//issuealert
 			$query = "DELETE FROM `issuealert` WHERE IssueID NOT IN (SELECT ID FROM `issues`)";
-			mysql_query($query);
+			mysql_query($query); //deleting from `issuealert` dependent upon non-existent issues
 
 
 			/********Any other tables wouldn't be modified during an archive********/
 
+			return true; //success
 		}
+		else{return false;} //user not allowed to archive
 	}
 
 	/**
@@ -5276,6 +5284,17 @@ class DataAccessManager {
 		}
 		else{return false;} //user not allowed to archive
 	}
+
+	/**
+	 * Copies over all information in the archive to the current
+	 * NOTE: ***** indicates a table that is obsolete in the archive, so isn't copied
+	 *	 ##    indicates a potential data integrity problem
+	 *
+	 * @param $sessionID - session information like IP address to verify for security
+	 *
+	 * @return whether or not copying was successful (based on whether or not the user can archive)
+	 */
+	
 	function putBack( $sessionID ){
 		if($this->userCanArchive($sessionID))
 		{
@@ -5634,7 +5653,9 @@ class DataAccessManager {
 				$query = "REPLACE INTO `".$this->dbname."`.`userwatch` (UserID, OtherUserID) VALUES ('$UserID', '$OtherUserID')";
 				mysql_query($query);
 			}
+			return true; //success
 		}
+		else{return false;} //user not allowed to archive
 	}
 
 }

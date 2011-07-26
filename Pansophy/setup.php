@@ -247,6 +247,8 @@ pass:$pass
   		`Extension` varchar(4) NOT NULL default '',
   		`IsFaculty` tinyint(1) NOT NULL default '0',
   		`IsStaff` tinyint(1) NOT NULL default '0',
+		`LastLogin` int(11) default NULL,
+		`LoginAttempts` int(11) default NULL,
   		PRIMARY KEY  (`ID`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 	array_push( $queries, $query );

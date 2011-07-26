@@ -48,7 +48,7 @@ $student = $dam->viewStudent('',$studentId);
 // for minimizing and maximizing issues/contacts displayed
 $viewAllIssues = false;
 $viewAllContacts = false;
-if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $viewAllIssues = true;
+if(isset($_GET['viewallissues']) && $_GET['viewallissues']) $viewAllIssues = 1;
 if(isset($_GET['viewallcontacts']) && $_GET['viewallcontacts']) $viewAllContacts = true;
 
 // display title section
@@ -299,6 +299,17 @@ foreach( $dam->getActiveUserSelectList() as $user ) {
 	$selected = "";
 	if( $student['AssignedTo'] == $userid ) $selected = " selected";
 	echo "<option value='$userid'$selected>$label</option>";
+}
+if( isset($_SESSION['historical']) ) {
+	foreach( $dam->getUserSelectList() as $user ) { //for accessing historical database (shows only the assigned user)
+		$userid = $user['ID'];
+		$label = $user['Label'];
+		$selected = "";
+		if( $student['AssignedTo'] == $userid ){
+			$selected = " selected";
+			echo "<option value='$userid'$selected>$label</option>";
+		}
+	}
 }
 echo "</select>&nbsp;<input type='submit' name='reassign' value='Reassign'></form>";
 //add user issue
