@@ -22,16 +22,16 @@ $recent=1;
 $issuesToView = 8;
 if(isset($_GET['viewallissues']) && $_GET['viewallissues']){
 	$issues=$dam->getStudentIssues($ID,0); //retrieve all issues
-	$recent=0;
+	$recent=1;
 }
 else {
 	$issues=$dam->getStudentIssues($ID,1); //only retrieve recent issues
-	$recent=1;
+	$recent=0;
 }
 
 echo '<table><dl>';
 if($issues){
-	for($i=0; $i < $issuesToView; $i++){
+	for($i=0; $i < sizeof($issues); $i++){
 		$staff=array();
 // Michael Thompson * 12/07/2005 * Fixed bug in link
 		if($issues[$i]['ID'] == ''){
@@ -53,11 +53,11 @@ if($issues){
 				}
 				if ($expanded)
 				{
-echo '<tr><td><center><a href="./viewstudentpf.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" >-</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
+echo '<tr><td><center><a href="./viewstudentpf.php?id='.$ID.'&viewallissues='.$recent.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" >-</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
 				}
 				else
 				{
-					echo '<tr><td><center><a href="./viewstudentpf.php?id='.$ID.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" >+</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
+					echo '<tr><td><center><a href="./viewstudentpf.php?id='.$ID.'&viewallissues='.$recent.'&expand='.$urlstring.'" style="font-size:16px;border: solid 3px #660000;width:20px;height:16px;padding-bottom:4px;display:block;" >+</a></center></td><td><dt><a href="./viewissue.php?id='.$issues[$i]['ID'].'" TARGET="Main">';
 				}
 				
 					echo $issues[$i]['ID'][0].'-'.substr($issues[$i]['ID'],1).'</a> ('.$issues[$i]['Status'].'): 
